@@ -1,0 +1,634 @@
+﻿@model JOB_MANAGER.Models.TasksDto
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ActiveMenu = "Jobs";
+    ViewBag.MenuOpen = "";
+    ViewBag.Title = "View Task";
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="text-white">
+                        <i class="fas fa-briefcase"></i> Jobs
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>@ViewBag.Title</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12">
+        
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-edit text-success"></i> View Phase</h3>
+                <div class="card-tools">
+                    <a href="@Url.Action("JobView", "Job", new { id = Model.PROJECT_ID,Layout = 1 })" class="btn btn-danger"><i class="fas fa-door-closed"></i> Back</a>
+                </div>
+            </div>
+            <div class="card-body row p-0">
+                <div class="col-sm-6 table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong><i class="fas fa-info-circle"></i> Status</strong></th>
+                                <td class="STATUS_NAME alert @Model.DISPLAY_CLASS">@Model.STATUS_NAME</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-user"></i> Phase</strong></th>
+                                <td class="PHASE_NAME">@Model.PHASE_NAME</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-user"></i> Task</strong></th>
+                                <td class="PROJECT_TASK_NAME">@Model.PROJECT_TASK_NAME</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-user"></i> Prj.Client</strong></th>
+                                <td class="PROJECT_AMOUNT">@Model.CLIENT_NAME</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-6  table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th><strong><i class="fas fa-square"></i> Order</strong></th>
+                                <td class="TASK_ORDER">@Model.TASK_ORDER</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-calendar"></i> Start Date</strong></th>
+                                <td class="MATERIAL_NAME">@((Model.TASK_START_DATE == null) ? "N/A" : Model.TASK_START_DATE)</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-calendar"></i> End Date</strong></th>
+                                <td class="TASK_END_DATE">@((Model.TASK_END_DATE == null) ? "N/A" : Model.TASK_END_DATE)</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-user"></i> Prj.Client</strong></th>
+                                <td class="PROJECT_AMOUNT">@Model.CLIENT_NAME</td>
+                            </tr>
+                            <tr>
+                                <th><strong><i class="fas fa-calendar"></i> Last Update</strong></th>
+                                <td class="MODIFIED_DATE">@((Model.MODIFIED_DATE == null) ? "N/A" : Model.MODIFIED_DATE)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th style="width:20%"><strong><i class="fas fa-percentage"></i> Completed</strong></th>
+                                <td>
+                                    <div class="progress TASK_PROGRESS">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="TASK_PROGRESS" role="progressbar" aria-valuenow="@Model.PROJECT_TASK_PROGRESS" aria-valuemin="0" aria-valuemax="100" style="width: @Model.PROJECT_TASK_PROGRESS%">
+                                            @Model.PROJECT_TASK_PROGRESS %
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12">
+                    <div class="card card-success card-outline card-outline-tabs">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="ViewTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a href="#TaskDocuments" class="nav-link active" data-toggle="pill" role="tab" aria-selected="true">
+                                        <i class="fas fa-file-upload"></i> Documents
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#TaskNotes" class="nav-link" data-toggle="pill" role="tab" aria-selected="false">
+                                        <i class="fas fa-file-upload"></i> Notes
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#TaskMembers" class="nav-link" data-toggle="pill" role="tab" aria-selected="false">
+                                        <i class="fas fa-users"></i> Members
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body p-1">
+                            <div class="tab-content">
+                                <div class="tab-pane tab-pane-padding" id="TaskDocuments">
+                                    <div class="col-sm-12 col-xs-12 border">
+                                        <input type="file" style="visibility:hidden" name="FILE" id="FILE" />
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="FILE_DESC" name="FILE_DESC" placeholder="Description" />
+                                            <div class="btn-group">
+                                                <select class="selectpicker" id="FileType" data-container="body" data-width="fit">
+                                                    <option data-icon="fa-heart">Ketchup</option>
+                                                </select>
+                                                <button class="btn btn-success btn-sm " onclick="$('#FILE').click();"><i class="fas fa-plus-circle"></i> Add New File</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-xs-12 TaskDocuments spinner">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade spinner" id="TaskNotes" role="tabpanel">
+                                </div>
+                                <div class="tab-pane fade spinner" id="TaskMembers" role="tabpanel">
+                                    <div class="row border">
+                                        @{
+                                            if (Model.MEMBERS.Count > 0)
+                                            {
+                                                foreach (var member in Model.MEMBERS)
+                                                {
+                                                    string title = member.EMP_NAME + "</br>" + member.TITLE_NAME;
+                                                    if (member.EMP_IMG == null)
+                                                    {
+                                                        var base64 = Convert.ToBase64String(ViewBag.DefaultProfileImg);
+                                                        var imgsrc = string.Format("data:image/GIF;base64,{0}", base64);
+
+                                                        <img src='@imgsrc' data-toggle="tooltip" title="@title" class="img-circle prof_img" width="50" height="50" />
+                                                    }
+                                                    else
+                                                    {
+                                                        var base64 = Convert.ToBase64String(member.EMP_IMG);
+                                                        var imgsrc = string.Format("data:image/GIF;base64,{0}", base64);
+
+                                                        <img src='@imgsrc' data-toggle="tooltip" title="@title" class="img-circle prof_img" width="50" height="50" />
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <label>N/A</label>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>      
+            </div>
+    </div>    
+    </div>
+</div>
+
+<!--Dialog-->
+<div id="ReminderDate" class="displaynone" title="Reminder Information">
+    <div class="col-sm-12">
+        <div class="col-sm-12">
+            <label class="col-sm-5"><strong><i class="fas fa-calendar"></i> Reminder Date</strong></label>
+            <div class="col-sm-7">
+                <input type="date" class="form-control ReminderDate" />
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <label class="col-sm-5"><strong><i class="fas fa-clock"></i> Reminder Time</strong></label>
+            <div class="col-sm-7">
+                <input type="time" class="form-control ReminderTime" />
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <label class="col-sm-5"><strong><i class="fas fa-users"></i> Reminder Member</strong></label>
+            <div class="col-sm-7">
+                <select id="ReminderMember" class="selectpicker form-control" data-width="fit" data-container="body" multiple data-selected-text-format="count">
+                    <option data-icon="fa-heart">Ketchup</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var NoteTb = null;
+    var FileTb = null;
+
+    var MemberDto = null;
+
+    var _ProjectID = @Model.PROJECT_ID;
+    var _PhaseID = @Model.PHASE_ID;
+    var _TaskID = @Model.PROJECT_TASK_ID;
+
+    $(document).ready(function ()
+    {
+        var _Progress = @Model.PROJECT_TASK_PROGRESS;
+        $("#TASK_PROGRESS").attr("aria-valuenow", _Progress).html(_Progress+"%");
+
+        InitNotes(function () {
+            LoadDocuments(function () {
+                InitDocuments(function () {
+                    CreateTooltip();
+                    FixSelectPicker();
+                });
+            });
+        });
+    });
+
+    function InitNotes(callback)
+    {
+      var param = {};
+      param.ProjectID = _ProjectID;
+      param.PhaseID = _PhaseID;
+      param.TaskID = _TaskID;
+
+        $.ajax({
+            url: '@Url.Action("GetDocumentList", "Job")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                if (IsUndefinedOrNullOrEmpty(retdata) == true)
+                {
+                    retdata = {};
+                    retdata.NoteType.push({ NOTE_TYPE_ID: 0, NOTE_TYPE_NAME: ""});
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    retdata.NoteType.push({ NOTE_TYPE_ID: 0, NOTE_TYPE_NAME: "" });
+
+                    CreateHtmlJsGrid("TaskNotes", function (retHtml) {
+
+                        var div = $("<div>").addClass("spinner").addClass("border").addClass("col-sm-12").html(retHtml);
+
+                        $("#TaskNotes").html(div);
+
+
+                        MemberDto = retdata.Members;
+
+                        var param = {};
+                        param.TypeID = 2;
+                        param.UniqID = _ProjectID;
+                        param.TaskID = _TaskID;
+
+                        var Options = {};
+                        Options.Name = $("#TableTaskNotes");
+                        Options.Url = '@Url.Action("GetNoteList", "Job")';
+                        Options.Data = [];
+                        Options.LoadParam = param;
+                        Options.Width = "200px"
+                        Options.Fields = [
+                            { name: "NOTE_DESC", title: "Note.#", type: "text", autosearch: false,width: 80, validate: "required" },
+                            { name: "NOTE_SUBJECT", title: "Subject", type: "text", autosearch: false, width: 150, validate: "required" },
+                            {
+                                name: "NOTE_TYPE_ID", title: "Note Type", autosearch: false, type: "select", items: retdata.NoteType, valueField: "NOTE_TYPE_ID", textField: "NOTE_TYPE_NAME",
+                                width: 80, validate: "required"
+                            },
+                            {
+                                name: "ASSINGED_MEMBERS_ARR", title: "Assigned To", autosearch: false, width: 100, multiple: true, items:retdata.Members, type: "multipleSelect",
+                                valueField: "EMP_ID", textField: "EMP_NAME", autosearch: false, validate: "required"
+                            },
+                            {
+                                name: "SET_REMINDER", title: "Set Reminder", autosearch: false, width: "75", type: "checkbox"
+                            },
+                            {
+                                type: "control", modeSwitchButton: false, width: "50", align: "center",
+                            }
+                        ]
+
+                        CreateJsGrid(Options, function (retGrid)
+                        {
+                            NoteTb = retGrid.Grid;
+                            callback();
+                        });
+
+                    });
+                }
+            }
+        });
+    }
+
+    function LoadDocuments(callback)
+    {
+        var param = {};
+        param.Type = 6;
+
+        $.ajax({
+            url: '@Url.Action("GetQuoteAndJobList", "AdminOperation")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata) {
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    let List = retdata.Getlist.filter(list => list.IS_CANCELED == false);
+
+                    $("#FileType").find('option').remove();
+                    $('#FileType').selectpicker('refresh');
+                    if (IsUndefinedOrNullOrEmpty(List) == false && List.length > 0) {
+                        var DocList = List;
+                        for (var i = 0; i < DocList.length; i++)
+                        {
+                            if (DocList[i].IS_CANCELED)
+                                continue;
+
+                            var option = $('<option></option>').attr("value", DocList[i].DOCUMENT_TYPE_ID).attr("alt", DocList[i].DOCUMENT_EXTENSION).attr("data-icon", DocList[i].FONT_AWESOME_ICON).text(DocList[i].DOCUMENT_TYPE_NAME);
+                            $("#FileType").append(option);
+                        }
+
+                        $('#FileType').selectpicker('refresh');
+                    }
+                    callback();
+                }
+                else
+                    callback();
+            }
+        });
+    }
+
+    function InitDocuments(callback)
+    {
+        CreateHtmlJsGrid("TaskFiles ToolBarFalse", function (retHtml)
+        {
+            $(".TaskDocuments").html(retHtml);
+
+            var param = {};
+            param.TypeID = 2;
+            param.UniqID = _ProjectID;
+            param.TaskID = _TaskID;
+
+            var Options = {};
+            Options.Name = $("#TableTaskFiles");
+            Options.Url = '@Url.Action("GetDocumentFileList", "Job")';
+            Options.Data = [];
+            Options.LoadParam = param;
+            Options.Width = "200px"
+            Options.Fields = [
+                {
+                    name: "DOC_NAME", title: "Name", type: "text", width: 80,
+                    itemTemplate: function (_, item) {
+
+                        var element = "<i class='" + item.FONT_AWESOME_ICON + "'></i>";
+
+                        return $("<span>").html(element + " " + item.DOC_NAME);
+                    }
+                },
+                { name: "DOC_DESC", title: "Desc.", type: "text", width: 150 },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    editButton: false,
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var $customEditButton = $("<i>").attr("class", "fas fa-external-link-alt text-cyan mx-2").attr("title", "Open")
+                            .click(function (e) {
+                                var param = {};
+                                param.folderPath = item.DOC_PATH;
+                                $.ajax({
+                                    url: '@Url.Action("OpenFolder", "Quote")',
+                                    type: 'GET',
+                                    data: $.param(param),
+                                    success: function (retdata) {
+
+                                    }
+                                });
+                                e.stopPropagation();
+                            });
+
+                        return $result.add($customEditButton);
+                    }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid)
+            {
+                FileTb = retGrid.Grid;
+                callback();
+            });
+
+        });
+    }
+
+    function AddGrid(obj) {
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#TaskDocuments" ? FileTb : NoteTb;
+
+        $(obj.children).toggleClass('active')
+        grid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+    function SearchGrid(obj) {
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#TaskDocuments" ? FileTb : NoteTb;
+
+        $(obj.children).toggleClass('active')
+        grid.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function ChangeGrid(obj) {
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#TaskDocuments" ? FileTb : NoteTb;
+
+        $(obj.children).toggleClass('active')
+        grid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+    function RefreshGrid(obj) {
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#TaskDocuments" ? FileTb : NoteTb;
+
+        $(obj.children).toggleClass('active')
+        grid.jsGrid("loadData");
+    }
+
+    function OnAddNewItem(args)
+    {
+        var _url;
+
+        var Active = $('#ViewTabs a.active').attr("href");
+        if (Active == "#TaskNotes")
+        {
+            args.item.NOTE_ID = args.item.NOTE_ID == null ? -1 : args.item.NOTE_ID;
+            args.item.UNIQ_ID = _ProjectID;
+            args.item.TASK_ID = _TaskID;
+            args.item.NOTE_KIND_ID = 2;
+            _url = '@Url.Action("AddOrUpdateNote", "Quote")';
+
+            if (args.item.SET_REMINDER)
+            {
+                OnReminderDate(args.item, function ()
+                {
+                    OnAddNewItemO(_url, args.item);
+                });
+            }
+            else
+                OnAddNewItemO(_url, args.item);
+        }
+    }
+
+    function OnAddNewItemO(_url, item)
+    {
+
+        $.ajax({
+            url: _url,
+            type: 'POST',
+            data: JSON.stringify(item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+                RefreshGrid(null);
+            }
+        });
+    }
+
+    function OnReminderDate(item, callback) {
+        $("#ReminderDate").removeClass("displaynone");
+
+        $("#ReminderMember").find('option').remove();
+        for (var i = 0; i < MembersDto.length; i++) {
+            if (MembersDto[i].EMP_NAME != "") {
+                var option = $('<option></option>').attr("value", MembersDto[i].EMP_ID).text(MembersDto[i].EMP_NAME);
+                $("#ReminderMember").append(option);
+            }
+        }
+
+        var RmdDialog = $("#ReminderDate").dialog({
+            height: "auto",
+            width: 300,
+            modal: true,
+            autoOpen: true,
+            responsive: true,
+            buttons: [
+                {
+                    text: "Save",
+                    click: function () {
+                        item.REMINDER_DATE = $(".ReminderDate").val();
+                        if (IsUndefinedOrNullOrEmpty($(".ReminderTime").val()) == false) {
+                            item.REMINDER_DATE += " " + $(".ReminderTime").val();
+                            item.REMINDER_TIME = $(".ReminderTime").val();
+                        }
+
+                        item.TO_REMIND_ARR = $('#ReminderMember').selectpicker('val');
+
+                        RmdDialog.dialog("close");
+                    }
+                }
+            ],
+            open: function (event, ui) {
+                $('#ReminderMember').selectpicker('refresh');
+                $(".ReminderDate").val(item.REMINDER_DATE);
+                $(".ReminderTime").val(item.REMINDER_TIME);
+                $('#ReminderMember').selectpicker('val', item.TO_REMIND_ARR);
+            },
+            close: function (ev, ui) {
+                $(".ReminderDate").val("");
+                $(".ReminderTime").val("");
+                $('#ReminderMember').selectpicker('val', "");
+                RmdDialog.dialog('destroy');
+                $("#ReminderDate").addClass("displaynone");
+                callback();
+            }
+        });
+    }
+
+    function OnDeleteITem(args, type)
+    {
+        showHideLoader(true);
+
+        var _url;
+
+        var Active = $('#ViewTabs a.active').attr("href");
+        if (Active == "#TaskNotes")
+            _url = '@Url.Action("RemoveTask", "Job")';
+        else
+          _url = '@Url.Action("RemoveDocument", "Quote")';
+
+        $.ajax({
+            url: _url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+                RefreshGrid(obj);
+                showHideLoader(false);
+            }
+        });
+    }
+
+    $('input[type="file"]').change(function(e){
+
+         var file = e.target.files[0];
+         if (file != null)
+         {
+
+             var FileType = $('#FileType option:selected').attr("alt");
+             var addfileType = file.name.substring(file.name.indexOf(".") + 1, file.name.length).toLowerCase();
+
+             if (FileType.indexOf(addfileType) < 0)
+             {
+                 toastr.error("File Type missmacting.Please select correct type in file types combo", "Error was found");
+                 $('input[type="file"]').val("");
+                 return;
+             }
+
+             if (IsUndefinedOrNullOrEmpty($("#FILE_DESC").val()) == true)
+             {
+                 toastr.error("File Description is requried", "Error was found");
+                 $('input[type="file"]').val("");
+                 return;
+             }
+
+
+             var request = new FormData();
+             request.append("UniqID", _ProjectID);
+             request.append("PhaseID", -1);
+             request.append("NoteID", -1);
+             request.append("TaskID", _TaskID);
+             request.append("File", file);
+             request.append("FileDesc", $("#FILE_DESC").val());
+             request.append("FileType", $("#FileType").val());
+
+             $.ajax({
+                    url: '@Url.Action("UpdateFile", "Job")',
+                    type: 'POST',
+                    data: request,
+                    processData: false,
+                    contentType: false,
+                    success: function (data)
+                    {
+                        if (data.success == true)
+                        {
+                            toastr.success("File Updating", "Success");
+                            FileTable.jsGrid("loadData");
+                        }
+                        else
+                        {
+                            toastr.error(data.message, "Error was found");
+                        }
+
+                        $('input[type="file"]').val("");
+                    }
+             });
+         }
+         else
+         {
+             toastr.error("No File found", "Warning");
+         }
+    });
+    </script>

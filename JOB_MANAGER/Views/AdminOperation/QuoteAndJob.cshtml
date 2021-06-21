@@ -1,0 +1,552 @@
+﻿
+@{
+    ViewBag.Title = "Quote&Job";
+    ViewBag.ActiveMenu = "QuoteAndJob";
+    ViewBag.MenuOpen = "Administrator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Quote&Job</li>
+            </ol>
+        </nav>
+    </div>
+    <div id="body-container" class="col-xs-12">
+        <div class="card card-success card-outline card-outline-tabs">
+            <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="ViewTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#FloorTypes" data-toggle="pill" role="tab" aria-selected="true">
+                            <i class="fas fa-list"></i> Floor Types
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Materials" data-toggle="pill" role="tab" aria-selected="false">
+                            <i class="fas fa-list"></i> Materials
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#ProjectTypes" data-toggle="pill" role="tab" aria-selected="false">
+                            <i class="fas fa-tasks"></i> Project Types
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Status" data-toggle="pill" role="tab" aria-selected="false">
+                            <i class="fas fa-list"></i> Status
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#NoteType" data-toggle="pill" role="tab" aria-selected="false">
+                            <i class="fas fa-list"></i> Note Type
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#DocumentType" data-toggle="pill" role="tab" aria-selected="false">
+                            <i class="fas fa-list"></i> Document Type
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-0">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="FloorTypes" role="tabpanel">
+                        <div class="card-body  active spinner TableFloorTypes">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="Materials" role="tabpanel">
+                        <div class="card-body  active spinner TableMaterials">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="ProjectTypes" role="tabpanel">
+                        <div class="card-body  active spinner TableProjectTypes">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="Status" role="tabpanel">
+                        <div class="card-body  active spinner TableStatus">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="NoteType" role="tabpanel">
+                        <div class="card-body  active spinner TableNoteType">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="DocumentType" role="tabpanel">
+                        <div class="card-body  active spinner TableDocType">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="main">
+
+    var tbFloor = null, tbMaterial = null, tbProject = null, tbStatus = null, tbNoteType = null, tbDocType = null;
+
+    var Classes = [
+        { Name: "Primary", Class: "alert-primary", id: 1 },
+        { Name: "Secondary", Class: "alert-secondary", id: 2 },
+        { Name: "Success", Class: "alert-success", id: 3 },
+        { Name: "Danger", Class: "alert-danger", id: 4 },
+        { Name: "Warning", Class: "alert-warning", id: 5 },
+        { Name: "Info", Class: "alert-info", id: 6 },
+        { Name: "Light", Class: "alert-light", id: 7 },
+        { Name: "Dark", Class: "alert-dark", id: 8 }
+    ];
+
+
+    $(document).ready(function () {
+
+        InitGrids();
+    });
+
+    function InitGrids() {
+
+
+        CreateHtmlJsGrid("FloorTypes", function (retHtml) {
+            $(".TableFloorTypes").html(retHtml);
+
+            var param = {};
+            param.Type = 1;
+
+            var Options = {};
+            Options.Name = $("#TableFloorTypes");
+            Options.Url = "@Url.Action("GetQuoteAndJobList", "AdminOperation")";
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "FLOOR_TYPE_NAME", title: "Floor Type", type: "text", width: "100", validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add(element);
+                    }
+
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                tbFloor = retGrid.Grid;
+                //$('.nav-tabs a[href="#ContractTypes"]').tab('show');
+            });
+        });
+        CreateHtmlJsGrid("Materials", function (retHtml) {
+            $(".TableMaterials").html(retHtml);
+
+            var param = {};
+            param.Type = 2;
+
+            var Options = {};
+            Options.Name = $("#TableMaterials");
+            Options.Url = "@Url.Action("GetQuoteAndJobList", "AdminOperation")";
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "MATERIAL_NAME", title: "Material", type: "text", width: "100", validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add(element);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                tbMaterial = retGrid.Grid;
+                //$('.nav-tabs a[href="#ContractTypes"]').tab('show');
+            });
+
+        });
+        CreateHtmlJsGrid("ProjectTypes", function (retHtml) {
+            $(".TableProjectTypes").html(retHtml);
+
+            var param = {};
+            param.Type = 4;
+
+             $.ajax({
+                url: '@Url.Action("GetQuoteAndJobList", "AdminOperation")',
+                data: $.param(param),
+                type: 'GET',
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                    {
+                        var param = {};
+                        param.Type = 3;
+
+                        retdata.Getlist.push({ EMP_NAME: "", EMP_ID: 0 });
+
+                        var Options = {};
+                        Options.Name = $("#TableProjectTypes");
+                        Options.Url = "@Url.Action("GetQuoteAndJobList", "AdminOperation")";
+                        Options.LoadParam = param;
+                        Options.Data = [];
+                        Options.Fields = [
+                            { name: "PROJECT_TYPE_NAME", title: "Project Type", type: "text", width: "100", validate: "required" },
+                            { name: "DEFAULT_SUPERVISOR", title: "Supervisor", type: "select", items: retdata.Getlist, valueField: "EMP_ID", textField: "EMP_NAME", width: "100" },
+                            { name: "PROJECT_TYPE_DESC", title: "Description", type: "text", width: "150" },
+                            { name: "IS_DEFAULT", title: "Default", type: "checkbox", width: "50" },
+                            { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                            {
+                                type: "control", modeSwitchButton: false, width: "50", align: "center",
+                                itemTemplate: function (_, item) {
+                                    var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                                    var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                                    var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                                    var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                                    var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                                    return $result.add(element);
+                                }
+                            }
+                        ];
+
+                        CreateJsGrid(Options, function (retGrid) {
+                            tbProject = retGrid.Grid;
+                            //$('.nav-tabs a[href="#ContractTypes"]').tab('show');
+                        });
+                    }
+                }
+            });
+
+        });
+
+        var StatusType = 'Status <label for="StatusType"> Type:</label><select id="StatusType" class="selectpicker" Onchange="StatusChange()"  title="Select Status Type"><option value="5" selected>Quonte</option><option value="6">Project</option></select>';
+        CreateHtmlJsGrid(StatusType, function (retHtml)
+        {
+            $(".TableStatus").html(retHtml);
+
+           CreateStatusTable();
+
+        });
+
+        CreateHtmlJsGrid("NoteType", function (retHtml) {
+            $(".TableNoteType").html(retHtml);
+
+            var param = {};
+            param.Type = 5;
+
+            var Options = {};
+            Options.Name = $("#TableNoteType");
+            Options.Url = "@Url.Action("GetQuoteAndJobList", "AdminOperation")";
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "NOTE_TYPE_NAME", title: "Note Type", type: "text", width: "100", validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add(element);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                tbNoteType = retGrid.Grid;                
+            });
+
+        });
+
+        CreateHtmlJsGrid("DocumentType", function (retHtml) {
+            $(".TableDocType").html(retHtml);
+
+            var param = {};
+            param.Type = 6;
+
+            var Options = {};
+            Options.Name = $("#TableDocumentType");
+            Options.Url = "@Url.Action("GetQuoteAndJobList", "AdminOperation")";
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "DOCUMENT_TYPE_NAME", title: "Doc.Type", type: "text", width: "100", validate: "required" },
+                { name: "DOCUMENT_EXTENSION", title: "Doc.Extention", type: "text", width: "100", validate: "required" },
+                {
+                    name: "FONT_AWESOME_ICON", title: "Icon", type: "text", width: "100",
+                    itemTemplate: function (_, item) {
+
+                        if (IsUndefinedOrNullOrEmpty(item.FONT_AWESOME_ICON) == false)
+                        {
+                            return $("<span></span>").html("<i class='" + item.FONT_AWESOME_ICON + "'></i> " + item.FONT_AWESOME_ICON + "");
+                        }
+                    }
+                },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add(element);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                tbDocType = retGrid.Grid;
+                
+            });
+
+        });
+    }
+
+    function StatusChange()
+    {
+        CreateStatusTable();
+    };
+
+
+    function AddGrid(obj) {
+
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#FloorTypes" ? tbFloor : (Active == "#Materials" ? tbMaterial : (Active == "#ProjectTypes" ? tbProject : (Active == "#NoteType" ? tbNoteType : (Active == '#DocumentType' ? tbDocType : tbStatus )  ) ) );
+
+        $(obj.children).toggleClass('active');
+        grid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+
+    function SearchGrid(obj) {
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#FloorTypes" ? tbFloor : (Active == "#Materials" ? tbMaterial : (Active == "#ProjectTypes" ? tbProject : (Active == "#NoteType" ? tbNoteType : (Active == '#DocumentType' ? tbDocType : tbStatus))));
+
+        $(obj.children).toggleClass('active');
+        grid.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function ChangeGrid(obj) {
+
+        var size = parseInt(obj.value, 10);
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#FloorTypes" ? tbFloor : (Active == "#Materials" ? tbMaterial : (Active == "#ProjectTypes" ? tbProject : (Active == "#NoteType" ? tbNoteType : (Active == '#DocumentType' ? tbDocType : tbStatus))));
+
+        grid.jsGrid("option", "pageSize", size);
+    };
+
+    function RefreshGrid(obj) {
+        var Active = $('#ViewTabs a.active').attr("href");
+        var grid = Active == "#FloorTypes" ? tbFloor : (Active == "#Materials" ? tbMaterial : (Active == "#ProjectTypes" ? tbProject : (Active == "#NoteType" ? tbNoteType : (Active == '#DocumentType' ? tbDocType : tbStatus))));
+
+        grid.jsGrid("loadData");
+    }
+
+
+    function OnAddNewItem(args)
+    {
+        showHideLoader(true);
+        var _url;
+
+         var Active = $('#ViewTabs a.active').attr("href");
+         if (Active == "#FloorTypes") {
+             args.item.CONTRACT_TYPE_ID = args.item.CONTRACT_TYPE_ID == null ? -1 : args.item.CONTRACT_TYPE_ID;
+             _url = '@Url.Action("AddOrUpdateFloorType", "AdminOperation")';
+         }
+         else
+         if (Active == "#Materials")
+         {
+            args.item.ROLE_ID = args.item.ROLE_ID == null ? -1 : args.item.ROLE_ID;
+            _url = '@Url.Action("AddOrUpdateMaterial", "AdminOperation")';
+         }
+         else
+         if (Active == "#ProjectTypes")
+         {
+            args.item.ROLE_ID = args.item.ROLE_ID == null ? -1 : args.item.ROLE_ID;
+            _url = '@Url.Action("AddOrUpdateProjectType", "AdminOperation")';
+         }
+         else
+         if (Active == "#NoteType")
+         {
+             args.item.NOTE_TYPE_ID = args.item.NOTE_TYPE_ID == null ? -1 : args.item.NOTE_TYPE_ID;
+            _url = '@Url.Action("AddOrUpdateNoteType", "AdminOperation")';
+         }
+         else
+         if (Active == "#DocumentType")
+         {
+             args.item.DOCUMENT_TYPE_ID = args.item.DOCUMENT_TYPE_ID == null ? -1 : args.item.DOCUMENT_TYPE_ID;
+            _url = '@Url.Action("AddOrUpdateDocumentType", "AdminOperation")';
+         }
+         else
+         {
+             _url = '@Url.Action("AddOrUpdateStatus", "AdminOperation")';
+             args.item.STATUS_ID = args.item.STATUS_ID == null ? -1 : args.item.STATUS_ID;
+             args.item.STATUS_TYPE = $('#StatusType').val();
+         }
+
+        $.ajax({
+            url: _url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success)
+                    {
+                        toastr.success(retdata.Message);
+                        RefreshGrid(null);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function OnDeleteITem(args)
+    {
+            showHideLoader(true);
+
+            var _url;
+            var Active = $('#ViewTabs a.active').attr("href");
+            if (Active == "#FloorTypes") {
+                _url = '@Url.Action("RemoveFloorType", "AdminOperation")';
+            }
+            else
+            if (Active == "#Materials") {
+
+                _url = '@Url.Action("RemoveMaterial", "AdminOperation")';
+            }
+            else
+            if (Active == "#ProjectTypes") {
+
+                _url = '@Url.Action("RemoveProjectType", "AdminOperation")';
+            }
+            else
+            if (Active == "#NoteType")
+            {
+                _url = '@Url.Action("RemoveNoteType", "AdminOperation")';
+            }
+            else
+            if (Active == "#DocumentType")
+            {
+                _url = '@Url.Action("RemoveDocumentType", "AdminOperation")';
+            }
+            else {
+                _url = '@Url.Action("RemoveStatus", "AdminOperation")';
+            }
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(args),
+                contentType: "application/json; charset=utf-8",
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                            RefreshGrid(null);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    showHideLoader(false);
+                }
+            });
+    }
+
+    function CreateStatusTable()
+    {
+         var param = {};
+            param.StatusType = $('#StatusType').val();
+
+            var Options = {};
+            Options.Name = $("#TableStatus");
+            Options.Url = '@Url.Action("GetStatusList", "AdminOperation")';
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "STATUS_NAME", title: "Status", type: "text", width: "150", validate: "required" },
+                {
+                    align: "center", name: "DISPLAY_CLASS", title: "Display Class", width: "50", type: "color",
+                    itemTemplate: function (_, item) {
+                        //var textcolor = lightOrDark(item.DISPLAY_CLAS)
+                        return $("<div>").css("background-color", "" + item.DISPLAY_CLASS + "").addClass("alert").text(item.DISPLAY_CLAS);
+                    }
+                },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+                tbStatus = retGrid.Grid;
+
+            });
+    }
+
+</script>

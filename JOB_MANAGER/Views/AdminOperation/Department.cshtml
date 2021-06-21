@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "Department Description";
+    ViewBag.ActiveMenu = "Department";
+    ViewBag.MenuOpen = "Genaral";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="row">
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="fas fa-ellipsis-h"></i> General
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Department</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body active spinner DepartmenGrid">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="main">
+    var _datDepartment = [];
+    var t1;
+
+   $(document).ready(function () {
+
+        InitGrids();
+
+    });
+
+    function InitGrids() {
+
+        CreateHtmlJsGrid("Department", function (retHtml) {
+                $(".DepartmenGrid").html(retHtml);
+
+                var Options = {};
+                Options.Name = $("#TableDepartment");
+                Options.Url = '@Url.Action("GetDepartmentList", "AdminOperation")';
+                Options.Data = [];
+                Options.Fields = [
+                    { name: "DEPARTMENT_NAME", title: "Department Name", type: "text", width: "150", validate: "required" },
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                    {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid) {
+                    t1 = retGrid.Grid;
+
+                });
+
+            });
+    }
+
+    function OnAddNewItem(args, type)
+        {
+            showHideLoader(true);
+
+            args.item.DEPARTMENT_ID = args.item.DEPARTMENT_ID == null ? -1 : args.item.DEPARTMENT_ID;
+
+            $.ajax({
+                url: '@Url.Action("AddOrUpdateDepartment", "AdminOperation")',
+                type: 'POST',
+                data: JSON.stringify(args.item),
+                contentType: "application/json; charset=utf-8",
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        t1.jsGrid("loadData");
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    showHideLoader(false);
+                }
+        });
+    }
+
+    function OnDeleteITem(args, type)
+    {
+        showHideLoader(true);
+
+        $.ajax({
+            url: '@Url.Action("RemoveDepartment", "AdminOperation")',
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success)
+                {
+                    t1.jsGrid("loadData");
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+
+    function AddGrid(obj)
+    {        
+        $(obj.children).toggleClass('active')
+        t1.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+
+    function SearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active')
+        t1.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+
+    function ChangeGrid(obj)
+    {
+        var size = parseInt($("#pageSize").val(), 10);
+        t1.jsGrid("option", "pageSize", size);
+    };
+
+    function RefreshGrid(obj) {
+        
+        t1.jsGrid("loadData");
+    }
+</script>

@@ -1,0 +1,175 @@
+﻿
+@{
+    ViewBag.Title = "Holidays";
+    ViewBag.ActiveMenu = "Holidays";
+    ViewBag.MenuOpen = "MyCompany";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-home"></i> Company
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Holiday</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card card-cyan card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-calendar-day text-cyan"></i> Holiday</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body active spinner HolidayGrid">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script id="main">
+
+    var HolidayGrid = null;
+
+   $(document).ready(function () {
+
+        InitGrids();
+
+    });
+
+    function InitGrids() {
+
+        CreateHtmlJsGrid("Holiday", function (retHtml) {
+            $(".HolidayGrid").html(retHtml);
+
+            var Options = {};
+            Options.Name = $("#TableHoliday");
+            Options.Url = '@Url.Action("GetHolidays", "Company")';
+            Options.Data = [];
+            Options.Fields = [
+                { name: "HOLIDAY_NAME", title: "Name", type: "text", width: "100", validate: "required" },
+                { name: "HOLIDAY_DESC", title: "Desc.", type: "text", width: "150", validate: "required" },
+                { name: "START_DATE", title: "Start Date", type: "date", width: "100", validate: "required" },
+                { name: "END_DATE", title: "End Date", type: "date", width: "100", validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                    {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid)
+                {
+                    HolidayGrid = retGrid.Grid;
+                });
+
+            });
+    }
+
+    function OnAddNewItem(args, type)
+    {
+        showHideLoader(true);
+
+        args.item.HOLIDAY_ID = args.item.HOLIDAY_ID == null ? -1 : args.item.HOLIDAY_ID;
+
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateHoliday", "Company")',
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                showHideLoader(false);
+                if (IsUndefinedOrNullOrEmpty(retdata) == false) {
+                    if (retdata.success)
+                    {
+                        RefreshGrid(null)
+                    }
+                    else
+                    {
+                        toastr.error(retdata.Message);
+                        RefreshGrid(null)
+                    }
+                }     
+            }
+        });
+    }
+
+    function OnDeleteITem(args, type)
+    {
+        showHideLoader(true);
+
+        $.ajax({
+            url: '@Url.Action("RemoveHoliday", "Company")',
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                showHideLoader(false);
+                if (IsUndefinedOrNullOrEmpty(retdata) == false) {
+                    if (retdata.success) {
+                        RefreshGrid(null)
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                        RefreshGrid(null)
+                    }                    
+                }                
+            }
+        });
+    }
+
+
+    function AddGrid(obj)
+    {
+        HolidayGrid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+  
+    function SearchGrid(obj) {
+        $(obj.children).toggleClass('active');
+        HolidayGrid.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function ChangeGrid(obj)
+    {
+        var size = parseInt($("#pageSize").val(), 10);
+        HolidayGrid.jsGrid("option", "pageSize", size);
+    };
+
+    function RefreshGrid(obj) {
+
+        HolidayGrid.jsGrid("loadData");
+    }
+</script>

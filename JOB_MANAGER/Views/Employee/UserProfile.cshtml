@@ -1,0 +1,580 @@
+﻿@{
+    ViewBag.Title = "UserProfile";
+    ViewBag.ActiveMenu = "Employees";
+    ViewBag.MenuOpen = "MyCompany";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var employeeInfo = ViewBag.Employee as JOB_MANAGER.Models.EMPLOYEES;
+    var Base64ImgKnt = false;
+}
+
+<div class="row">
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-home"></i> Company
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>User Profile</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-5">
+        <div class="card card-default">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-4 ">
+                        @if (employeeInfo.EMP_IMG == null)
+                        {
+                            var base64 = Convert.ToBase64String(ViewBag.DefaultProfileImg);
+                            var imgsrc = string.Format("data:image/GIF;base64,{0}", base64);
+                            Base64ImgKnt = false;
+
+                            <img src='@imgsrc' alt="profile image" class="img-circle prof_img" width="100" height="100" />
+                        }
+                        else
+                        {
+                            var base64 = Convert.ToBase64String(employeeInfo.EMP_IMG);
+                            var imgsrc = string.Format("data:image/GIF;base64,{0}", base64);
+                            Base64ImgKnt = true;
+                            <img src='@imgsrc' alt="profile image" class="img-circle prof_img" width="100" height="100" />
+                        }
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <h3 class="col-sm-12"><b>@employeeInfo.FIRST_NAME @employeeInfo.LAST_NAME</b></h3>
+                            <h3 class="col-sm-12 badge badge-info"><b>@employeeInfo.TITLES.TITLE_NAME</b></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn-group col-sm-12">
+                        <button id="ChangeImg" class="btn btn-success btn-xs" onclick="$('#img_upload').click();"><i class="fas fa-spinner"> Change Profile İmage</i></button>
+                        <button id="RemoveImg" class="btn btn-danger btn-xs" onclick="removeProfilePic()"><i class="fa fa-remove"> Remove Profile İmage</i></button>
+                        <button id="EditProfil" class="btn btn-info btn-xs" onclick="slideProfileEdit()"><i class="fa fa-arrow-right"> Edit</i></button>
+                        <input type="file" id="img_upload" name="img_upload" style="visibility:hidden;" />
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body row">
+                <div class="col-sm-6">
+                    <hr>
+                    <strong><i class="fas fa-map-marker-alt"></i> Employee #</strong>
+                    <p class="text-muted">@employeeInfo.EMP_NUMBER</p>
+
+                    <hr>
+                    <strong><i class="fas fa-user"></i> UserName</strong>
+                    <p class="text-muted">@employeeInfo.SYSTEM_USERNAME</p>
+
+                    <hr>
+                    <strong><i class="fas fa-user-tag"></i> Role</strong>
+                    <p class="text-muted">@employeeInfo.ROLES.ROLE_NAME</p>
+
+                    <hr>
+                    <strong><i class="fas fa-user-check"></i> Status</strong>
+                    <p class="text-muted">@employeeInfo.STATUS.STATUS_NAME</p>
+                </div>
+                <div class="col-sm-6">
+
+                    <hr>
+                    <strong><i class="fas fa-id-badge"></i> Contract</strong>
+                    <p class="text-muted">@employeeInfo.CONTRACT_TYPES.CONTRACT_TYPE_NAME</p>
+
+                    <hr>
+                    <strong><i class="fas fa-envelope"></i> Email</strong>
+                    <p class="text-muted">@employeeInfo.EMAIL_USERNAME</p>
+
+                    <hr>
+                    <strong><i class="fas fa-phone"></i> Phone</strong>
+                    <p class="text-muted txtPhone">@employeeInfo.EMP_PHONE</p>
+
+                    <hr>
+                    <strong><i class="fa fa-mobile-phone"></i> Mobile</strong>
+                    <p class="text-muted txtMobile">@employeeInfo.MOBILE_PHONE</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-7">
+        <div class="col-sm-12">
+            <div class="card card-default" id="ProfileEdit">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-user-cog"></i> Update User Profile [<small class="Changeinfo">Change Your İnformation Bellow</small>]</h3>
+                </div>
+                <div class="card-body">
+                    <div class="bs-stepper">
+                        <div class="bs-stepper-header" role="tablist">
+                            <!-- your steps here -->
+                            <div class="step" data-target="#user-info" onclick="ChangeStaperWithIndex(1)">
+                                <button type="button" class="step-trigger" role="tab" aria-controls="user-info" id="user-info-trigger">
+                                    <span class="bs-stepper-circle">
+                                        <i class="fa fa-info" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="bs-stepper-label">İnformation</span>
+                                </button>
+                            </div>
+                            <div class="line"></div>
+                            <div class="step" data-target="#user-pass" onclick="ChangeStaperWithIndex(2)">
+                                <button type="button" class="step-trigger" role="tab" aria-controls="user-pass" id="user-pass-trigger">
+                                    <span class="bs-stepper-circle">
+                                        <i class="fa fa-passport" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="bs-stepper-label">Password</span>
+                                </button>
+                            </div>
+                            <div class="line"></div>
+                            <div class="step" data-target="#user-email" onclick="ChangeStaperWithIndex(3)">
+                                <button type="button" class="step-trigger" role="tab" aria-controls="user-email" id="user-email-trigger">
+                                    <span class="bs-stepper-circle">
+                                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="bs-stepper-label">Email</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bs-stepper-content">
+                            <!-- your steps content here -->
+                            <div id="user-info" class="content spinner" role="tabpanel" aria-labelledby="user-info-trigger">
+                                <div class="sk-spinner sk-spinner-double-bounce">
+                                    <div class="sk-double-bounce1"></div>
+                                    <div class="sk-double-bounce2"></div>
+                                </div>
+
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="Phone" class="col-sm-4 control-label">Phone</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="Phone" name="Phone" data-inputmask='"mask": "@ViewBag.DefaultPhoneMask"' data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhoneExt" for="PhoneExt" class="col-sm-4 control-label">Phone Ext.</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="PhoneExt" name="PhoneExt" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblBuilder" for="Mobile" class="col-sm-4 control-label">Mobile</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="Mobile" name="Mobile" data-inputmask='"mask": "@ViewBag.DefaultMobileMask"' data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-success col-sm-12" onclick="OnEmpInfoSave()">Save</button>
+
+                            </div>
+                            <div id="user-pass" class="content spinner" role="tabpanel" aria-labelledby="user-pass-trigger">
+                                <div class="sk-spinner sk-spinner-double-bounce">
+                                    <div class="sk-double-bounce1"></div>
+                                    <div class="sk-double-bounce2"></div>
+                                </div>
+                                <hr />
+                                <div class="form-row">
+                                    <label id="lblOldPass" for="oldPass" class="col-sm-4 control-label">Old Password</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                            </div>
+                                            <input type="password" class="form-control float-right" id="oldPass" name="oldPass">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row" id="pwd-container">
+                                    <label id="lblNewPass" for="newPass" class="col-sm-4 control-label">New Password</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                            </div>
+                                            <input type="password" class="form-control float-right" id="newPass" name="newPass">
+                                        </div>
+                                        <div class="pwstrength_viewport_progress"></div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblConfirmPass" for="confirmPass" class="col-sm-4 control-label">Confirm Password</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                            </div>
+                                            <input type="password" class="form-control float-right" id="confirmPass" name="confirmPass">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-success col-sm-12" onclick="OnEmpPassSave()">Save</button>
+                            </div>
+                            <div id="user-email" class="content spinner" role="tabpanel" aria-labelledby="user-email-trigger">
+                                <div class="sk-spinner sk-spinner-double-bounce">
+                                    <div class="sk-double-bounce1"></div>
+                                    <div class="sk-double-bounce2"></div>
+                                </div>
+                                <hr />
+                                <div class="form-row">
+                                    <label id="lblEmail" for="txtEmail" class="col-sm-4 control-label">Email</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control float-right" id="txtEmail" name="txtEmail">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblEmailPass" for="EmailPass" class="col-sm-4 control-label">Password</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                            </div>
+                                            <input type="password" class="form-control float-right" id="EmailPass" name="EmailPass">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblSignature" for="EmailPass" class="col-sm-2 control-label">Signature</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-check float-sm-right">
+                                            <input type="checkbox" id="ShowSignature" style="margin:0">
+                                            <label class="control-label" for="ShowSignature">Show Signature</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <textarea rows="2" id="Signature" name="Signature"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <button class="btn btn-success" onclick="OnEmailSave()">Save</button>
+                                    <button class="btn btn-primary" onclick="OnEmailTest()">Send Test Email</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="main">
+
+    var stepper;
+    var EmployeeID = @employeeInfo.EMP_ID;
+    var Base64ImgData = '@Base64ImgKnt';
+    var dataScrore = 0;
+
+    $(document).ready(function () {
+
+        stepper = new Stepper(document.querySelector('.bs-stepper'));
+
+
+        if (Base64ImgData.toLowerCase() == "false")
+            $("#RemoveImg").hide();
+
+        $('#Signature').summernote();
+        $('[data-mask]').inputmask();
+        //$(selector).inputmask("setvalue", value);
+
+
+        pwstrength('#newPass');
+
+        //$('#newPass').on('keyup input paste', function () {
+        //    $(this).pwstrength("forceUpdate");
+        //});
+
+    });
+
+    function ChangeStaperWithIndex(index)
+    {
+        var changetext = index == 1 ? "Change Your İnformation Bellow" : (index == 2 ? "Change Your Password Bellow" : "Change Your Email Bellow");
+        $(".Changeinfo").html(changetext);
+        stepper.to(index);
+    }
+
+    function slideProfileEdit()
+    {
+        $("#ProfileEdit").toggle("slide", function () {
+
+            if ($("#ProfileEdit").is(":visible"))
+            {
+                $("#EditProfil").children("i").removeClass("fa-arrow-right").addClass("fa-arrow-left");
+            }
+            else
+            {
+                $("#EditProfil").children("i").removeClass("fa-arrow-left").addClass("fa-arrow-right");
+            }
+        });
+    }
+
+    function dataScoreUpd(Score) {
+        dataScore = Score;
+    }
+
+     $('input[type="file"]').change(function(e){
+
+         var file = e.target.files[0];
+         if (file != null)
+         {
+             var request = new FormData();
+             request.append("EmpID", EmployeeID);
+             request.append("Image", file);
+             request.append("Remove", 0);
+
+             $.ajax({
+                    url: '@Url.Action("UpdateEmployeeImg", "Employee")',
+                    type: 'POST',
+                    data: request,
+                    processData: false,
+                    contentType: false,
+                    success: function (data)
+                    {
+                        if (data.success == true)
+                        {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+
+                                $(".prof_img").attr('src', e.target.result);
+                            };
+                            reader.readAsDataURL(file);
+
+                            $("#RemoveImg").show();
+                            toastr.success("Logo changed successfully", "Success");
+                        }
+                        else
+                        {
+                            var base64String = btoa(String.fromCharCode.apply(null, new Uint8Array("@ViewBag.DefaultProfileImg")));
+                            var src ="data:image/GIF;base64,"+base64String+"";
+                            $(".prof_img").attr('src', src);
+                            toastr.error(data.message, "Error was found");
+                            $("#RemoveImg").hide();
+                        }
+
+                        $('#img_upload').val("");
+                    }
+             });
+         }
+         else
+         {
+                toastr.error("No Image found", "Warning");
+         }
+     });
+
+    function removeProfilePic()
+    {
+        var request = new FormData();
+        request.append("EmpID", EmployeeID);
+        request.append("Image", null);
+        request.append("Remove", 1);
+            //fdata.append("anImage", file);
+        $.ajax({
+            url: '@Url.Action("UpdateEmployeeImg", "Employee")',
+            type: 'POST',
+            data: request,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.success == true)
+                {
+                   var base64String = btoa(String.fromCharCode.apply(null, new Uint8Array("@ViewBag.DefaultProfileImg")));
+                   var src ="data:image/GIF;base64,"+base64String+"";
+                   $(".prof_img").attr('src', src);
+                    //$(".prof_img").attr('src', "http://placehold.it/100x100");
+                   toastr.success("Logo changed successfully", "Success");
+                   $("#RemoveImg").hide();
+                }
+                else {
+                    toastr.error(data.message, "Error was found");
+                }
+            }
+        });
+
+    }
+
+    function OnEmpPassSave()
+    {
+        var oldP = $('#oldPass').val();
+        var newP = $('#newPass').val();
+        var confirmP = $('#confirmPass').val();
+
+        if (oldP == "" && newP == "" && confirmP == "")
+        {
+            toastr.warning("No data to update", "Warning");
+            return;
+        }
+        else
+        if (oldP == "")
+        {
+            toastr.error("Old password cannot be empty", "Error!");
+            return;
+        }
+
+        if (newP == "") {
+            toastr.error("New password cannot be empty", "Error!");
+            return;
+        }
+        else {
+            if (dataScrore < 20) {
+                toastr.error("Your Password is weak", "Error!");
+                return;
+            }
+        }
+        if (confirmP == "") {
+            toastr.error("Confirm password cannot be empty", "Error!");
+            return;
+        }
+        if (newP != confirmP) {
+            toastr.error("Password and Confirmation must match", "Error!");
+            return;
+        }
+
+        showHideLoader(true);
+
+        $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ChangePassword", "Employee")',
+                data: { id: EmployeeID, oldPwd: oldP, newPwd: newP, confirmPwd: confirmP },
+                success: function (data)
+                {
+                    if (data.success == true)
+                    {
+                        toastr.success(data.message, "Success");
+                    } else
+                    {
+                        toastr.error(data.message, "Error was found!");
+                    }
+                    showHideLoader(false);
+
+                    $('#oldPass').val("");
+                    $('#newPass').val("");
+                    $('#confirmPass').val("");
+                }
+            });
+    }
+
+    function OnEmpInfoSave()
+    {
+
+        if (($("#Phone").inputmask('isComplete') == false && $("#Phone").inputmask('unmaskedvalue') != "") ||
+            ($("#Mobile").inputmask('isComplete') == false && $("#Mobile").inputmask('unmaskedvalue') != "" )
+           )
+        {
+            toastr.warning("Phone or Mobile is missing ", "Warning");
+            return;
+        }
+
+        var phone = $("#Phone").inputmask('unmaskedvalue');
+        var PhoneExt = $("#PhoneExt").val();
+        var mobile = $("#Mobile").inputmask('unmaskedvalue');
+
+
+        if (phone == "" && PhoneExt == "" && mobile == "")
+        {
+            toastr.warning("No data to update", "Warning");
+            return;
+        }
+
+        showHideLoader(true);
+
+        $.ajax({
+            url: '@Url.Action("UpdateProfileDetails", "Employee")',
+            type: 'POST',
+            data: { id: '@employeeInfo.EMP_ID', phone: phone, extension: PhoneExt, mobile: mobile },
+            //contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    if (retdata.success) {
+                        toastr.success(retdata.message, "Sucess");
+                        $('.txtMobile').html(mobile);
+                        $('.txtPhone').html(phone);
+                    }
+                    else {
+                        toastr.error(retdata.message, "Error was found!");
+                    }
+
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function OnEmailSave()
+    {
+        var emailS = $('#txtEmail').val();
+        var pwdS = $('#EmailPass').val();
+        var signatureS = $('#Signature').summernote('code');
+        var showSig = $("#ShowSignature").is(':checked');
+
+        if (emailS == "" && pwdS == "" && signatureS == "")
+        {
+            toastr.warning("No data to update", "Warning");
+            return;
+        }
+
+        if (emailS == "")
+        {
+            toastr.warning("Email field is required", "Warning");
+            return;
+        }
+
+        if(showSig==true && signatureS=='')
+        {
+            toastr.warning("Signature field cannot be empty", "Warning");
+            return;
+        }
+
+        showHideLoader(true);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UpdateEmailSettings", "Employee")',
+            data: { id: EmployeeID, email: emailS, pwd: pwdS, signature: signatureS, showSignature: showSig },
+            success: function (data) {
+                if (data.success == true)
+                {
+                    toastr.success(data.message, "Sucess");
+                }
+                else
+                {
+                    toastr.error(data.message, "Error was found!");
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+
+
+</script>

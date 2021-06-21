@@ -1,0 +1,180 @@
+﻿@model JOB_MANAGER.Models.PhasesDto
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Edit Phase";
+    ViewBag.ActiveMenu = "Jobs";
+    ViewBag.MenuOpen = "";
+
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">        
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="text-white">
+                        <i class="fas fa-briefcase"></i> Jobs
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Edit Phase</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-sm-12">
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-edit text-success"></i> Edit Phase(@Model.PHASE_NAME)</h3>
+                <div class="card-tools">
+                    <a href="@Url.Action("JobView", "Job", new { id = Model.PROJECT_ID,Layout = 1 })" class="btn btn-danger btn-sm"><i class="fas fa-door-closed"></i> Back</a>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SavePhase()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+            <div class="card-body row">
+                <div class="col-sm-6">
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblCabinets" for="CABINETS_NBR" class="col-sm-4 control-label">Order</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control form-group-sm" id="PHASE_ORDER" value="@Model.PHASE_ORDER" required data-required-message="Order is Required!" />
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="STATUS_ID" class="col-sm-4 control-label">Status</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("STATUS_ID", ViewBag.STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "STATUS_ID", @title = "Select Status", @required = "true" })
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="SUPERVISOR_ID" class="col-sm-4 col-xs-4 control-label">Supervisor</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("SUPERVISOR_ID", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "SUPERVISOR_ID", @title = "Select Supervisor" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#SUPERVISOR_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_PROGRESS" class="col-sm-4 control-label">Progress</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-percent"></i></span>
+                                </div>
+                                <input type="number" class="form-control form-group-sm PROJECT_PHASE_PROGRESS" value="@Model.PROJECT_PHASE_PROGRESS" disabled id="PROJECT_PHASE_PROGRESS" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="TIME" class="col-sm-4 control-label">Start</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                </div>
+                                <input type="date" class="form-control float-right" id="PHASE_START_DATE" value="@Model.PHASE_START_DATE" required data-required-message="The Start field must be specified!" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="TIME" class="col-sm-4 control-label">End</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                </div>
+                                <input type="date" class="form-control float-right" id="PHASE_END_DATE" value="@Model.PHASE_END_DATE" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblContractDesc" for="PROJECT_DESC" class="col-sm-4 control-label">Desc.</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control form-control-sm" rows="3" id="PROJECT_PHASE_DESC" required data-required-message="Desc. is Required!">@Model.PROJECT_PHASE_DESC</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function ()
+    {
+        var StatusID = @Model.STATUS_ID;
+        $("#STATUS_ID").attr("data-required-message", "Status is requried");
+        $("#STATUS_ID").selectpicker('val', StatusID);
+
+        var SupID = @Model.SUPERVISOR_ID;
+        $("#SUPERVISOR_ID").selectpicker('val', SupID);
+
+        FixSelectPicker();
+
+        var param = {};
+        param.ProjectID = @Model.PROJECT_ID;
+        $.ajax({
+            url: '@Url.Action("ProjectOpDetails", "Job")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                var EmpIds = $.map(retdata.Members, function (el, i) { return el.EMPLOYEE_ID })
+                $("#ViewDialog #ASSIGNED_EMPLOYEE_ID").selectpicker('val', EmpIds);
+                showHideLoader(false);
+            }
+        });
+    });
+
+    function SavePhase()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '') {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "error");
+                allRequired = false;
+            }
+        });
+
+
+        if (allRequired == false)
+            return;
+
+        param.PROJECT_PHASE_ID = @Model.PROJECT_PHASE_ID;
+        param.PHASE_ORDER = $("#PHASE_ORDER").val();
+        param.PROJECT_PHASE_STATUS = $("#STATUS_ID").val();
+        param.SUPERVISOR_ID = $("#SUPERVISOR_ID").val();
+        param.ASSIGNED_EMPLOYEE_ID = $("#ASSIGNED_EMPLOYEE_ID").val();
+        param.PHASE_START_DATE = $("#PHASE_START_DATE").val();
+        param.PHASE_END_DATE = $("#PHASE_END_DATE").val();
+        param.PROJECT_PHASE_DESC = $("#PROJECT_PHASE_DESC").val();
+        param.PROJECT_PHASE_PROGRESS = $("#PROJECT_PHASE_PROGRESS").val();
+
+        showHideLoader(true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdatePhase", "Job")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                {
+                    toastr.success(retdata.Message);
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+</script>

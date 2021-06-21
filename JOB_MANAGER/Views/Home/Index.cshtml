@@ -1,0 +1,250 @@
+﻿@model JOB_MANAGER.Models.DasboradDto
+
+@{
+    ViewBag.Title = "Dasboard";
+    ViewBag.ActiveMenu = "Dashboard";
+    ViewBag.MenuOpen = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int jobColumns = (int)ViewBag.JobTypesCount > 12 ? 12 : 12 / (int)ViewBag.JobTypesCount;
+
+
+}
+
+<div class="row p-2">  
+
+    @{
+        foreach (var item in Model.JobSummary)
+        {
+            <div class="col-sm-@jobColumns">
+                <!-- small card -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@item.COUNT</h3>
+
+                        <p>
+                            <span class="badge badge-danger">Jobs</span>
+                            @item.PROJECT_TYPE_NAME
+                        </p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+
+
+    <div class="col-sm-12">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> Phases Summary</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                @{
+                    int nProjectTypeID = -1;
+                    var tempmodel = Model.PhaseSummary.OrderBy(o => o.PROJECT_TYPE_ID).ThenBy(o => o.PHASE_ORDER);
+                    foreach (var group in Model.PhaseSummary.OrderBy(o => o.PROJECT_TYPE_ID).ThenBy(o => o.PHASE_ORDER))
+                    {
+                        if (nProjectTypeID != group.PROJECT_TYPE_ID)
+                        {
+                            nProjectTypeID = group.PROJECT_TYPE_ID;
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <span class="right badge badge-info">@group.PROJECT_TYPE_NAME</span>
+                                </div>
+
+
+                                @foreach (var item in tempmodel)
+                                {
+                                    if (nProjectTypeID != item.PROJECT_TYPE_ID)
+                                    {
+                                        continue;
+                                    }
+
+                                    <div class="col-sm-3">
+                                        <!-- small card -->
+                                        <div class="small-box bg-@item.WIDGET_COLOR">
+                                            <div class="inner">
+                                                <h3>@item.COUNT</h3>
+
+                                                <p>@item.PHASE_NAME</p>
+                                            </div>
+                                            <a href="@Url.Action("Jobs", "Job", new { phaseID = item.PHASE_ID })" class="small-box-footer">
+                                                More info <i class="fas fa-arrow-circle-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-tasks"></i> My Task</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="row p-1">
+                    <div class="col-sm-4">
+                        <label class="control-label" for="pageSize">Page Size:</label>
+                        <select id="pageSize" class="selectpicker" data-width="fit" onchange="ChangeGrid()">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <label style="margin-left:5px">
+                            <input type="checkbox" id="ChComplatedTask" onchange="ChangeTaskState()" /> Completed Task
+                        </label>
+                    </div>
+                    <div class="col-sm-8">
+                        <button class="btn btn-info btn-sm RefreshItem float-sm-right" onClick="RefreshGrid()">
+                            <i class="fas fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-12 TableTask"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script class="main">
+
+    var taskTable = null;    
+
+    $(document).ready(function () {
+
+        var defPageSize = 25;
+        var ParamVal = GetParamVal("GRID_DEFAULT_PAGER_RANGE", 1);
+        if (IsUndefinedOrNullOrEmpty(ParamVal) == false)
+            defPageSize = ParamVal;
+        $("#pageSize").selectpicker("val", defPageSize);
+
+        InitGrid(false);
+    });
+
+
+
+
+    function ChangeTaskState()
+    {
+        var State = $("#ChComplatedTask").is(":checked");
+        InitGrid(State)
+    }
+
+    function InitGrid(IsCompleted)
+    {
+        var param = {};
+        param.IsCompleted = IsCompleted;
+
+        var Options = {};
+        Options.Name = $(".TableTask");
+        Options.Url = '@Url.Action("MyTask", "Home")';
+        Options.Data = [];
+        Options.LoadParam = param;
+        Options.Fields = [
+            { name: "PROJECT_NAME", title: "Job", type: "text", width: 100 },
+            { name: "PHASE_NAME", title: "Phase", type: "text", width: 100 },
+            { name: "TASK_ORDER", title: "Order", type: "number", width: 40 },
+            {
+                align: "center", name: "DISPLAY_CLASS", title: "Status", width: 60,
+                itemTemplate: function (_, item) {
+
+                    if (IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) == false)
+                    {
+                        return $("<div class='alert " + item.DISPLAY_CLASS + " role='alert' style='font-size:small'>").html(item.STATUS_NAME);
+                    }
+                }
+            },
+            {
+                name: "PROJECT_TASK_NAME", title: "Task", width: 100, align: "center",
+                itemTemplate: function (_, item)
+                {
+                    var text = item.PROJECT_TASK_NAME + (IsUndefinedOrNullOrEmpty(item.TASK_START_DATE) ? "" : "Date:"+item.TASK_START_DATE);
+                    return $("<span>").html(text);
+                }
+            },
+            {
+                name: "PROJECT_TASK_PROGRESS", title: "Progress", type: "number", width: "100", validate: "required",
+                itemTemplate: function (_, item) {
+                    var element = '<div class="progress">'
+                    var progtext = item.PROJECT_TASK_PROGRESS > 0 ? item.PROJECT_TASK_PROGRESS + "%" : "";
+                    element += '<div class="progress-bar progress-bar-striped" role="progressbar" style="width: ' + item.PROJECT_TASK_PROGRESS + '%" aria-valuenow="' + item.PROJECT_TASK_PROGRESS + '" aria-valuemin="0" aria-valuemax="100">' + progtext + '</div> </div>';
+
+                    return $("<div>").add(element);
+                }
+            },
+            {
+                type: "control",
+                modeSwitchButton: false,
+                editButton: false,
+                width: 60,
+
+                itemTemplate: function (_, item) {
+
+                    var $editButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-info").attr("title", "edit").css("margin-left", "5px")
+                        .attr("href", "@Url.Action("EditTask", "Job")/?projectID=" + item.PROJECT_ID + "&TaskID=" + item.TASK_ID)
+                        .html("<i class='fas fa-edit'></i>");
+
+                    var $viewButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-success").attr("title", "view").css("margin-left", "5px")
+                        .attr("href", "@Url.Action("ViewTask", "Job")/?TaskID=" + item.TASK_ID)
+                        .html("<i class='fas fa-eye'></i>");
+
+                    return $("<div class='btn-toolbox'>").append($editButton).append($viewButton);
+
+                }
+            }
+        ]
+
+        CreateJsGrid(Options, function (retGrid) {
+            taskTable = retGrid.Grid;
+            taskTable.jsGrid("sort", "TASK_ORDER");
+            taskTable.jsGrid("option", "editing", false);
+        });
+
+    }
+
+    //function OpenMultiDialog(Url, Header)
+    //{
+    //    showHideLoader(true);
+    //    _Dialog.dialog("option", "title", Header);
+    //    _Dialog.load(Url, function () {
+
+    //        $(this).dialog('open');
+
+    //    });
+    //}
+
+    function ChangeGrid()
+    {
+        var size = parseInt($("#pageSize").val(), 10);
+        taskTable.jsGrid("option", "pageSize", size);
+    };
+
+    function RefreshGrid()
+    {
+        taskTable.jsGrid("loadData");
+    }
+</script>

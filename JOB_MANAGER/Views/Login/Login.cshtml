@@ -1,0 +1,114 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JOBMANAGER | Log in</title>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/nexenus")
+    <style>
+        .login-box, .register-box {
+            width: 720px;
+        }
+    </style>
+    
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body row">
+                <div class="col-sm-5">
+                    <img data-src="holder.js/100px250" class="img-fluid" alt="LOGO" style="height: 250px; width: 100%; display: block;" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22740%22%20height%3D%22250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20740%20250%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_175efbf3808%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A37pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_175efbf3808%22%3E%3Crect%20width%3D%22740%22%20height%3D%22250%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22275.3666687011719%22%20y%3D%22141.5%22%3E740x250%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-holder-rendered="true">
+                </div>
+                <div class="col-sm-7">
+                    <div class="login-logo">
+                        <a href="Home/Index"><b>JOB</b>MANAGER</a>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="control-label" style="font-size:small">Login in to start your session.</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <form action="@Url.Action("Login", "Login")" method="post">
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" class="form-control" placeholder="Username" name="username">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <div class="input-group-append">                                   
+                                    <div class="input-group-text">
+                                        <span class="fas fa-eye ShowPS"></span>
+                                    </div>  
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- /.col -->
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block">Sign In</button>
+                                </div>
+                                <div class="col-sm-12 float-sm-right">
+                                    <div class="icheck-primary">
+                                        <input type="checkbox" id="remember" name="remember" value="true">
+                                        <label for="remember">
+                                            Remember Me
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12" id="errorMessage">
+
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        </form>
+                    </div>                    
+                </div>
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery -->
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->    
+    <script src="~/Scripts/adminlte/adminlte.min.js"></script>
+    <script id="main">
+        $(document).ready(function () {
+
+            $(".login-page").css("background", "#212529");
+
+            var LoginFaultMessaga = "@ViewBag.LoginFaultMessage";
+            if (LoginFaultMessaga != null && LoginFaultMessaga != "")
+            {
+                var ErrorTemplate = '<div class="alert alert-danger" role="alert">'
+                ErrorTemplate += '<strong>' + LoginFaultMessaga + '</strong> Try Again.'
+                ErrorTemplate += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                ErrorTemplate += '<span aria-hidden="true">&times;</span></button>';
+                    
+
+                $("#errorMessage").html(ErrorTemplate);
+            }
+        });
+
+        $(".ShowPS")
+            .mouseover(function () {
+                $("input[name='password']").attr("type", "text");
+            })
+            .mouseout(function () {
+                $("input[name='password']").attr("type", "password");
+            });
+    </script>
+</body>
+</html>

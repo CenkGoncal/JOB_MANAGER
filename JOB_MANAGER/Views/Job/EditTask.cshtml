@@ -1,0 +1,239 @@
+﻿@model JOB_MANAGER.Models.TasksDto
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.PROJECT_TASK_ID > 0 ? "Edit Task" : "Add Task";
+    ViewBag.ActiveMenu = "Jobs";
+    ViewBag.MenuOpen = "";
+
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="text-white">
+                        <i class="fas fa-briefcase"></i> Jobs
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>@ViewBag.Title</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-sm-12">
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    @if (@Model.PHASE_ID > 0)
+                    {
+                        <i class="fas fa-edit text-success"></i> <span>Edit Task(@Model.PROJECT_TASK_NAME)</span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-plus-circle text-success"></i> <span>Add Task</span>
+                    }
+                </h3>
+                <div class="card-tools">
+                    <a href="@Url.Action("JobView", "Job", new { id = Model.PROJECT_ID,Layout = 1 })" class="btn btn-danger btn-sm"><i class="fas fa-door-closed"></i> Back</a>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveTask()" style="margin-left:5px"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+            <div class="card-body row">
+                <div class="col-sm-6">
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_TASK_NAME" class="col-sm-4 control-label">Task</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control form-control-sm" id="PROJECT_TASK_NAME" value="@Model.PROJECT_TASK_NAME" required data-required-message="Task Name is Required!" />
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="TASK_ORDER" class="col-sm-4 control-label">Order</label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control form-control-sm" value="@Model.TASK_ORDER" id="TASK_ORDER" required data-required-message="Order is Required!" />
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="STATUS_ID" class="col-sm-4 control-label">Status</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("STATUS_ID", ViewBag.STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "STATUS_ID", @value = Model.STATUS_ID, @title = "Select Status", @required = "true" })
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="ASSIGNED_EMPLOYEE_ID" class="col-sm-4 control-label">Allocated to</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("ASSIGNED_EMPLOYEE_ID", ViewBag.EMPLOYEE_LIST as SelectList, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @multiple = "true", @id = "ASSIGNED_EMPLOYEE_ID", @title = "Select Assined Employee" })
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_PHASE_ID" class="col-sm-4 control-label">Phase</label>
+                        <div class="col-sm-8">
+                            @{
+                                if (Model.PROJECT_TASK_ID > 0)
+                                {
+                                    @Html.DropDownList("PROJECT_PHASE_ID", ViewBag.PROJECT_PHASE_ID as SelectList, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @disabled = "true", @id = "PROJECT_PHASE_ID", @title = "Select Phase" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownList("PROJECT_PHASE_ID", ViewBag.PROJECT_PHASE_ID as SelectList, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_PHASE_ID", @title = "Select Phase" })
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_TASK_PROGRESS" class="col-sm-4 control-label">Progress</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-percent"></i></span>
+                                </div>
+                                <input type="number" class="form-control float-right" id="PROJECT_TASK_PROGRESS" value="@Model.PROJECT_TASK_PROGRESS" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="TIME" class="col-sm-4 control-label">Start</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                </div>
+                                <input type="date" class="form-control float-right" id="TASK_START_DATE" value="@Model.TASK_START_DATE" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="TIME" class="col-sm-4 control-label">End</label>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                </div>
+                                <input type="date" class="form-control float-right" id="TASK_END_DATE" value="@Model.TASK_END_DATE" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_TASK_DESC" class="col-sm-4 control-label">Desc.</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control form-control-sm" rows="3" id="PROJECT_TASK_DESC" required data-required-message="Desc. is Required!">@Model.PROJECT_TASK_DESC</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var StatusID = @Model.STATUS_ID;           
+    var PhaseID = @Model.PHASE_ID;
+
+    $(document).ready(function () {
+        $("#STATUS_ID").attr("data-required-message", "Status is requried");
+        $("#PROJECT_PHASE_ID").attr("data-required-message", "Phase is requried");
+        $("#ASSIGNED_EMPLOYEE_ID").prop("multiple", true);
+
+        LoadMembers(function () {
+            $("#STATUS_ID").selectpicker('val', StatusID);
+            $("#PROJECT_PHASE_ID").selectpicker('val', PhaseID);
+            FixSelectPicker();
+        });
+    });
+
+    function LoadMembers(callback)
+    {
+       var param = {};
+       param.TypeID = 2;
+       param.ProjectID = @Model.PROJECT_ID;
+       param.TaskID = @Model.PROJECT_TASK_ID;
+
+       $.ajax({
+            url: '@Url.Action("GetMembersList", "Job")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    var EmpIds = $.map(retdata, function (el, i) { return el.EMPLOYEE_ID })
+                    $("#ASSIGNED_EMPLOYEE_ID").selectpicker('val', EmpIds);
+                    callback();
+                }
+                else
+                    callback();
+
+            }
+       });
+    }
+
+    function SaveTask()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '') {
+                var message = $(this).attr("data-required-message")
+                toastr.error(message, "error");
+                allRequired = false;
+            }
+        });
+
+        param.TASK_START_DATE = $("#TASK_START_DATE").val();
+        param.TASK_END_DATE = $("#TASK_END_DATE").val();
+
+        if (IsUndefinedOrNullOrEmpty($("#TASK_START_DATE").val()) && !IsUndefinedOrNullOrEmpty($("#TASK_END_DATE").val()))
+        {
+            toastr.error("The Start field must be specified!", "error");
+            allRequired = false;
+        }
+
+        if ($("#TASK_ORDER").val() <= 0)
+        {
+            toastr.error("Task Order must be greater than zero!", "error");
+            allRequired = false;
+        }
+
+        if (allRequired == false)
+            return;
+
+
+        param.PROJECT_ID = @Model.PROJECT_ID;
+        param.PROJECT_TASK_ID = @Model.PROJECT_TASK_ID;
+        param.PROJECT_PHASE_ID = $("#PROJECT_PHASE_ID").val();
+        param.PROJECT_TASK_STATUS = $("#STATUS_ID").val();
+        param.PROJECT_TASK_DESC = $("#PROJECT_TASK_DESC").val();
+        param.PROJECT_TASK_PROGRESS = $("#PROJECT_TASK_PROGRESS").val();
+        param.TASK_ORDER = $("#TASK_ORDER").val();
+        param.PROJECT_TASK_NAME = $("#PROJECT_TASK_NAME").val();
+
+        param.ASSINGED_MEMBERS_ARR = $("#ASSINGED_MEMBERS_ARR").val();
+        debugger;
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateTask", "Job")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                {
+                    if (retdata.success)
+                        toastr.success("Save Task");
+                    else
+                        toastr.error(retdata.Message, "error");
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,588 @@
+﻿@using JOB_MANAGER.Models;
+@{
+    ViewBag.Title = "Calendar";
+    ViewBag.ActiveMenu = "Calendar";
+    ViewBag.MenuOpen = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-sm-12 p-2">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-gradient-olive">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")" class="text-white">
+                    <i class="fas fa-tachometer-alt"></i> Dasboard
+                </a>
+                <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+            </li>
+            <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Calendar</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="row">
+    <div class="col-sm-3 SearchJobCritersDiv" style="display:none">
+        <div class="card card-outline card-primary">
+            <div class="card-header">
+                <span><b>Show Advaced Search</b></span>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormSeach'))">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" style="padding:0.50rem">
+                <form id="FormSeach">
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="FromStart" class="col-sm-4 control-label"><b>From Start Date</b></small>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                </div>
+                                <input type="date" class="form-control float-right" id="FromStart" name="FromStart">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="EndStart" class="col-sm-4 control-label"><b>End Start Date</b></small>
+                        <div class="col-sm-8">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                </div>
+                                <input type="date" class="form-control float-right" id="EndStart" name="EndStart">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="LotNumber" class="col-sm-4 control-label"><b>Lot.#</b></small>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control form-control-sm" id="LotNumber" name="LotNumber">
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="ClientFilter" class="col-sm-4 control-label"><b>Client</b></small>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("Client", ViewBag.CLIENT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "ClientFilter", @name = "Client", @title = "Select Client" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="Material" class="col-sm-4 control-label"><b>Material</b></small>
+                        <div class="col-sm-8 ">
+                            @Html.DropDownList("Material", ViewBag.MATERIAL_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Material", @name = "Material", @title = "Select Material" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="Floor" class="col-sm-4 control-label"><b>Floor</b></small>
+                        <div class="col-sm-8 ">
+                            @Html.DropDownList("Floor", ViewBag.FLOOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Floor", @name = "Floor", @title = "Select Floor" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="ProjectType" class="col-sm-4 control-label"><b>Project Type</b></small>
+                        <div class="col-sm-8 ">
+                            @Html.DropDownList("ProjectType", ViewBag.PROJECT_TYPE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control selectpicker", @id = "ProjectType", @name = "ProjectType", @title = "Select Project Type" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-row" style="margin-bottom:2px">
+                        <small for="Clientlist" class="col-sm-4 control-label"><b>Supervisor</b></small>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("Supervisor", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Supervisor", @name = "Supervisor", @title = "Select Supervisor" })
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-info btn-sm col-sm-12" Onclick="SearchAdvaced()"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 CalenderDiv">
+        <div class="card card-default">
+            <div class="card-header">
+                <div class="row">
+                    <h3 class="col-sm-4">Change Event</h3>
+                    <div class="col-sm-7 ResultFilter"></div>
+                    <button class="btn btn-primary col-sm-1" Onclick="ShowSearchJob()"><i class="fa fa-2x fa-search"></i> </button>
+                </div>
+                <div class="col-sm-12 changeEventDiv" style="display: none;">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-row">
+                                <small class="control-label"><b>Status</b></small>
+                                <select class="selectpicker form-control form-control-sm" id="ProjectStatus">
+                                    @{
+                                        foreach (var item in (List<StatusDto>)ViewBag.StatusList)
+                                        {
+                                            string color = string.Format("Color:{0}", item.DISPLAY_CLASS);
+                                            <option value="@item.STATUS_ID" data-content="<span><i class='fas fa-circle' style='@color'></i> @item.STATUS_NAME</span>"> @item.STATUS_NAME</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-row" style="margin-bottom:2px">
+                                <small class="control-label col-sm-3"><b>Start Date</b></small>
+                                <div class="input-group input-group-sm col-sm-9">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                    </div>
+                                    <input type="date" class="form-control float-right SStartDate">
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom:2px">
+                                <small class="control-label col-sm-3"><b>Start Time</b></small>
+                                <div class="input-group input-group-sm col-sm-9">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                    </div>
+                                    <input type="time" class="form-control float-right SStartTime" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-row" style="margin-bottom:2px">
+                                <small class="control-label col-sm-3"><b>End Date</b></small>
+                                <div class="input-group input-group-sm col-sm-9">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                    </div>
+                                    <input type="date" class="form-control float-right SEndDate">
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom:2px">
+                                <small class="control-label col-sm-3"><b>End Time</b></small>
+                                <div class="input-group input-group-sm col-sm-9">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                    </div>
+                                    <input type="time" class="form-control float-right SEndTime" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="btn-group" style="margin-top:2px">
+                                <button class="btn btn-success btn-sm" Onclick="ChangeEvent()"><i class="fa fa-2x fa-save"></i> </button>
+                                <button class="btn btn-info btn-sm" Onclick="ViewJob()"><i class="fas fa-eye fa-2x"></i> </button>
+                                <button class="btn btn-danger btn-sm" Onclick="ChangeEventClose()"><i class="fas fa-times-circle fa-2x"></i> </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Plugins/Fullcalendar/lib/main.js"></script>
+<link href="~/Plugins/Fullcalendar/lib/main.css" rel="stylesheet" />
+
+<script>
+
+var calendar = null;
+var selectEvent = null;
+var _Dialog = null
+
+$(document).ready(function () {
+
+    var calendarEl = document.getElementById('calendar');
+    //$(".changeEventDiv").slideUp();
+
+        GetCalenderJobs(function (events) {
+
+            GetHolidays(events,function (retEvents) {
+
+
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    //initialDate: '2020-09-12',
+                    navLinks: true, // can click day/week names to navigate views
+                    selectable: false,
+                    //selectMirror: true,
+                    displayEventTime: false,
+
+                    select: function (arg) {
+                        var title = prompt('Event Title:');
+                        if (title) {
+                            calendar.addEvent({
+                                title: title,
+                                start: arg.start,
+                                end: arg.end,
+                                allDay: arg.allDay,
+                                color: "blue"
+                            })
+                        }
+                        calendar.unselect()
+                    },
+                    events: retEvents,
+                    eventContent: function (info) {
+                        html: '<span data-toggle="tooltip" title="' + info.event.extendedProps.content + '" ></span>'
+
+                    },
+                    eventClick: function (arg)
+                    {
+                        if (arg.event.extendedProps.holidayflg == false)
+                        {
+                            Change(arg);
+                        }
+                    },
+                    eventDidMount: function (info) {
+
+
+                        $(info.el).attr("title", info.event.extendedProps.content).attr("data-toggle", "tooltip");
+
+                    },
+                    eventDrop: function (info) {
+                        //alert(info.event.title + " was dropped on " + info.event.start.toISOString());
+
+                        if (arg.event.extendedProps.holidayflg)
+                            info.revert();
+
+                        if (!confirm("Are you sure about this change?")) {
+                            info.revert();
+                        }
+                        else {
+                            var param = {};
+                            param.start = info.event.start.toISOString();
+                            param.end = info.event.end.toISOString();
+                            param.status = -1
+                            param.projectId = info.event.id;
+                            UpdateEvent(param, function (state) {
+                                if (state.success == false)
+                                    info.revert();
+                            })
+                        }
+                    },
+                    editable: true,
+
+                    dayMaxEvents: true
+                });
+
+
+                calendar.render();
+
+            });
+        });
+
+    });
+
+
+
+    function Change(arg)
+    {
+        selectEvent = arg.event;
+        $(".SStartDate").val(arg.event.startStr.substring(0, arg.event.startStr.indexOf("T")));
+        $(".SEndDate").val(arg.event.endStr.substring(0, arg.event.endStr.indexOf("T")));
+
+        var startTime = checkTime(arg.event.start.getHours()) + ":" + checkTime(arg.event.start.getMinutes())
+        var endTime = checkTime(arg.event.end.getHours()) + ":" + checkTime(arg.event.end.getMinutes())
+        $(".SStartTime").val(startTime);
+        $(".SEndTime").val(endTime);
+
+        $('#ProjectStatus').selectpicker('val', arg.event.extendedProps.statusid);
+
+        FixSelectPicker();
+        CreateTooltip();
+        $(".changeEventDiv").slideDown();
+    }
+
+
+    function ChangeEvent() {
+        var start = $(".SStartDate").val() + "T" + $(".SStartTime").val() + ":00";
+        var end = $(".SEndDate").val() + "T" + $(".SEndTime").val() + ":00";
+
+        var param = {};
+        param.start = start;
+        param.end = end;
+        param.status = $('#ProjectStatus').val();
+        param.projectId = selectEvent.id;
+        debugger;
+        UpdateEvent(param,function (state)
+        {
+            if (state.success == true)
+            {
+                var newEvent = calendar.addEvent({
+                    id: selectEvent.id,
+                    title: selectEvent.title,
+                    start: start,
+                    end: end,
+                    allDay: selectEvent.allDay,
+                    content: selectEvent.extendedProps.content,
+                    color: state.color,
+                    textColor: lightOrDark(state.color),
+                    statusid: $('#ProjectStatus').val(),
+                    holidayflg: false
+                });
+
+                selectEvent.remove();
+                selectEvent = newEvent;
+            }
+
+        })
+    }
+
+    function ShowSearchJob()
+    {
+
+        $(".SearchJobCritersDiv").toggle("slide", function () {
+
+            if ($(".SearchJobCritersDiv").is(":visible"))
+            {
+                $('.CalenderDiv').removeClass("col-sm-12").addClass("col-sm-9");
+                calendar.render();
+                FixSelectPicker();
+            }
+            else
+            {
+                $('.CalenderDiv').removeClass("col-sm-9").addClass("col-sm-12");
+                $(".ResultFilter").html("");
+                calendar.render();
+            }
+        });
+    }
+
+    function ChangeEventClose()
+    {
+        $(".changeEventDiv").slideUp();
+        selectEvent = null;
+    }
+
+    function lightOrDark(color) {
+        // Variables for red, green, blue values
+        var r, g, b, hsp;
+        // Check the format of the color, HEX or RGB?
+        if (color.match(/^rgb/)) {
+            // If HEX --> store the red, green, blue values in separate variables
+            color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+            r = color[1];
+            g = color[2];
+            b = color[3];
+        }
+        else {
+            // If RGB --> Convert it to HEX: http://gist.github.com/983661
+            color = +("0x" + color.slice(1).replace(
+                color.length < 5 && /./g, '$&$&'));
+            r = color >> 16;
+            g = color >> 8 & 255;
+            b = color & 255;
+        }
+        // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+        hsp = Math.sqrt(
+            0.299 * (r * r) +
+            0.587 * (g * g) +
+            0.114 * (b * b)
+        );
+        // Using the HSP value, determine whether the color is light or dark
+        if (hsp > 127.5) {
+            return 'black';
+        }
+        else {
+            return 'white';
+        }
+    }
+
+    function GetCalenderJobs(callback)
+    {
+          $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetCalenderJobs", "Job")',
+            contentType: "application/json",
+            success: function (data) {
+                var events = [];
+
+                for (var i = 0; i < data.Getlist.length; i++) {
+                    events.push({
+                        id: data.Getlist[i].PROJECT_ID,
+                        title: data.Getlist[i].TITLE,
+                        start: data.Getlist[i].START_DATE,
+                        end: data.Getlist[i].END_DATE,
+                        content: data.Getlist[i].CONTENT,
+                        color: data.Getlist[i].COLOR,
+                        textColor: lightOrDark(data.Getlist[i].COLOR),
+                        statusid: data.Getlist[i].STATUS_ID,
+                        holidayflg: false,
+                    });
+                }
+                callback(events);
+            },
+            error: function (xhr, status, error)
+            {
+                toastr.error(xhr.responseText, "Error!");
+            }
+        });
+     }
+
+    function GetHolidays(events,callback)
+    {
+          $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetHolidays", "Company")',
+            contentType: "application/json",
+            success: function (data) {
+                //var events = [];
+
+                for (var i = 0; i < data.Getlist.length; i++)
+                {
+                    if (data.Getlist[i].IS_CANCELED == true)
+                        continue;
+
+                    events.push({
+                        id: data.Getlist[i].HOLIDAY_ID,
+                        title: data.Getlist[i].HOLIDAY_NAME,
+                        start: data.Getlist[i].START_DATE,
+                        end: data.Getlist[i].END_DATE,
+                        overlap: false,
+                        display: 'background',
+                        color: '#ff9f89',
+                        textColor: lightOrDark('#ff9f89'),
+                        holidayflg: true,
+                    });
+                }
+                callback(events);
+            },
+            error: function (xhr, status, error)
+            {
+                toastr.error(xhr.responseText, "Error!");
+            }
+        });
+     }
+
+
+    function checkTime(i) {
+        return (i < 10) ? "0" + i : i;
+    }
+
+    function SearchAdvaced() {
+        var str = {};
+        str.FromStart = $("#FromStart").val();
+        str.EndStart = $("#EndStart").val();
+        str.LotNumber = $("#LotNumber").val();
+        str.Material = $("#Material").val() == "" ? -1 : $("#Material").val();
+        str.Floor = $("#Floor").val() == "" ? -1 : $("#Floor").val();
+        str.ProjectType = $("#ProjectType").val() == "" ? -1 : $("#ProjectType").val();
+        str.Client = $("#ClientFilter").val() == "" ? -1 : $("#ClientFilter").val();
+        str.Supervisor = $("#Supervisor").val() == "" ? -1 : $("#Supervisor").val();
+
+         $.ajax({
+            type: "GET",
+            url : '@Url.Action("GetJobAdvacedList", "Job")',
+            data: $.param(str),
+            contentType: "application/json",
+            success: function (data) {
+
+                if (IsUndefinedOrNullOrEmpty(data) == false && data.Getlist.length > 0)
+                {
+                    var list = data.Getlist;
+
+                    var $select = $("<select>").addClass("selectpicker form-control form-control-sm").attr("data-live-search", "true").attr("data-container", "body").attr("title","Select Job")
+                        .change(function ()
+                        {
+                            for (var i = 0; i < list.length; i++)
+                            {
+                                if (list[i].PROJECT_ID == $(this).val())
+                                {
+                                    calendar.gotoDate(list[i].INSTALLATION_DATE)
+                                    return;
+                                }
+                            }
+
+                        });
+
+
+                    for (var i = 0; i < list.length; i++)
+                    {
+                        var option = $('<option></option>').attr("value", list[i].PROJECT_ID).text(list[i].PROJECT_NAME);
+                        $select.append(option);
+                    }
+                    $(".ResultFilter").html($select);
+                    $select.selectpicker('refresh');
+                    $select.selectpicker('val',-1);
+
+                    FixSelectPicker();
+                }
+                else
+                    toastr.error("Not Found Jobs", "Error!");
+            },
+            error: function (xhr, status, error)
+            {
+                toastr.error(xhr.responseText, "Error!");
+            }
+        });
+    }
+
+    function FormReset(element) {
+        element.trigger("reset");
+
+        $('.selectpicker').each(function (index) {
+            $(this).selectpicker('refresh');
+        });
+    }
+
+    function UpdateEvent(param,callback)
+    {
+         $.ajax({
+            url: '@Url.Action("UpdateInstalationDate", "Job")',
+            type: 'POST',
+            data: $.param(param),
+             success: function (retdata)
+             {
+                 if (retdata.success)
+                 {
+                     var state = {};
+                     state.success = true;
+                     state.color = retdata.color;
+                     callback(state);
+                 }
+                 else {
+                     toastr.error(retdata.message, "Instalation date not updating!");
+
+                     var state = {};
+                     state.success = false;
+                     callback(state);
+                 }
+             },
+             error: function (xhr, status, error)
+             {
+                 toastr.error(xhr.responseText, "Error!");
+                 var state = {};
+                 state.success = false;
+
+                 callback(state);
+             }
+
+        });
+    }
+
+    function ViewJob()
+    {
+        var url = "@Url.Action("JobView", "Job")" + "/?id=" + selectEvent.id + "&Layout=1";
+        window.open(url, "_blank");
+    }
+
+</script>

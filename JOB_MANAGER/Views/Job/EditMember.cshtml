@@ -1,0 +1,229 @@
+﻿@model JOB_MANAGER.Models.MembersDto
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ActiveMenu = "Jobs";
+    ViewBag.MenuOpen = "";
+
+
+    int SUP_ID = Model.SUPERVISOR_ID;
+    int EMP_ID = Model.EMP_ID;
+
+    ViewBag.Title = Model.PROJECT_MEMBER_ID > 0 ? "Edit Member" : "Add Member";
+}
+
+<div class="row">
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="text-white">
+                        <i class="fas fa-briefcase"></i> Jobs
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>@{ if (Model.PROJECT_MEMBER_ID > 0)
+                    { <span>Edit Member</span> }
+                    else
+                    { <span>Add Member</span> } }
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-sm-12">
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit text-success"></i> <span>Edit Member(@Model.EMP_NAME )</span>
+                </h3>
+                <div class="card-tools">
+                    <a href="@Url.Action("JobView", "Job", new { id = Model.PROJECT_ID,Layout = 1 })" class="btn btn-danger btn-sm" style="margin-left:5px"><i class="fas fa-door-closed"></i> Back</a>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveMember()" style="margin-left:5px"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+            <div class="card-body row">
+                <div class="col-sm-12">
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="EMPLOYEE_LIST" class="col-sm-4 control-label">Member</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12  p-0">
+                                @Html.DropDownList("EMP_ID", ViewBag.EMPLOYEE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "EMP_ID", @title = "Select Member" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#EMP_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="SUPERVISOR_ID" class="col-sm-4 control-label">Supervisor</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("SUPERVISOR_ID", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "SUPERVISOR_ID", @title = "Select Supervisor" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#SUPERVISOR_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="PROJECT_PHASE_ID" class="col-sm-4 control-label">Phase</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("PROJECT_PHASE_ID", ViewBag.PROJECT_PHASE_ID as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_PHASE_ID", @title = "Select Phase" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#PROJECT_PHASE_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="PROJECT_TASK_ID" class="col-sm-4 control-label">Task</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("PROJECT_TASK_ID", ViewBag.MEMBER_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_TASK_ID", @title = "Select Task" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#PROJECT_TASK_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <div class="form-group">
+                            @{
+                                if (Model.IS_SUPERVISOR)
+                                {
+                                    <input type="checkbox" id="IS_SUPERVISOR" checked="checked">
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="IS_SUPERVISOR">
+                                }
+                            }
+                            <label class="control-label mx-2" for="IS_SUPERVISOR">Supervisor</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+
+
+
+
+
+
+<script>
+
+    $(document).ready(function ()
+    {
+        var EmpID = @EMP_ID;
+        var SupID = @SUP_ID;
+        var PhaseID = @Model.PHASE_ID;
+        var TaskID = @Model.TASK_ID;
+
+        $("#EMP_ID").selectpicker('val', EmpID);
+        $("#SUPERVISOR_ID").selectpicker('val', SupID);
+        $("#PROJECT_PHASE_ID").selectpicker('val', PhaseID);
+        if (PhaseID > 0)
+        {
+            ChangePhase(function ()
+            {
+                $("#PROJECT_TASK_ID").selectpicker('val', TaskID);
+                FixSelectPicker();
+            });
+        }
+        else
+            FixSelectPicker();
+
+    });
+
+    function Temizle(element)
+    {
+        element.selectpicker('val', -1);
+    }
+
+    function SaveMember()
+    {
+
+        if ($("#EMP_ID").val() == "") {
+            toastr.error("Employee is Required!", "error");
+        }
+
+        if ($("#SUPERVISOR_ID").val() != null && $("#EMP_ID").val() == $("#SUPERVISOR_ID").val())
+        {
+            toastr.error("Supervisor need to be different than employee!", "error");
+            return;
+        }
+
+        var param = {};
+        param.PROJECT_ID = @Model.PROJECT_ID;
+        param.PROJECT_MEMBER_ID = @Model.PROJECT_MEMBER_ID;
+        param.EMPLOYEE_ID = $("#EMP_ID").val();
+        if ($("#PROJECT_PHASE_ID").val() != "")
+            param.PROJECT_PHASE_ID = $("#PROJECT_PHASE_ID").val();
+        if ($("#PROJECT_TASK_ID").val() != "")
+            param.PROJECT_TASK_ID = $("#PROJECT_TASK_ID").val();
+
+        if ($("#SUPERVISOR_ID").val() != "")
+        {
+            param.SUPERVISOR_ID = $("#SUPERVISOR_ID").val();
+        }
+
+        param.IS_SUPERVISOR = $("#IS_SUPERVISOR").prop("checked");
+
+        showHideLoader(true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateProjectMember", "Job")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                {
+                    if (retdata.success)
+                        toastr.success(retdata.Message);
+                    else
+                        toastr.error(retdata.Message,"error");
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    $("#PROJECT_PHASE_ID").change(function () {
+
+
+        ChangePhase(function () { });
+    });
+
+    function ChangePhase(callback)
+    {
+        var param = {};
+        param.ProjectID = @Model.PROJECT_ID;
+        param.PhaseID = $("#PROJECT_PHASE_ID").val();
+        param.TaskID = 0;
+
+        $.ajax({
+            url: '@Url.Action("GetTaskList", "Job")',
+            data: $.param(param),
+            type: 'GET',
+            success: function (retdata) {
+                var Getlist = retdata.Getlist;
+                $("#PROJECT_TASK_ID").find('option').remove();
+                $('#PROJECT_TASK_ID').selectpicker('refresh');
+                for (var i = 0; i < Getlist.length; i++) {
+                    var option = $('<option></option>').attr("value", Getlist[i].PROJECT_TASK_ID).text(Getlist[i].PROJECT_TASK_NAME);
+                    $("#PROJECT_TASK_ID").append(option);
+
+                }
+                $('#PROJECT_TASK_ID').selectpicker('refresh');
+                callback();
+            }
+        });
+    };
+
+</script>

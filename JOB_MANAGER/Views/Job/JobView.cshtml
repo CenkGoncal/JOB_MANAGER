@@ -1,0 +1,747 @@
+﻿@model JOB_MANAGER.Models.ProjectViewDto
+@{
+    if ((int)ViewBag.Layout == 0)
+    {
+        Layout = null;
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        ViewBag.Title = "Job View";
+        ViewBag.ActiveMenu = "Jobs";
+        ViewBag.MenuOpen = "";
+
+        <div class="col-sm-12 p-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-gradient-olive">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Index", "Home")" class="text-white">
+                            <i class="fas fa-tachometer-alt"></i> Dasboard
+                        </a>
+                        <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="text-white">
+                            <i class="fas fa-briefcase"></i> Jobs
+                        </a>
+                        <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                    </li>
+                    <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Job View</li>
+                </ol>
+            </nav>
+        </div>
+
+    }
+}
+
+<div class="card bg-gradient-olive" id="JobView">
+    <div class="card-header">
+        <h3 class="card-title">
+            <label><i class="fas fa-eye"></i> Contract with @Model.CLIENT_NAME (@Model.PROJECT_NUMBER-@Model.PROJECT_NAME)</label>
+            @{
+                if ((int)ViewBag.Layout == 0)
+                {
+                    <button type="button" class="btn btn-info" onclick="CloseViewAndEditPrj(@Model.PROJECT_ID)"><i class="fas fa-edit"></i> Edit</button>
+                }
+            }
+
+        </h3>
+        <div class="card-tools">
+            <label><i class="fas fa-clock"></i> Created @Model.CREATION_DATE,Updated @Model.MODIFIED_DATE </label>
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" onclick="ScaleProfile('#JobView')">
+                <i class="fas fa-compress"></i>
+            </button>
+            @{
+                if ((int)ViewBag.Layout == 0)
+                {
+                    <button type="button" class="btn btn-tool" title="Close" OnClick="CloseViewJob()">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                }
+            }
+        </div>
+    </div>
+    <div class="card-body bg-light">
+        <div class="row">
+            <div class="col-sm-9">
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <div class="card-title">Job Details</div>
+                    </div>
+                    <div class="card-body row p-0">
+                        <div class="col-sm-6 table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th><strong><i class="fas fa-map-marker-alt"></i> Status:</strong></th>
+                                        <td class="STATUS_NAME alert" style="background-color:@Model.DISPLAY_CLASS">@Model.STATE_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-list"></i> Type:</strong></th>
+                                        <td class="PROJECT_TYPE_NAME">@Model.PROJECT_TYPE_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-square"></i> Amount:</strong></th>
+                                        <td class="QUOTE_AMOUNT">@Model.PROJECT_AMOUNT</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-user"></i> Client</strong></th>
+                                        <td class="CLIENT_NAME">@Model.CLIENT_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-code"></i> PO.#</strong></th>
+                                        <td class="CLIENT_PO_NBR">@Model.CLIENT_PO_NBR</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-user"></i> Site Supervisor</strong></th>
+                                        <td class="PROJECT_AMOUNT">@((Model.CLIENT_SUPRVISOR == null) ? "N/A" : Model.CLI_SUPERVISOR_NAME)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-6  table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th><strong><i class="fas fa-toolbox"></i> Material</strong></th>
+                                        <td class="MATERIAL_NAME">@Model.MATERIAL_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-check"></i> Display</strong></th>
+                                        <td class="FLOOR_TYPE_NAME">
+                                            @{ if (Model != null && Model.DISPLAY)
+                                                {
+                                                    <i class="fas fa-check"></i>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-calendar"></i> Inition Date</strong></th>
+                                        <td class="PROJECT_START_DATE">@Model.PROJECT_START_DATE</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-calendar"></i> Installation Date</strong></th>
+                                        <td class="INSTALLATION_DATE">@((Model.INSTALLATION_DATE == null) ? "N/A" : Model.INSTALLATION_DATE)</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-code"></i> Quote</strong></th>
+                                        <td class="QUOTE_NUMBER">@((Model.QUOTE_ID == null) ? "N/A" : Model.QUOTE_NUMBER)</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-user"></i> Project Manager</strong></th>
+                                        <td class="PROJECT_SUPERVISOR">@((Model.PROJECT_SUPERVISOR == null) ? "N/A" : Model.PRO_SUPERVISOR_NAME)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th style="width:20%"><strong><i class="fas fa-percentage"></i> Completed</strong></th>
+                                        <td>
+                                            <div class="progress PROJECT_PROGRESS">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.PROJECT_PROGRESS" aria-valuemin="0" aria-valuemax="100" style="width: @Model.PROJECT_PROGRESS%">
+                                                    @Model.PROJECT_PROGRESS %
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12 content spinner">
+                            <div class="sk-spinner sk-spinner-double-bounce">
+                                <div class="sk-double-bounce1"></div>
+                                <div class="sk-double-bounce2"></div>
+                            </div>
+                            <div class="card card-success card-outline card-outline-tabs">
+                                <div class="card-header p-0 border-bottom-0">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" href="#Phases" data-toggle="pill" role="tab" aria-selected="true">
+                                                <i class="fas fa-list"></i> Phases
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#Tasks" data-toggle="pill" role="tab" aria-selected="false">
+                                                <i class="fas fa-tasks"></i> Tasks
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#Members" data-toggle="pill" role="tab" aria-selected="false">
+                                                <i class="fas fa-users"></i> Members
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#Notes" data-toggle="pill" role="tab" aria-selected="false">
+                                                <i class="fas fa-sticky-note"></i> Notes
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade show active" id="Phases" role="tabpanel">
+                                            <div id="TablePhases"></div>
+                                        </div>
+                                        <div class="tab-pane fade" id="Tasks" role="tabpanel">
+                                            <div class="card card-success card-tabs">
+                                                <div class="card-header p-0 pt-1">
+                                                    <ul class="nav nav-tabs" id="taskList" role="tablist">
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="tab-content" id="taskContent">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="Members" role="tabpanel">
+                                            <a class="btn btn-success btn-sm" data-toggle='modal' data-target='#ViewDialog' href="@Url.Action("EditMember", "Job")/?projectID=@Model.PROJECT_ID&MemberID=0','Assing Member"><i class="fa fa-cog"></i> Assign Member</a>
+                                            <div id="TableMembers"></div>
+                                        </div>
+                                        <div class="tab-pane fade" id="Notes" role="tabpanel">
+                                            <a class="btn btn-success btn-sm" href="@Url.Action("EditNotes", "Job")/?projectID=@Model.PROJECT_ID&NoteID=0"><i class="fa fa-plus"></i> Add Note</a>
+                                            <div id="TableNotes"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <div class="card-title">Address Details</div>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th><strong><i class="fas fa-square"></i> Number Of Cabinents</strong></th>
+                                    <td class="CABINETS_NBR">@Model.CABINETS_NBR</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-square"></i> Lot.#</strong></th>
+                                    <td class="ADR_LOT_NBR">@Model.ADR_LOT_NBR</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-square"></i> Unit.#</strong></th>
+                                    <td class="ADR_UNIT_NBR">@Model.ADR_UNIT_NBR</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-square"></i> Street.#</strong></th>
+                                    <td class="ADR_STREET_NBR">@Model.ADR_STREET_NBR</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fa fa-street-view"></i> Suffix</strong></th>
+                                    <td class="STREET_NAME">@Model.STREET_NAME</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fa fa-street-view"></i> Street</strong></th>
+                                    <td class="ADR_STREET_NAME">@Model.ADR_STREET_NAME</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-envelope"></i> P/Code</strong></th>
+                                    <td class="PROJECT_POSTAL_CODE">@Model.PROJECT_POSTAL_CODE</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-city"></i> City</strong></th>
+                                    <td class="CITY_NAME">@Model.CITY_NAME</td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fa fa-road"></i> State</strong></th>
+                                    <td class="text-muted STATE_NAME">@Model.STATE_NAME</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <div class="card-title">Documents</div>
+                        <div class="card-tools">
+                            <button class="btn btn-outline-success btn-xs" onclick="PreviewDoc()"><i class="fas fa-eye"></i> Preview</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul id="treeview">
+                            @{ string DocFolder = string.Empty;
+                                foreach (var document in Model.ProjectDto.Document)
+                                {
+                                    if (DocFolder != document.DOC_FOLDER_NAME)
+                                    {
+                                        <li data-icon-cls="fas fa-folder text-warning" data-expanded="true">
+                                            <span class="Calendar">@document.DOC_FOLDER_NAME</span>
+                                            <ul>
+                                                @foreach (var document2 in Model.ProjectDto.Document)
+                                                {
+                                                    if (document.DOC_FOLDER_NAME == document2.DOC_FOLDER_NAME)
+                                                    {
+
+                                                        <li>
+                                                            <i class="@document2.FONT_AWESOME_ICON" data-path="@document2.DOC_PATH"></i> @document2.DOC_NAME
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </li>
+                                        DocFolder = document.DOC_FOLDER_NAME;
+                                    }
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- CopyContact.modal -->
+<div id="ViewDialog" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h4 class="modal-title text-white"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CloseDialog()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var PhaseGrid = null;
+    var MemberGrid = null;
+    var NoteGrid = null;
+    var TaskGrid = null;
+
+    var _ProjectID = @Model.PROJECT_ID;
+    var _ProjectTypeID = @Model.PROJECT_TYPE_ID;
+    var _Dialog = null;
+
+    $(document).ready(function () {
+
+        InitGrids(false);
+
+        $("#treeview").shieldTreeView();
+
+        var textColor = lightOrDark($(".STATUS_NAME").css("background-color"));
+        $(".STATUS_NAME").css("color", textColor);
+
+    });
+
+    function InitGrids(JustSetData)
+    {
+        var param = {};
+        param.ProjectID = _ProjectID;
+
+        $.ajax({
+            url: '@Url.Action("ProjectOpDetails", "Job")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    if (!JustSetData) {
+                        InitPhases(retdata.Phases, function () {
+                            InitMember(retdata.Members, function () {
+                                InitNotes(retdata.Notes, function () {
+                                    InitTask2(retdata.Phases);
+                                });
+                            });
+                        });
+                    }
+                    else
+                    {
+
+                        PhaseGrid.jsGrid("option", "data", retdata.Phases);
+                        TaskGrid.jsGrid("option", "data", retdata.Phases); TaskGrid.jsGrid("option", "width", "100%");
+                        MemberGrid.jsGrid("option", "data", retdata.Members);
+                        NoteGrid.jsGrid("option", "data", retdata.Notes);
+
+                        var oldProgress = @Model.PROJECT_PROGRESS;
+                        if (retdata.ProjectProg > 0 && oldProgress != retdata.ProjectProg)
+                        {
+
+                            $(".PROJECT_PROGRESS").html("");
+                            var prog = $("<div>").addClass("progress-bar progress-bar-striped progress-bar-animated").attr("aria-valuenow", retdata.ProjectProg)
+                                .attr("role", "progressbar").attr("aria-valuemin", "0").attr("aria-valuemax", "100").css("width", retdata.ProjectProg + "%")
+                                .html(retdata.ProjectProg +" %");
+
+                            $(".PROJECT_PROGRESS").html(prog);
+                        }
+                    }
+                    //InitNote();
+                }
+            }
+        });
+    }
+
+    function InitPhases(Phases,callback)
+    {
+            var Options = {};
+            Options.Name = $("#TablePhases");
+            Options.Url = "null";
+            Options.Data = Phases;
+            Options.Fields = [
+                {
+                    name: "PHASE_ORDER", title: "Order", type: "number", width: "25", validate: "required",
+                    headerTemplate: function () {
+                        return "<b><i class='fas fa-sort-numeric-down' title='Order' style='font-size:x-large'></i></b>";
+                    },
+
+                },
+                {
+                    align: "center", name: "DISPLAY_CLASS", title: "Status", width: "75",
+                    itemTemplate: function (_, item) {
+
+                        if (IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) == false) {
+
+                            return $("<div class='alert " + item.DISPLAY_CLASS + " role='alert' style='font-size: small'>").html(item.STATUS_NAME);
+                        }
+                    }
+                },
+                { name: "PHASE_NAME", title: "Phase", type: "text", width: "100", validate: "required" },
+                {
+                    name: "PROJECT_PHASE_PROGRESS", title: "Progress", type: "number", width: "100", validate: "required",
+                    itemTemplate: function (_, item)
+                    {
+                        var element = '<div class="progress">'
+                        var progtext = item.PROJECT_PHASE_PROGRESS > 0 ? item.PROJECT_PHASE_PROGRESS + "%" : "";
+                        element += '<div class="progress-bar progress-bar-striped" role="progressbar" style="width: ' + item.PROJECT_PHASE_PROGRESS + '%" aria-valuenow="' + item.PROJECT_PHASE_PROGRESS + '" aria-valuemin="0" aria-valuemax="100">' + progtext+'</div> </div>';
+
+                        return $("<div>").add(element);
+                    }
+                },
+                {
+                     type: "control", modeSwitchButton: false, width: "50", align: "center",
+                     itemTemplate: function (_, item)
+                     {
+                         var $editButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-info").attr("title", "edit").css("margin-left", "5px")
+                             .attr("href", "@Url.Action("EditPhase", "Job")" + "/" + item.PROJECT_PHASE_ID)
+                             .html("<i class='fas fa-edit'></i>");
+
+                         var $viewButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-success").attr("title", "view").css("margin-left", "5px")
+                             .attr("href", "@Url.Action("ViewPhase", "Job")" + "/" + item.PROJECT_PHASE_ID)
+                             .html("<i class='fas fa-eye'></i>");
+
+                         return $("<div class='btn-toolbox'>").append($editButton).append($viewButton);
+                     }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+
+                PhaseGrid = retGrid.Grid;
+                PhaseGrid.jsGrid("option", "data", Options.Data);
+                PhaseGrid.jsGrid("sort", "PHASE_ORDER");
+                PhaseGrid.jsGrid("option", "editing", false);
+
+                callback();
+
+            });
+    }
+
+    function InitTask2(Phases)
+    {
+        $("#taskList").html("");
+        $("#taskContent").html("");
+
+        var title = $("<li>").addClass("pt-2 px-3").html("<a class='card-title btn btn-success' href='@Url.Action("EditTask", "Job")/?projectID=@Model.PROJECT_ID&TaskID=0' ><i class='fa fa-plus'></i> Add Task</a>");
+        $("#taskList").append(title);
+
+        $.each(Phases, function (i, phase)
+        {
+            var tabitem = $("<li>").addClass("nav-item")
+                .append($("<a>").addClass("nav-link").attr("data-toggle", "pill").attr("role", "tab").attr("aria-selected", "false")
+                    .attr("href", "#Ph" + phase.PROJECT_PHASE_ID).text(phase.PHASE_NAME)
+                    );
+
+            var tabContent = $("<div>").addClass("tab-pane fade p-0").attr("role", "tabpanel").attr("id", "Ph" + phase.PROJECT_PHASE_ID)
+                    .append($("<div>").addClass("Table" + phase.PROJECT_PHASE_ID))
+
+
+            var Options = {};
+            Options.Name = tabContent.find(".Table" + phase.PROJECT_PHASE_ID);
+            Options.Url = "null";
+            //Options.Width = "400px";
+            Options.Data = phase.TASKS;
+            Options.Fields = [
+                {
+                    name: "TASK_ORDER", title: "Order", type: "number", width: "25", validate: "required",
+                    headerTemplate: function ()
+                    {
+                        return "<b><i class='fas fa-sort-numeric-down' title='Order' style='font-size:x-large'></i></b>";
+                    },
+                },
+                {
+                    align: "center", name: "DISPLAY_CLASS", title: "Status", width: "75",
+                    itemTemplate: function (_, item) {
+
+                        if (IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) == false) {
+
+
+                            return $("<div class='alert " + item.DISPLAY_CLASS + " role='alert' style='font-size: small' >").html(item.STATUS_NAME);
+                        }
+                    }
+                },
+                { name: "PROJECT_TASK_NAME", title: "Task", type: "text", width: "100", validate: "required" },
+                {
+                    name: "PROJECT_TASK_PROGRESS", title: "Progress", type: "number", width: "100", validate: "required",
+                    itemTemplate: function (_, item) {
+                        var element = '<div class="progress">'
+                        var progtext = item.PROJECT_TASK_PROGRESS > 0 ? item.PROJECT_TASK_PROGRESS + "%" : "";
+                        element += '<div class="progress-bar progress-bar-striped" role="progressbar" style="width: ' + item.PROJECT_TASK_PROGRESS + '%" aria-valuenow="' + item.PROJECT_TASK_PROGRESS + '" aria-valuemin="0" aria-valuemax="100">' + progtext+'</div> </div>';
+
+                        return $("<div>").add(element);
+                    }
+                },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+                        var $editButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-info").attr("title", "edit").css("margin-left", "5px")
+                            .attr("href", "@Url.Action("EditTask", "Job")/?projectID=@Model.PROJECT_ID&TaskID=" + item.PROJECT_TASK_ID)
+                            .html("<i class='fas fa-edit'></i>");
+
+                        var $viewButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-success").attr("title", "view").css("margin-left", "5px")
+                            .attr("href", "@Url.Action("ViewTask", "Job")/?TaskID=" + item.PROJECT_TASK_ID)
+                            .html("<i class='fas fa-eye'></i>");
+
+                        return $("<div class='btn-toolbox'>").append($editButton).append($viewButton);
+                    }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+                TaskGrid = retGrid.Grid;
+                TaskGrid.jsGrid("option", "data", Options.Data);
+                TaskGrid.jsGrid("sort", "TASK_ORDER");
+                TaskGrid.jsGrid("option", "editing", false);
+            });
+
+            if (i == 0) {
+                tabitem.find("a").addClass("active").removeAttr("aria-selected").attr("aria-selected", "true");
+                tabContent.addClass("show active");
+            }
+
+            $("#taskList").append(tabitem);
+            $("#taskContent").append(tabContent);
+
+        });
+
+    }
+
+    function InitMember(Members, callback)
+    {
+        var Options = {};
+        Options.Name = $("#TableMembers");
+        Options.Url = "null";
+        Options.Data = Members;
+        Options.Fields = [
+            {
+                itemTemplate: function (_, item) {
+
+                    var base64String = IsUndefinedOrNullOrEmpty(item.EMP_IMG) ? "@ViewBag.DefaultProfileImg" : btoa(String.fromCharCode.apply(null, new Uint8Array(item.EMP_IMG)));
+                    var img = "<img src='data:image/GIF;base64,"+base64String+"' class='img-circle'  width='50' height='50'>"
+                    return $("<td>").html(img);
+                }
+                , align: "center", width: 50
+            },
+            { name: "EMP_NAME", title: "Member", type: "text", width: "100"},
+            { name: "TITLE_NAME", title: "Title", type: "text", width: "60"},
+            { name: "PHASE_NAME", title: "Phase", type: "text", width: "50" },
+            { name: "TASK_NAME", title: "Task", type: "text", width: "50" },
+            {
+                name: "IS_SUPERVISOR", title: "Supervisor", type: "checkbox", width: "50", align: "center",
+                itemTemplate: function (_, item)
+                {
+                    var element = item.IS_SUPERVISOR ?  "<i class='far fa-check-square fa-2x'></i>" : "";
+                    return $("<div>").html(element);
+                }
+            },
+            {
+                type: "control", modeSwitchButton: false, width: "50", align: "center",
+                itemTemplate: function (_, item) {
+                    var $editButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-info").attr("title", "edit").css("margin-left", "5px")
+                        .attr("href", "@Url.Action("EditMember", "Job")/?projectID=@Model.PROJECT_ID&MemberID=" + item.PROJECT_MEMBER_ID)
+                        .html("<i class='fas fa-user-edit'></i>");
+
+                    var $viewButton = $("<button>").attr("type", "button").addClass("btn btn-xs btn-outline-danger").attr("title", "delete").css("margin-left", "5px")
+                        .html("<i class='fas fa-user-times'></i>")
+                        .click(function () {
+                            RemoveItem("@Url.Action("RemoveMembers", "Job")", item);
+                        });
+
+                    return $("<div class='btn-toolbox'>").append($editButton).append($viewButton);
+                }
+            }
+        ];
+
+        CreateJsGrid(Options, function (retGrid) {
+            MemberGrid = retGrid.Grid;
+            MemberGrid.jsGrid("option", "data", Options.Data);
+            MemberGrid.jsGrid("option", "editing", false);
+            callback();
+        });
+    }
+
+    function InitNotes(Notes, callback)
+    {
+        var Options = {};
+        Options.Name = $("#TableNotes");
+        Options.Url = "null";
+        Options.Data = Notes;
+        Options.Fields = [
+            { name: "NOTE_ID", title: "Note.#", type: "number", width: "45" },
+            { name: "NOTE_SUBJECT", title: "Subject", type: "text", width: "100" },
+            { name: "PHASE_NAME", title: "Phase", type: "text", width: "55" },
+            { name: "TASK_NAME", title: "Task", type: "text", width: "55" },
+            { name: "NOTE_TYPE_NAME", title: "Type", type: "text", width: "50" },
+            {
+                name: "SET_REMINDER", title: "Reminder", type: "checkbox", width: "45", align: "center",
+                itemTemplate: function (_, item) {
+                    var element = item.SET_REMINDER ? "<i class='far fa-check-square fa-2x'></i>" : "";
+                    return $("<div>").html(element);
+                }
+            },
+            {
+                type: "control", modeSwitchButton: false, width: "50", align: "center",
+                itemTemplate: function (_, item) {
+                    var $editButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-info").attr("title", "edit").css("margin-left", "5px")
+                        .attr("href", "@Url.Action("EditNotes", "Job")/?projectID=@Model.PROJECT_ID&NoteID=" + item.NOTE_ID)
+                        .html("<i class='fas fa-edit'></i>");
+
+                    var $viewButton = $("<button>").attr("type", "button").addClass("btn btn-xs btn-outline-danger").attr("title", "delete").css("margin-left", "5px")
+                        .html("<i class='fas fa-trash-alt'></i>")
+                        .click(function ()
+                        {
+                            if (confirm("Are You Sure?") == true) {
+                                    RemoveItem("@Url.Action("RemoveNote", "Quote")", item);
+                            }
+                        });
+
+                    return $("<div class='btn-toolbox'>").append($editButton).append($viewButton);
+                }
+            }
+        ];
+
+        CreateJsGrid(Options, function (retGrid) {
+            NoteGrid = retGrid.Grid;
+            NoteGrid.jsGrid("option", "data", Options.Data);
+            NoteGrid.jsGrid("option", "editing", false);
+            callback();
+        });
+    }
+
+    $('#ViewDialog').on('show.bs.modal', function (e) {
+
+        var button = $(e.relatedTarget);
+        showHideLoader(true);
+        debugger;
+        $.get(button.data("remote"), function (data)
+        {
+            $('.modal-title').text(button.data("header"));
+            $(".modal-body").html(data);
+
+            var param = {};
+            param.ProjectID = _ProjectID;
+            $.ajax({
+                url: '@Url.Action("ProjectOpDetails", "Job")',
+                type: 'GET',
+                data: $.param(param),
+                success: function (retdata) {
+
+
+                    setTimeout(function () { InitDialog(); }, 3000);
+
+                    $("#ViewDialog .selectpicker").selectpicker('refresh');
+                    $('.bs-caret span').removeClass("caret");
+
+                    var EmpIds = $.map(retdata.Members, function (el, i) { return el.EMPLOYEE_ID })
+                    $("#ViewDialog #ASSIGNED_EMPLOYEE_ID").selectpicker('val', EmpIds);
+                    showHideLoader(false);
+                }
+            });
+        });
+    });
+
+
+    function CloseDialog()
+    {
+        $('.modal-title').text("");
+        $(".modal-body").html("");
+
+        InitGrids(true);
+    }
+
+    function RemoveItem(url,item)
+    {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+                InitGrids(true);
+            }
+        });
+    }
+
+    function PreviewDoc()
+    {
+        var Selected = $("#treeview").swidget().selected();
+        if (IsUndefinedOrNullOrEmpty(Selected))
+        {
+            toastr.error("Please Select Document", "error");
+            return;
+        }
+
+        var Path = Selected.find("i").data("path");
+        if (IsUndefinedOrNullOrEmpty(Path) == false)
+        {
+            var param = {};
+            param.folderPath = Path;
+
+            $.ajax({
+                    url: '@Url.Action("OpenFolder", "Quote")',
+                    type: 'GET',
+                    data: $.param(param),
+                    success: function (retdata) {
+
+                    }
+                });
+        }
+        else
+        {
+            toastr.error("Path Not Found", "error");
+        }
+    }
+
+
+</script>

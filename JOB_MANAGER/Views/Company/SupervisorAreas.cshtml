@@ -1,0 +1,390 @@
+﻿
+@{
+    ViewBag.Title = "Supervisor Areas";
+    ViewBag.ActiveMenu = "SupervisorAreas";
+    ViewBag.MenuOpen = "MyCompany";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-home"></i> Company
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Supervisor Areas</li>
+            </ol>
+        </nav>
+    </div>
+   
+    <div class="col-sm-12">
+        <div class="card card-cyan card-outline" id="ListSupervisor">
+            <div class="card-header">
+                <label><i class="fas fa-list text-cyan"></i> List Of Supervisor</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body active spinner SupervisorGrid" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div id="card edit-SupervisorAreas">
+            <div class="card card-success displaynone" id="CreateSupervisorAreas">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-cogs"></i> Assign Supervisors Areas</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormReset'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="ScaleProfile('#CreateSupervisorAreas')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="EditProfile('#CreateSupervisorAreas','#ListSupervisor')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body spinercontrol">
+                    <form id="FormReset">
+                        <div class="col-sm-12">
+                            <hr>
+                            <div class="form-row">
+                                <label id="lblStatus" for="SUPERVISOR_LIST" class="col-sm-4 col-xs-4 control-label">Supervisor</label>
+                                <div class="col-sm-8 col-xs-8">
+                                    @Html.DropDownList("EMP_ID", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "SUPERVISOR_LIST", @name = "SUPERVISOR_LIST", @title = "Select Supervisor", @required = "true" })
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-row">
+                                <label id="lblCountry" for="SUPERVISOR_COUNTRY" class="col-sm-4 control-label">Country</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("COUNTRY_ID", ViewBag.COUNTRIES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "SUPERVISOR_COUNTRY", @name = "SUPERVISOR_COUNTRY", @title = "Select Company", @required = "true" })
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-row">
+                                <label id="lblState" for="SUPERVISOR_STATE" class="col-sm-4 control-label">State</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("STATE_ID", ViewBag.STATES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "SUPERVISOR_STATE", @name = "SUPERVISOR_STATE", @title = "Select State", @required = "true" })
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-row">
+                                <label id="lblCity" for="SUPERVISOR_CITY" class="col-sm-4 control-label">City</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("CITY_ID", ViewBag.CITIES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "SUPERVISOR_CITY", @name = "SUPERVISOR_CITY", @title = "Select City", @required = "true" })
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-danger" onclick="EditProfile('#CreateSupervisorAreas','#ListSupervisor');"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success float-sm-right" onclick="SaveVec()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="~/Scripts/adminlte/adminlte.js"></script>
+    <script id="main">
+
+        var SupTable;
+        $(document).ready(function ()
+        {
+            $("#SUPERVISOR_COUNTRY").attr("data-required-message", "Country is requried");
+            $("#SUPERVISOR_STATE").attr("data-required-message", "State is requried");
+            $("#SUPERVISOR_CITY").attr("data-required-message", "City is requried").attr("multiple","true");
+            $("#SUPERVISOR_LIST").attr("data-required-message", "Supervisor is requried");
+
+            $('.selectpicker').attr("data-live-search", "true");
+            $('.selectpicker').selectpicker();
+
+
+            $.ajax({
+                url: '@Url.Action("GetListFilterSupervisors", "Company")',
+                type: 'GET',
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata) {
+                        InitGrids(retdata);
+
+                    }
+                }
+            });
+
+        });
+
+
+        function InitGrids(retdata)
+        {
+            CreateHtmlJsGrid("Supervisor",  function (retHtml)
+            {
+                $(".SupervisorGrid").html(retHtml);
+                //$('.searchItem').hide();
+                $('.addItem').hide();
+                $(".SupervisorGrid").find(".btn-toolbox").append("<button class='btn btn-success btn-sm' onclick='AddGrid(this)'  style='margin-right: 5px'><i class='fas fa-cogs'></i> Assign</button>");
+
+
+                retdata.Suplier.push({ EMPLOYEE_NAME: "", EMPLOYEE_ID: 0 });
+                retdata.City.push({ CITY_NAME: "", CITY_ID: 0 });
+
+                var Options = {};
+                Options.Name = $("#TableSupervisor");
+                Options.Url = '@Url.Action("GetSupervisorList", "Company")';
+                Options.Data = [];
+                Options.Fields = [
+                    { name: "EMPLOYEE_ID", title: "Supervisor", type: "select", items: retdata.Suplier, valueField: "EMPLOYEE_ID", textField: "EMPLOYEE_NAME", width: 80  },
+                    { name: "CITY_ID", title: "City", type: "select", items: retdata.City, valueField: "CITY_ID", textField: "CITY_NAME" , width: 80 },
+                    { name: "POSTAL_CODE", title: "Postal Code", type: "text", width: 50 },
+                    {
+                        type: "control",
+                        modeSwitchButton: false,
+                        editButton: false,
+                        width: 60,
+                        align: "center",
+                        itemTemplate: function (_, item)
+                        {
+                            var controlCustimoze = "<button type='button' class='btn btn-xs btn-outline-danger' title='Delete' onclick = 'DeleteSup(" + item.EMPLOYEE_ID + "," + item.CITY_ID+")'><i class='fas fa-trash-alt'></i></button> ";
+                            return $("<td class='btn-toolbox'>").html(controlCustimoze);
+                        }
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid) {
+                    SupTable = retGrid.Grid;
+                    SupTable.jsGrid("option", "editing", false);
+                    SupTable.jsGrid("option", "filtering", true);
+                });
+            });
+        }
+
+        function SearchGrid(obj) {
+            SupTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+        };
+
+
+        $("#SUPERVISOR_COUNTRY").change(function () {
+            var param = {};
+            param.CountryID = this.value;
+
+            //GetSupAdreesCombo(1, param);
+            GetStateListByCompany(param, function () {
+            });
+        });
+
+        $("#SUPERVISOR_STATE").change(function () {
+            var param = {};
+            param.StateID = this.value;
+
+            GetCityListByState(param, function () {
+            });
+        });
+
+        function GetStateListByCompany(param,callback)
+        {
+             $.ajax({
+                    url: '@Url.Action("GetStateByCompanyID", "Company")',
+                    data: $.param(param),
+                    type: 'POST',
+                    success: function (retdata) {
+                        $("#SUPERVISOR_STATE").find('option').remove();
+                        $('#SUPERVISOR_STATE').selectpicker('refresh');
+
+                        $("#SUPERVISOR_CITY").find('option').remove();
+                        $('#SUPERVISOR_CITY').selectpicker('refresh');
+                        if (IsUndefinedOrNullOrEmpty(retdata.StateList) == false && retdata.StateList.length > 0)
+                        {
+                            var StateList = retdata.StateList;
+                            for (var i = 0; i < StateList.length; i++) {
+                                var option = $('<option></option>').attr("value", StateList[i].STATE_ID).text(StateList[i].STATE_NAME);
+                                $("#SUPERVISOR_STATE").append(option);
+
+                            }
+
+                            $('#SUPERVISOR_STATE').selectpicker('refresh');
+                            callback();
+                        }
+                    }
+                });
+        }
+
+        function GetCityListByState(data, callback)
+        {
+            var param = {};
+            param.StateID = data.StateID;
+
+            $.ajax({
+                url: '@Url.Action("GetCityCompanyID", "Company")',
+                data: $.param(param),
+                type: 'POST',
+                success: function (retdata)
+                {
+                    $("#SUPERVISOR_CITY").find('option').remove();
+                    $('#SUPERVISOR_CITY').selectpicker('refresh');
+                    if (IsUndefinedOrNullOrEmpty(retdata.CityList) == false && retdata.CityList.length > 0) {
+                        var CityList = retdata.CityList;
+                        for (var i = 0; i < CityList.length; i++) {
+                            var option = $('<option></option>').attr("value", CityList[i].CITY_ID).attr("alt", CityList[i].POSTAL_CODE).text(CityList[i].CITY_NAME);
+                            $("#SUPERVISOR_CITY").append(option);
+                        }
+
+                        $('#SUPERVISOR_CITY').selectpicker('refresh');
+                        callback();
+                    }
+                }
+            });
+        }
+
+        function FormReset(element) {
+            element.trigger("reset");
+
+            $('.selectpicker').each(function (index) {
+                $(this).selectpicker('refresh');
+            });
+        }
+
+
+        function AddGrid(obj)
+        {
+            $("#SUPERVISOR_STATE").find('option').remove();
+            $('#SUPERVISOR_STATE').selectpicker('refresh');
+
+            $("#SUPERVISOR_CITY").find('option').remove();
+            $('#SUPERVISOR_CITY').selectpicker('refresh');
+
+            EditProfile('#CreateSupervisorAreas', '#ListSupervisor');
+            FormReset($('#FormReset'));
+        }
+
+
+        function SaveVec()
+        {
+            var required = $('input,textarea,select').filter('[required]:visible');
+
+            var allRequired = true;
+            var param = {};
+            required.each(function () {
+                if ($(this).val() == '')
+                {
+                    var message = $(this).attr("data-required-message")
+                    toastr.warning(message, "Warning");
+                    allRequired = false;
+                }
+            });
+
+            if (allRequired == false)
+                return;
+            //var param = $("form").serialize();
+            param.SuperVizorID = $("#SUPERVISOR_LIST").val();
+            param.CityIDs = $("#SUPERVISOR_CITY").val();
+
+            CreateLoader($('.spinercontrol'), true);
+            $.ajax({
+                url: '@Url.Action("AddSuppervisorArea", "Company")',
+                type: 'POST',
+                data: $.param(param),
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                            RefreshGrid(null);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    CreateLoader($('.spinercontrol'),false);
+                },
+                error: function (xhr, status, error) {
+                    toastr.error(xhr.responseText, "Error!");
+                    CreateLoader($('.spinercontrol'), false);
+                }
+            });
+        }
+
+        function DeleteSup(SupervisorID,CityID)
+        {
+            if (confirm("Are You Sure?") == true)
+            {
+                 showHideLoader(true);
+
+                var param = {};
+                param.SuperVizorID = SupervisorID;
+                param.CityID = CityID;
+
+                $.ajax({
+                    url: '@Url.Action("DeleteSuppervisorArea", "Company")',
+                    type: 'POST',
+                    data: $.param(param),
+                    success: function (retdata)
+                    {
+                 
+                        if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                        {
+                            if (retdata.success) {
+                                toastr.success(retdata.Message);
+                                RefreshGrid(null);
+                            }
+                            else {
+                                toastr.error(retdata.Message);
+                            }
+                        }
+                        showHideLoader(false);
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error(xhr.responseText, "Error!");
+                        CreateLoader($('.spinercontrol'), false);
+                    }
+                });
+            }
+        }
+
+        function SearchGrid(obj) {
+            $(obj.children).toggleClass('active');
+            SupTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+        };
+
+        function ChangeGrid(obj) {
+            var size = parseInt($("#pageSize").val(), 10);
+            SupTable.jsGrid("option", "pageSize", size);            
+        };
+
+        function RefreshGrid(obj)
+        {
+            $.ajax({
+                    url: '@Url.Action("GetListFilterSupervisors", "Company")',
+                    type: 'GET',
+                    success: function (retdata) {
+
+                        if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata) {
+                            InitGrids(retdata);
+
+                        }
+                    }
+                });
+        }
+    </script>

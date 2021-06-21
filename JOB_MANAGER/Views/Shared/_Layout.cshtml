@@ -1,0 +1,1003 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JM | @ViewBag.Title</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css">
+    @Styles.Render("~/Content/css")
+
+
+    @*@Scripts.Render("~/bundles/passwordMeter")*@
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- overlayScrollbars -->
+
+
+    <link href="~/Content/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css" rel="stylesheet" />
+    <link id="themecss" rel="stylesheet" type="text/css" href="//www.shieldui.com/shared/components/latest/css/light/all.min.css" />
+    <link href="~/Plugins/jqueryui/jquery-ui.css" rel="stylesheet" />
+    <style>
+        
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: none;
+        }
+
+        .breadcrumb-item.active {
+            color: #eeeeee;
+        }
+    
+
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.bundle.min.js"></script>
+
+    @Scripts.Render("~/bundles/nexenus")
+    <script src="~/Scripts/adminlte/plugins/overlayScrollbars/js/OverlayScrollbars.min.js"></script>
+    <script type="text/javascript" src="//www.shieldui.com/shared/components/latest/js/shieldui-all.min.js"></script>
+    <script src="~/Plugins/jqueryui/jquery-ui.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js"></script>
+
+
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed text-sm">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button" @*onclick="ToogleSideMenu()"*@><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item">
+                    <span id="pageHeaderLeftIconsArea" class="IconAlign pull-left" style="display:block; margin-left:5px;">@RenderSection("sectionpageHeaderLeftIconsArea", false)</span>
+                    <a class="IconAlign pull-left pageHeader nav-link" style="margin-top: 3px"> Welcome Our <b>Websites</b></a>
+                    <span id="pageHeaderRightIconsArea" class="IconAlign pull-right" style="display:block; margin-right:5px;">@RenderSection("sectionpageHeaderRightIconsArea", false)</span>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" role="button" data-toggle="modal" data-target="#MailForm">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <span class="fas fa-user-circle">
+                        </span> @HttpContext.Current.User.Identity.Name <b class="fas fa-caret-down"></b>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <a class="dropdown-item" href="@Url.Action("UserProfile", "Employee")"><span class="fa fa-user"></span> Profile</a>
+                        <a class="dropdown-item" href="@Url.Action("Index", "Home")"><span class="fas fa-tasks"></span> My Taks</a>
+                        <a class="dropdown-item" href="#" onclick="MenuReset()"><span class="fas fa-cogs"></span> Menu Reset</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#" onclick="LogOut()"><span class="fas fa-sign-out-alt"></span> Logout</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- /.navbar
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="#" class="brand-link navbar-gray-dark">
+                <span class="brand-text img-circle elevation-3"><b>JM</b></span>
+                <span class="brand-text font-weight-light"><b>JOB</b>MANAGER</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="#" class="img-circle elevation-2 UserImage" style="width:4.1rem" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="@Url.Action("UserProfile", "Employee")" class="d-block UserName">Alexander Pierce</a>
+                        <span class="right badge badge-info UserTitle">Main</span>
+                    </div>
+                </div>
+
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-legacy nav-compact leftMenu" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+                        with font-awesome or any other icon font library -->
+                        <li class="nav-item" id="Dashboard">
+                            <a href="@Url.Action("Index", "Home")" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Dashboard
+                                    <span class="right badge badge-success">Main</span>
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="Calendar">
+                            <a href="@Url.Action("Calendar", "Home")" class="nav-link">
+                                <i class="nav-icon fas fa-calendar"></i>
+                                <p>Calendar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="MyCompany">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>
+                                    My Company
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item" id="Profile">
+                                    <a href="@Url.Action("CompanyProfile", "Company")" class="nav-link">
+                                        <i class="fas fa-circle nav-icon"></i>
+                                        <p>Profile</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="Employees">
+                                    <a href="@Url.Action("Index", "Employee")" class="nav-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <p>Employees</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="Vehicles">
+                                    <a href="@Url.Action("Vehicles", "Company")" class="nav-link">
+                                        <i class="fas fa-truck nav-icon"></i>
+                                        <p>Vehicles</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="Supplier">
+                                    <a href="@Url.Action("Supplier", "Company")" class="nav-link">
+                                        <i class="fas fa-people-carry nav-icon"></i>
+                                        <p>Supplier</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="SupervisorAreas">
+                                    <a href="@Url.Action("SupervisorAreas", "Company")" class="nav-link">
+                                        <i class="fas fa-address-book nav-icon"></i>
+                                        <p>Supervisor Areas</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="Holidays">
+                                    <a href="@Url.Action("Holidays", "Company")" class="nav-link">
+                                        <i class="fas fa-calendar-day nav-icon"></i>
+                                        <p>Holidays</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" id="Client">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Clients
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item" id="Clients">
+                                    <a href="@Url.Action("Clients", "Client")" class="nav-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <p>Client</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="ClientContacts">
+                                    <a href="@Url.Action("Contacts", "Client")" class="nav-link">
+                                        <i class="far fa-address-book nav-icon"></i>
+                                        <p>Client Contacts</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" id="Quotes">
+                            <a href="@Url.Action("Quotes", "Quote")" class="nav-link">
+                                <i class="nav-icon fas fa-quote-right"></i>
+                                <p>
+                                    Quotes
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="Jobs">
+                            <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="nav-link">
+                                <i class="nav-icon fas fa-briefcase"></i>
+                                <p>
+                                    Jobs
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="Installers">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-table"></i>
+                                <p>
+                                    Installers
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>General Elements</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="../forms/advanced.html" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Advanced Elements</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" id="Administrator">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-tools text-warning"></i>
+                                <p>
+                                    Administrator
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item" id="Genaral">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-ellipsis-h nav-icon"></i>
+                                        <p>General</p>
+                                        <i class="fas fa-angle-left right"></i>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item" id="Contract">
+                                            <a href="@Url.Action("Contract", "AdminOperation")" class="nav-link">
+                                                <i class="fas fa-file-contract nav-icon"></i>
+                                                <p>Contract</p>
+                                                <i class="fas fa-plus right"></i>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" id="Department">
+                                            <a href="@Url.Action("Department", "AdminOperation")" class="nav-link">
+                                                <i class="fas fas fa-building nav-icon"></i>
+                                                <p>Department</p>
+                                                <i class="fas fa-plus right"></i>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" id="Employee">
+                                            <a href="@Url.Action("Employee", "AdminOperation")" class="nav-link">
+                                                <i class="fas fa-user nav-icon"></i>
+                                                <p>Employee</p>
+                                                <i class="fas fa-plus right"></i>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" id="CompanyType">
+                                            <a href="@Url.Action("CompanyType", "AdminOperation")" class="nav-link">
+                                                <i class="far fa-building nav-icon"></i>
+                                                <p>Company Type</p>
+                                                <i class="fas fa-plus right"></i>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" id="SupplierStatus">
+                                            <a href="@Url.Action("SupplierStatus", "AdminOperation")" class="nav-link">
+                                                <i class="fas fa-user nav-icon"></i>
+                                                <p>Supplier Status</p>
+                                                <i class="fas fa-plus right"></i>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item" id="ClientStatus">
+                                            <a href="@Url.Action("ClientStatus", "AdminOperation")" class="nav-link">
+                                                <i class="fas fa-list nav-icon"></i>
+                                                <p>Client Status</p>
+                                                <i class="fas fa-plus right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item" id="Location">
+                                    <a href="@Url.Action("Location", "AdminOperation")" class="nav-link">
+                                        <i class="fas fa-location-arrow nav-icon"></i>
+                                        <p>Location</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="Vehicle">
+                                    <a href="@Url.Action("Vehicle", "AdminOperation")" class="nav-link">
+                                        <i class="fas fa-truck nav-icon"></i>
+                                        <p>Vehicle</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="QuoteAndJob">
+                                    <a href="@Url.Action("QuoteAndJob", "AdminOperation")" class="nav-link">
+                                        <i class="fas fa-clipboard-list nav-icon"></i>
+                                        <p>Quote & Job</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="PhaseandTask">
+                                    <a href="@Url.Action("PhaseandTask", "AdminOperation")" class="nav-link">
+                                        <i class="fas fa-tasks nav-icon"></i>
+                                        <p>Phase & Task</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="SystemConfiguration">
+                                    <a href="@Url.Action("Parameters", "AdminOperation")" class="nav-link">
+                                        <i class="fas fa-cogs nav-icon"></i>
+                                        <p>System Configuration</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                                <li class="nav-item" id="MenuAuthority">
+                                    <a href="@Url.Action("MenuAuthority", "AdminOperation")" class="nav-link">
+                                        <i class="fas fa-sitemap nav-icon"></i>
+                                        <p>Menu Authority</p>
+                                        <i class="fas fa-minus right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        @*<li class="nav-header">EXAMPLES</li>*@
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        @*<footer class="main-footer">
+                <div class="float-right d-none d-sm-block">
+                    <b>Version</b> 3.1.0-pre
+                </div>
+                <strong>Copyright &copy; 2014-2020 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+            </footer>*@
+
+        <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-legacy nav-compact" data-widget="treeview" role="menu" data-accordion="false">
+            <li class="nav-item" id="Genaral">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-ellipsis-h nav-icon"></i>
+                    <p>Customize</p>
+                    <i class="fas fa-angle-left right"></i>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item p-3">
+                        <div class="btn-group-vertical btn-group-toggle col-sm-12 ThemeType" data-toggle="buttons">
+                            <label class="btn btn-secondary active btn-xs" data-id="0">
+                                <input type="radio" name="ThemeType" id="navbar" autocomplete="off" checked> Header
+                            </label>
+                            <label class="btn btn-secondary btn-xs" data-id="1">
+                                <input type="radio" name="ThemeType" id="sidebar" autocomplete="off"> SideBar
+                            </label>
+                            <label class="btn btn-secondary btn-xs" data-id="2">
+                                <input type="radio" name="ThemeType" id="brand" autocomplete="off"> Brand Logo
+                            </label>
+                        </div>
+                    </li>
+                    <li class="nav-item p-3">
+                        <select class="selectpicker form-control form-control-sm col-sm-12" title="Change Theme"
+                                data-container="body" id="changeTheme">
+                        </select>
+                        <div class="row text-center">
+                            <div class="btn-group btn-group-toggle col-sm-12 Theme" data-toggle="buttons">
+                                <label class="btn btn-secondary btn-xs" data-id="0">
+                                    <input type="radio" name="Theme" id="light" autocomplete="off"> Light
+                                </label>
+                                <label class="btn btn-secondary active btn-xs" data-id="1">
+                                    <input type="radio" name="Theme" id="dark" autocomplete="off" checked> Dark
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn btn-warning btn-xs col-sm-12 CopyAll" onclick="CopyAll()"><i class="fas fa-copy"></i> Copy All Employee</button>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+       
+    </aside>
+        <!-- /.control-sidebar -->
+    </div>
+
+    <!-- EmailForm.modal -->
+    <div id="MailForm" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-gradient-olive">
+                    <h4 class="modal-title text-white"><i class="fas fa-envelope"></i> Email:</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row" style="margin-bottom:2px">
+                        <label id="lblSubject" for="Subject" class="col-sm-2 control-label"> Subject:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control float-right" id="Subject" name="Subject">
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom:2px">
+                        <label id="lblEmail" for="ToEmail" class="col-sm-2 control-label"> To:</label>
+                        <div class="col-sm-10">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                </div>
+                                <input type="email" class="form-control float-right" id="ToEmail" name="ToEmail">
+                                <div class="input-group-addon">
+                                    <button class="input-group-text" data-toggle="modal" data-ActiveList="#ToEmail" OnClick="List(1)" data-target="#MailList">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom:2px">
+                        <label id="lblEmail" for="CCEmail" class="col-sm-2 control-label"> CC:</label>
+                        <div class="col-sm-10">
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                </div>
+                                <input type="email" class="form-control float-right" id="CCEmail" name="CCEmail">
+                                <div class="input-group-addon">
+                                    <button class="input-group-text" data-toggle="modal" data-target="#MailList" OnClick="List(2)" data-ActiveList="#CCEmail" >
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom:2px">
+                        <div class="col-sm-12">
+                            <textarea rows="2" id="MailBody" name="MailBody" style="display: none;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-outline-success" onclick="SendMail()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MailList.modal -->
+    <div id="MailList" class="modal fade">
+        <div class="modal-dialog ">
+            <div class="modal-content p-0">
+                <div class="modal-header bg-gradient-olive">
+                    <div class="btn-group btn-group-toggle col-sm-8" data-toggle="buttons">
+                        <label class="btn btn-success EmailListType active btn-xs" onclick="ChoseListType(1)">
+                            <input type="radio" name="options" id="option1" autocomplete="off" checked> Employee
+                        </label>
+                        <label class="btn btn-success btn-xs" onclick="ChoseListType(2)">
+                            <input type="radio" name="options" id="option2" autocomplete="off" > Contact
+                        </label>
+                        <label class="btn btn-success btn-xs" onclick="ChoseListType(3)">
+                            <input type="radio" name="options" id="option3" autocomplete="off" > Supplier
+                        </label>
+                    </div>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">  
+                    <div id="EmailList"></div>
+                </div> 
+            </div>
+        </div>
+    </div>
+    <script>
+
+    var Classes = [
+        { Name: "Primary", Class: "primary", TextClass:"navbar-dark" ,id: 1 },
+        { Name: "Secondary", Class: "secondary", TextClass: "navbar-dark", id: 2 },
+        { Name: "Success", Class: "success", TextClass: "navbar-dark", id: 3 },
+        { Name: "Danger", Class: "danger", TextClass: "navbar-dark", id: 4 },
+        { Name: "Warning", Class: "warning", TextClass: "navbar-light", id: 5 },
+        { Name: "Info", Class: "info", TextClass: "navbar-dark", id: 6 },
+        { Name: "Blue", Class: "blue", TextClass: "navbar-dark", id: 7 },
+        { Name: "Indigo", Class: "indigo", TextClass: "navbar-dark", id: 10 },
+        { Name: "Purple", Class: "purple", TextClass: "navbar-dark", id: 11 },
+        { Name: "Pink", Class: "pink", TextClass: "navbar-dark", id: 11 },
+        { Name: "Red", Class: "red", TextClass: "navbar-dark", id: 12 },
+        { Name: "Orange", Class: "orange", TextClass: "navbar-dark", id: 13 },
+        { Name: "Yellow", Class: "yellow", TextClass: "navbar-light", id: 13 },
+        { Name: "Green", Class: "green", TextClass: "navbar-dark", id: 14 },
+        { Name: "Teal", Class: "teal", TextClass: "navbar-dark", id: 15 },
+        { Name: "Cyan", Class: "cyan", TextClass: "navbar-dark", id: 16 },
+        { Name: "White", Class: "white", TextClass: "navbar-light", id: 17 },
+        { Name: "Gray", Class: "gray", TextClass: "navbar-dark", id: 18 },
+        { Name: "Gray-Dark", Class: "gray-dark", TextClass: "navbar-dark", id: 19 }
+    ];
+
+    var ActivePage = "@ViewBag.ActiveMenu";
+    var MenuOpen = "@ViewBag.MenuOpen";
+    var ActiveTxt = null;
+    var ActiveTheme = "dark";
+    var ActiveThemeType = "navbar";
+
+
+    $(document).ready(function ()
+    {
+            $('nav .nav-link').removeClass("active");
+            $("#" + ActivePage + " .nav-link").addClass("active");
+            if (MenuOpen != "") {
+                $("#" + MenuOpen).addClass("menu-open");
+                $(".menu-open .nav-link:first").addClass("active");
+                if (MenuOpen == "Genaral") {
+                    $("#Administrator").addClass("menu-open");
+                    $("#Administrator .nav-link:first").addClass("active");
+                }
+            }
+            var sessionTimeoutWarning = @Session.Timeout- 3;
+
+            var sTimeout = parseInt(sessionTimeoutWarning) * 60 * 1000;
+            setTimeout('SessionEnd()', sTimeout);
+
+            FillTemplateDrop();
+            LoadParameters(function ()
+            {
+                LoadUserInfo(function ()
+                {
+                    var UserInfo = JSON.parse(localStorage.getItem('UserInfo'));
+                    var DefaultProfileImg = GetParamVal("NO_PICTURE_IMG",2);
+
+                    var base64String = IsUndefinedOrNullOrEmpty(UserInfo.EMP_IMG) ? btoa(String.fromCharCode.apply(null, new Uint8Array(DefaultProfileImg)))
+                                        : btoa(String.fromCharCode.apply(null, new Uint8Array(UserInfo.EMP_IMG)));
+                    var src = "data:image/GIF;base64," + base64String + "";
+
+                    $(".UserImage").attr("src", src);
+                    $(".UserName").html(UserInfo.EMP_NAME);
+                    $(".UserTitle").html(UserInfo.EMP_TITLE);
+
+                    if (IsUndefinedOrNullOrEmpty(UserInfo.NAVBAR_CLASS) == false)
+                    {
+
+                        ChangeTheme0(UserInfo.NAVBAR_CLASS);
+                    }
+
+                    CreateEmailListGrid(1);
+                    $('#MailBody').summernote(
+                        {
+                            focus: true,
+                            placeholder: 'Mail Body',
+                            tabsize: 2,
+                            height: 100
+                        }
+                    );
+
+                    var IsAdmin = false;
+                    var ParamVal = "";
+                    ParamVal = GetParamVal("EMP_OPERATION_AUT_ROLES", 3);
+                    IsAdmin = IsUndefinedOrNullOrEmpty(ParamVal) ? false : (ParamVal.indexOf(UserInfo.EMP_ROLE) < 0 ? false : true);
+                    if (!IsAdmin)
+                        $(".CopyAll").hide();
+                });
+            });
+
+            UserMenuAuth(false,function (data)
+            {
+                if (IsUndefinedOrNullOrEmpty(data) == false)
+                {
+                    SetMenusState(data);
+                }
+            });
+
+
+        FixSelectPicker();
+
+    });
+
+
+    function FillTemplateDrop() {
+            for (var i = 0; i < Classes.length; i++) {
+                var option = $('<option></option>').attr("value", Classes[i].id).text(Classes[i].Name);
+
+                var dataContent = "<span><i class='fas fa-circle text-" + Classes[i].Class + "'></i> " + Classes[i].Name + "</span>";
+                option.attr("data-content", dataContent);
+                $("#changeTheme").append(option);
+            }
+
+            FixSelectPicker();
+        }
+
+        $("#changeTheme").change(function () {
+
+            var ParentElement = ActiveThemeType.indexOf("sidebar") >= 0 ? "main-sidebar" : (ActiveThemeType.indexOf("brand") >= 0 ? "brand-link" : "main-header");
+            var ActiveThemeType0 = ActiveThemeType.indexOf("brand") >= 0 ? "navbar" : (ActiveThemeType.indexOf("sidebar") >= 0 ? "sidebar-" + ActiveTheme :   ActiveThemeType);
+
+            var ParentElement = ActiveThemeType.indexOf("sidebar") >= 0 ? "main-sidebar" : (ActiveThemeType.indexOf("brand") >= 0 ? "brand-link" : "main-header");
+
+            var newclass = "";
+            for (var i = 0; i < Classes.length; i++) {
+
+                if ($("#changeTheme").val() == Classes[i].id) {
+                    newclass = ActiveThemeType0+"-" + Classes[i].Class;
+                }
+            }
+
+            var bfind = false;
+            for (var i = 0; i < Classes.length; i++)
+            {
+                var oldclass = ActiveThemeType0 + "-" + Classes[i].Class;
+
+                if ($("." + ParentElement).hasClass(oldclass))
+                {
+                    //$("." + ParentElement).removeClass(oldclass).addClass(newclass);
+                    UpdateUserTemplate(ParentElement,oldclass, newclass);
+
+                    if (ParentElement != "main-header")
+                    {
+                        var themeClass = "navbar-light navbar-dark";
+                        $("." + ParentElement).removeClass(themeClass).addClass(Classes[i].TextClass);
+                    }
+
+                    bfind = true;
+                    break;
+                }
+            }
+
+            if (bfind == false && ActiveThemeType0.indexOf("sidebar") >= 0)
+            {
+                var reverseAc = ActiveTheme.indexOf("light") >= 0 ? "sidebar-dark" : "sidebar-light";
+
+                for (var i = 0; i < Classes.length; i++)
+                {
+                    var oldclass = reverseAc + "-" + Classes[i].Class;
+
+                    if ($("." + ParentElement).hasClass(oldclass)) {
+
+                        UpdateUserTemplate(ParentElement, oldclass, newclass);
+                        break;
+                    }
+                }
+            }
+    });
+
+    function UpdateUserTemplate(ParentElement,oldclass,navbarClass)
+    {
+        var param = {};
+        param.navbarClass = navbarClass;
+        param.Type = ParentElement.indexOf("main-sidebar") >= 0 ? 2 : (ParentElement.indexOf("brand-link") >= 0 ? 3 : 1);
+
+
+        $.ajax({
+            url: '@Url.Action("UpdateNavbarClass", "Employee")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                if (retdata.success) {
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                        toastr.success(retdata.Message);
+
+                    $("." + ParentElement).removeClass(oldclass).addClass(navbarClass);
+
+                    localStorage.removeItem('UserInfo');
+                    location.reload();
+                }
+                else
+                {
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+            }
+        });
+    }
+
+    function ChangeTheme0(newclass)
+    {
+        var Customize  = JSON.parse(newclass)
+
+        for (var y = 0; y < Customize.length; y++)
+        {
+            var RemoveClass = Customize[y].Type == 1 ? "navbar-white navbar-light" : (Customize[y].Type == 2 ? "sidebar-dark-primary" : "navbar-gray-dark");
+            var ParentElement = Customize[y].Type == 2 ? "main-sidebar" : (Customize[y].Type == 3 ?  "brand-link" : "main-header");
+            $("." + ParentElement).removeClass(RemoveClass).addClass(Customize[y].Class);
+
+            if (y == 0)
+            {
+                for (var i = 0; i < Classes.length; i++) {
+
+                    if (Customize[y].Class.indexOf("-"+Classes[i].Class) >= 0 )
+                        $("." + ParentElement).addClass(Classes[i].TextClass);
+                }
+            }
+        }
+    }
+
+    function CopyAll()
+    {
+        $.ajax({
+            url: '@Url.Action("CopyNavbarAll", "Employee")',
+            type: 'GET',            
+            success: function (retdata)
+            {
+                if (retdata)
+                {
+                    toastr.success("Operation successful");
+                }
+                else
+                {
+                    toastr.error("An error occurred");
+                }
+
+            }
+        });
+    }
+
+    function LoadParameters(callback) {
+
+            var parameters = localStorage.getItem('Parameters');
+            if (IsUndefinedOrNullOrEmpty(parameters) == true) {
+                $.ajax({
+                    url: '@Url.Action("GetParameterList", "AdminOperation")',
+                    type: 'GET',
+                    success: function (data) {
+                        if (IsUndefinedOrNullOrEmpty(data) == false) {
+                            localStorage.setItem('Parameters', JSON.stringify(data.Getlist));
+                            callback();
+                        }
+                    }
+                });
+            }
+            else
+                callback();
+        }
+
+        function LoadUserInfo(callback)
+        {
+            var UserInfo = localStorage.getItem('UserInfo');
+            if (IsUndefinedOrNullOrEmpty(UserInfo) == true) {
+                $.ajax({
+                    url: '@Url.Action("GetLoginUserInfo", "Login")',
+                    type: 'GET',
+                    success: function (data) {
+                        if (IsUndefinedOrNullOrEmpty(data) == false) {
+                            localStorage.setItem('UserInfo', JSON.stringify(data.GetUser));
+
+                            callback();
+                        }
+                    }
+                });
+            }
+            else
+                callback();
+        }
+
+        function ToogleSideMenu()
+        {
+            $('[data-widget="pushmenu"]').PushMenu('toggle');
+        }
+
+        function UserMenuAuth(IsReset,callback)
+        {
+            var menuRoles = localStorage.getItem('MenuRoles');
+            if (IsUndefinedOrNullOrEmpty(menuRoles) == true || IsReset)
+            {
+                $.ajax({
+                    url: '@Url.Action("GetLoginEmpRolesMenus", "AdminOperation")',
+                    type: 'GET',
+                    success: function (data) {
+                        if (IsUndefinedOrNullOrEmpty(data) == false) {
+                            localStorage.setItem('MenuRoles', JSON.stringify(data));
+                            callback(JSON.stringify(data));
+                        }
+                    }
+                });
+            }
+            else
+            {
+                callback(menuRoles);
+            }
+        }
+
+        function MenuReset()
+        {
+            UserMenuAuth(true, function (data)
+            {
+                if (IsUndefinedOrNullOrEmpty(data) == false)
+                {
+                    SetMenusState(data);
+                }
+            });
+        }
+
+        function SetMenusState(data)
+        {
+            var objParam = JSON.parse(data);
+            if (IsUndefinedOrNullOrEmpty(objParam.Getlist[0].MENUS_STR) == false)
+            {
+                var menuStr = JSON.parse(objParam.Getlist[0].MENUS_STR);
+
+                for (var i = 0; i < menuStr.length; i++)
+                {
+                    var cntrl = $("#" + menuStr[i].name + "");
+                    if (menuStr[i].state)
+                    {
+                        cntrl.show();
+                    }
+                    else
+                    {
+                        cntrl.hide();
+                    }
+                }
+            }
+        }
+
+        function SessionEnd()
+        {
+            toastr.warning('Your session has expired. Please re-enter your password');
+            window.location = "@Url.Action("LockedUser", "Login")";
+        }
+
+
+        function LogOut()
+        {
+            localStorage.clear();
+            window.location.href = "@Url.Action("LogOut", "Login")";
+        }
+
+        function SendMail()
+        {
+            var data = {};
+            data.SenderMail = $('#ToEmail').val();
+            if (data.SenderMail == "")
+            {
+                toastr.error('Sender Mail Empty');
+                return;
+            }
+
+            data.Subject = $('#Subject').val();
+            if (data.Subject == "") {
+                toastr.error('Subject Mail Empty');
+                return;
+            }
+
+            data.Body = $('#MailBody').summernote('code').replace(/</gi, "&lt;").replace(/>/gi, "&gt;");
+            if (data.Subject == "") {
+                toastr.error('Body Mail Empty');
+                return;
+            }
+
+            data.CCMail = $('#CCEmail').val();
+
+            $.ajax({
+                url: '@Url.Action("SendEmail", "Employee")',
+                type: 'POST',
+                data : $.param(data),
+                success: function (data) {
+                    if (IsUndefinedOrNullOrEmpty(data) == false)
+                    {
+
+                    }
+                }
+            });
+        }
+
+        function CreateEmailListGrid(Type)
+        {
+           var param = {};
+            param.TypeID = Type;
+           var Options = {};
+            Options.Name = $("#EmailList");
+            Options.Url = '@Url.Action("GetAllEmailAdress", "Employee")';
+            Options.Data = [];
+            Options.LoadParam = param;
+            Options.Width = "200px";
+            Options.Fields = [
+                { name: "EMAIL", title: "Email", type: "text", width: 100 },
+                { name: "NAME", title: "Name", type: "text", width: 100 },
+                {
+                    type: "control",
+                    modeSwitchButton: false,
+                    editButton: false,
+                    width: 60,
+
+                    itemTemplate: function (_, item) {
+
+                        var $editButton = $("<a>").attr("type", "button").addClass("btn btn-xs btn-outline-success")
+                            .html('<i class="fas fa-check-circle"></i>')
+                            .attr("data-dismiss", "modal")
+                            .click(function ()
+                            {
+                                $(ActiveTxt).val(item.EMAIL);
+                            });
+
+                        return $("<div class='btn-toolbox'>").append($editButton)
+                    }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+                retGrid.Grid.jsGrid("option", "editing", false);
+            });
+        }
+
+        function List(Type) {
+
+            ActiveTxt = Type == 1 ? $("#ToEmail") : $("#CCEmail");
+        };
+
+        function ChoseListType(Type)
+        {
+            $('.EmailListType input[name="options"]').prop("checked", false);
+            $('.EmailListType #option' + Type).prop("checked", true);
+            CreateEmailListGrid(Type);
+        }
+
+    $(document).on('shown.lte.pushmenu', function (e) {
+        $(".UserImage").css("width", "4.1rem");
+    });
+
+    $(document).on('collapsed.lte.pushmenu', function (e) {
+        $(".UserImage").css("width", "2.1rem");
+    });
+
+    $(".Theme .btn-secondary").click(function() {
+
+        $("input[name='Theme']").prop("cheked", false);
+        var id = $(this).data("id");
+        $("input[name='Theme']:eq(" + id + ")").prop("cheked", true);
+        ActiveTheme = $("input[name='Theme']:eq(" + id + ")").attr("id");
+    });
+
+    $(".ThemeType .btn-secondary").click(function () {
+
+        $("input[name='ThemeType']").prop("cheked", false);
+        var id = $(this).data("id");
+        $("input[name='ThemeType']:eq(" + id + ")").prop("cheked", true);
+        ActiveThemeType = $("input[name='ThemeType']:eq(" + id + ")").attr("id");
+    });
+
+
+
+    </script>
+</body>
+
+</html>

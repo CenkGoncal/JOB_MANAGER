@@ -1,0 +1,212 @@
+﻿
+@{
+    ViewBag.Title = "Client Status";
+    ViewBag.ActiveMenu = "ClientStatus";
+    ViewBag.MenuOpen = "Genaral";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">    
+
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="fas fa-ellipsis-h"></i> General
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Client Status</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body active spinner StatusGrid">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="main">
+    var t1;
+
+    var Classes = [
+        { Name: "Primary", Class: "alert-primary", id: 1 },
+        { Name: "Secondary", Class: "alert-secondary", id: 2 },
+        { Name: "Success", Class: "alert-success", id: 3 },
+        { Name: "Danger", Class: "alert-danger", id: 4 },
+        { Name: "Warning", Class: "alert-warning", id: 5 },
+        { Name: "Info", Class: "alert-info", id: 6 },
+        { Name: "Light", Class: "alert-light", id: 7 },
+        { Name: "Dark", Class: "alert-dark", id: 8 }
+    ];
+
+
+   $(document).ready(function () {
+
+        InitGrids();
+
+    });
+
+    function InitGrids() {
+
+        CreateHtmlJsGrid("Status", function (retHtml) {
+
+            $(".StatusGrid").html(retHtml);
+
+            var param = {};
+            param.StatusType = 4;
+
+            var Options = {};
+            Options.Name = $("#TableStatus");
+            Options.Url = '@Url.Action("GetStatusList", "AdminOperation")';
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "STATUS_NAME", title: "Status", type: "text", width: "150", validate: "required" },
+                {
+                    align: "center", name: "DISPLAY_CLASS", title: "Display Class", type: "select", items: Classes, valueField: "Class", textField: "Name", width: "50",
+                    itemTemplate: function (_, item) {
+
+                        if (IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) == false) {
+                            var cssClass = item.DISPLAY_CLASS.replace("alert-", "");
+                            var Upper = cssClass.charAt(0).toUpperCase() + cssClass.slice(1);
+
+                            return $("<div class='alert " + item.DISPLAY_CLASS + " role='alert' style='font-size: small'>").html(Upper);
+                        }
+                    }
+                },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                     type: "control", modeSwitchButton: false, width: "50", align: "center",
+                     itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip' style='font-size: large;'  title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+                t1 = retGrid.Grid;           
+            });
+
+        });
+    }
+
+    function OnAddNewItem(args, type)
+    {
+        showHideLoader(true);
+
+        args.item.STATUS_ID = args.item.STATUS_ID == null ? -1 : args.item.STATUS_ID;
+        args.item.STATUS_TYPE = 4;
+
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateStatus", "AdminOperation")',
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    t1.jsGrid("loadData");
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+            }
+
+        });
+    }
+
+    function OnDeleteITem(args, type)
+    {
+        showHideLoader(true);
+
+        $.ajax({
+            url: '@Url.Action("RemoveStatus", "AdminOperation")',
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                showHideLoader(false);
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    if (retdata.success)
+                    {
+                        RefreshGrid(null)    
+                    }
+                    else
+                    {
+                        toastr.error(retdata.Message);
+                    }                    
+                }                
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+            }
+        });
+    }
+
+
+    function AddGrid(obj)
+    {
+        $(obj.children).toggleClass('active')
+        t1.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+
+    function SearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active')
+        t1.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+
+    function ChangeGrid(obj)
+    {
+        var size = parseInt(obj.value, 10);
+        t1.jsGrid("option", "pageSize", size);
+    };
+
+    function RefreshGrid(obj) {
+
+        t1.jsGrid("loadData");
+    }
+
+
+</script>

@@ -1,0 +1,585 @@
+﻿@model JOB_MANAGER.Models.QuonteDto
+@{
+    if ((int)ViewBag.Layout == 0)
+    {
+        Layout = null;
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<style>
+    .adress td {
+        width: 60%;
+    }
+
+    .adress th {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    
+</style>
+
+<div id="card">
+    <div class="card bg-gradient-olive" id="ViewQuonte">
+        <div class="card-header">
+            <h3 class="card-title">
+                <label><i class='fas fa-eye'></i> Contract With <b>@Model.CLIENT_NAME ( @Model.QUOTE_NAME )</b></label>
+                <button type='button' class='btn btn-info' onclick='EditOrViewQuote(true)'><i class='fas fa-edit'></i> Edit</button>
+            </h3>
+            <div class="card-tools">
+                <label class="CreateInf"><i class='far fa-clock'></i> Created @Model.CREATION_DATE_STR ,Updated @Model.MODIFIED_DATE_STR</label>
+                <button type="button" class="btn btn-tool" title="Expand" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" title="Maximaze" OnClick="ScaleProfile('#ViewQuonte')">
+                    <i class="fas fa-compress"></i>
+                </button>
+                @if ((int)ViewBag.Layout == 0)
+                {
+                    <button type="button" class="btn btn-tool" title="Close" OnClick="RemoveViewQuonte()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                }
+            </div>
+        </div>
+        <div class="card-body bg-light">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="card card-success card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Details</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="row">
+                                <div class="col-sm-6 table-responsive p-0">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th><strong><i class="fas fa-map-marker-alt"></i> Status:</strong></th>
+                                                <td class="STATUS_NAME alert" style="background-color:@Model.DISPLAY_CLASS">@Model.STATE_NAME</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-list"></i> Type:</strong></th>
+                                                <td class="PROJECT_TYPE_NAME">@Model.PROJECT_TYPE_NAME</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-square"></i> Amount:</strong></th>
+                                                <td class="QUOTE_AMOUNT">@Model.QUOTE_AMOUNT</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-envelope"></i> Client:</strong></th>
+                                                <td class="CLIENT_NAME">@Model.CLIENT_NAME</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-square"></i> Cabinents:</strong></th>
+                                                <td class="CABINETS_NBR">@Model.CABINETS_NBR</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-6 table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th><strong><i class="fas fa-toolbox"></i> Material:</strong></th>
+                                                <td class="MATERIAL_NAME">@Model.MATERIAL_NAME</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-square"></i> Floor:</strong></th>
+                                                <td class="FLOOR_TYPE_NAME">@Model.FLOOR_TYPE_NAME</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-check"></i> Display:</strong></th>
+                                                <td class="DISPLAY">
+                                                    @{
+                                                        if (Model.DISPLAY)
+                                                        {
+                                                            <i class='far fa-check-square'></i>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-calendar" "></i> İnitiation Date:</strong></th>
+                                                <td class="QUOTE_START_DATE">@Model.QUOTE_START_DATE</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong><i class="fas fa-calendar"></i> Expriy Date:</strong></th>
+                                                <td class="QUOTE_EXPIRY_DATE">@Model.QUOTE_EXPIRY_DATE</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 p-1">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item active">
+                                        <a href="#Notes" class="nav-link active show" role="tab" data-toggle="pill" aria-controls="Notes" aria-selected="true">
+                                            <i class="fas fa-sticky-note"></i> Notes
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#Files"class="nav-link" role="tab" data-toggle="pill" aria-controls="Files" aria-selected="false">
+                                            <i class="fas fa-file-upload"></i> Files
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content spinercontrolTab">
+                                    <div class="tab-pane card  fade show active"  role="tabpanel" id="Notes">
+                                        <div class="card-body active spinner TableNotes">
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="Files" role="tabpanel">
+                                        <div class="card-body row">
+                                            <div class="col-sm-12 col-xs-12" style="overflow:scroll">
+                                                <input type="file" style="visibility:hidden" name="FILE" id="FILE" />
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="FILE_DESC" name="FILE_DESC" placeholder="Description" />
+                                                    <div class="btn-group">
+                                                        <select class="selectpicker" id="FileType" data-container="body" data-width="fit">
+                                                            <option data-icon="fa-heart">Ketchup</option>
+                                                        </select>
+                                                        <button class="btn btn-success btn-sm " onclick="$('#FILE').click();"><i class="fas fa-plus-circle"></i> Add New File</button>
+                                                    </div>
+                                                </div>                                               
+                                                <div class="col-sm-12 col-xs-12 active spinner TableFiles">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 table-responsive">
+                    <div class="card card-success card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Contacts</h3>
+                        </div>
+                        <div class="card-body  p-1">
+                            <table class="table adress">
+                                <tbody>
+                                    <tr>
+                                        <th><strong><i class="fas fa-square"></i> Lot.#:</strong></th>
+                                        <td class="ADR_LOT_NBR">@Model.ADR_LOT_NBR</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-square"></i> Unit.#:</strong></th>
+                                        <td class="ADR_UNIT_NBR">@Model.ADR_UNIT_NBR</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-square"></i> Street.#:</strong></th>
+                                        <td class="ADR_STREET_NBR">@Model.ADR_STREET_NBR</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fa fa-street-view"></i> Suffix:</strong></th>
+                                        <td class="STREET_NAME">@Model.STREET_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fa fa-street-view"></i> Street:</strong></th>
+                                        <td class="ADR_STREET_NAME">@Model.ADR_STREET_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-map-marked-alt"></i> Address:</strong></th>
+                                        <td class="QUOTE_ADDRESS">@Model.QUOTE_ADDRESS</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-envelope"></i> P/Code:</strong></th>
+                                        <td class="QUOTE_POSTAL_CODE">@Model.QUOTE_POSTAL_CODE</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fas fa-city"></i> City:</strong></th>
+                                        <td class="CITY_NAME">@Model.CITY_NAME</td>
+                                    </tr>
+                                    <tr>
+                                        <th><strong><i class="fa fa-road"></i> State:</strong></th>
+                                        <td class="STATE_NAME">@Model.STATE_NAME</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var NoteTable = null;
+    var FileTable = null;
+    var QuonteID = @Model.QUOTE_ID;
+    $(document).ready(function ()
+    {
+        var textColor = lightOrDark($(".STATUS_NAME").css("background-color"));
+        $(".STATUS_NAME").css("color", textColor);
+
+
+        CreateLoader($('.spinercontrolTab'), true);
+        CreateNotesGrid(function () {
+            LoadFileTypes(function () {
+                CreateFileGrid(function () {
+                    CreateLoader($('.spinercontrolTab'), false);
+                    //$('.nav-tabs a[href="#Files"]').tab('show');
+                });
+            });
+        });
+    });
+
+    function CreateNotesGrid(callback)
+    {
+        var param = {};
+        param.Type = 5;
+
+        $.ajax({
+            url: '@Url.Action("GetQuoteAndJobList", "AdminOperation")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    CreateHtmlJsGrid("Notes CreateOwnFunction", function (retHtml) {
+                        $(".TableNotes").html(retHtml);
+
+                        retdata.Getlist.push({ NOTE_TYPE_ID: 0, NOTE_TYPE_NAME: "", IS_CANCELED : false });
+
+                        let List = retdata.Getlist.filter(list => list.IS_CANCELED == false);
+
+                        var param = {};
+                        param.QuanteID = QuonteID;
+
+                        var Options = {};
+                        Options.Name = $("#TableNotes");
+                        Options.Url = '@Url.Action("GetQuoteNoteList", "Quote")';
+                        Options.Data = [];
+                        Options.LoadParam = param;
+                        Options.Width = "200px";
+                        Options.Fields = [
+                            { name: "NOTE_DESC", title: "Note.#", type: "text", width: 80 },
+                            { name: "NOTE_SUBJECT", title: "Subject", type: "text", width: 150 },
+                            { name: "NOTE_TYPE_ID", title: "Note Type", type: "select", items: List, valueField: "NOTE_TYPE_ID", textField: "NOTE_TYPE_NAME", width: 80 },
+                            {
+                                type: "control", modeSwitchButton: false, width: "50", align: "center",
+                                itemTemplate: function (_, item) {
+
+                                    var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                                    var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                                    var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                                    var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                                    var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                                    return $result.add(element);
+                                }
+                            }
+                        ]
+
+                        CreateJsGrid(Options, function (retGrid)
+                        {
+                            NoteTable = retGrid.Grid;
+
+                            callback();
+                        });
+
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                callback();
+            }
+        });
+    }
+
+    function NotesAddGrid(obj) 
+    {   
+        $(obj.children).toggleClass('active');
+        NoteTable.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    }
+
+    function NotesSearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active');
+        NoteTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    }
+
+    function NotesRefreshGrid(obj)
+    {
+        NoteTable.jsGrid("loadData");
+    }
+
+    function ChangeGrid(obj)
+    {
+        var size = parseInt(obj.value, 10);
+        NoteTable.jsGrid("option", "pageSize", size);
+    }
+
+    function OnAddNewItem(args)
+    {
+        var _url;
+
+        var Active = $('.nav-tabs li.active a').attr("href");
+        if (Active == "#Notes") {
+            args.item.NOTE_ID = args.item.NOTE_ID == null ? -1 : args.item.NOTE_ID;
+            args.item.UNIQ_ID = QuonteID;
+            args.item.NOTE_KIND_ID = 1;
+            _url = '@Url.Action("AddOrUpdateNote", "Quote")';
+        }
+        else
+        {
+            args.item.UNIQ_ID = QuonteID;
+            _url = '@Url.Action("UpdateDocInf", "Quote")';
+        }
+        CreateLoader($('.spinercontrolTab'), true);
+         $.ajax({
+            url: _url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    FileTable.jsGrid("loadData");
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        toastr.success(retdata.Message);
+                    }
+                }
+                else {
+                    toastr.error(retdata.Message);
+                }
+
+                CreateLoader($('.spinercontrolTab'), false);
+             },
+             error: function (xhr, status, error) {
+                 toastr.error(xhr.responseText, "Error!");
+                 CreateLoader($('.spinercontrolTab'), false);
+             }
+
+        });
+    }
+
+    function OnDeleteITem(args)
+    {
+        CreateLoader($('.spinercontrol'), true);
+
+            var _url;
+            var Active = $('.nav-tabs li.active a').attr("href");
+            if (Active == "#Notes") {
+                _url = '@Url.Action("RemoveNote", "Quote")';
+            }
+            else
+            {
+                _url = '@Url.Action("RemoveDocument", "Quote")';
+            }
+
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: JSON.stringify(args.item),
+                contentType: "application/json; charset=utf-8",
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success)
+                    {
+                        FileTable.jsGrid("loadData");
+                        if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                        {
+                            toastr.success(retdata.Message);
+                        }
+                    }
+                    else
+                    {
+                        toastr.error(retdata.Message);
+                    }
+
+                    CreateLoader($('.spinercontrol'), false);
+                },
+                error: function (xhr, status, error) {
+                    toastr.error(xhr.responseText, "Error!");
+                    CreateLoader($('.spinercontrolTab'), false);
+                }
+            });
+    }
+
+    function LoadFileTypes(callback)
+    {
+         var param = {};
+         param.Type = 6;
+
+        $.ajax({
+            url: '@Url.Action("GetQuoteAndJobList", "AdminOperation")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata) {
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    let List = retdata.Getlist.filter(list => list.IS_CANCELED == false);
+
+                    $("#FileType").find('option').remove();
+                    $('#FileType').selectpicker('refresh');
+                    if (IsUndefinedOrNullOrEmpty(List) == false && List.length > 0) {
+                        var DocList = List;
+                        for (var i = 0; i < DocList.length; i++)
+                        {
+                            if (DocList[i].IS_CANCELED)
+                                continue;
+
+                            var option = $('<option></option>').attr("value", DocList[i].DOCUMENT_TYPE_ID).attr("alt", DocList[i].DOCUMENT_EXTENSION).attr("data-icon", DocList[i].FONT_AWESOME_ICON).text(DocList[i].DOCUMENT_TYPE_NAME);
+                            $("#FileType").append(option);
+                        }
+
+                        $('#FileType').selectpicker('refresh');
+                    }
+
+                    callback();
+                }
+                else
+                    callback();
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                callback();
+            }
+        });
+    }
+
+    function CreateFileGrid(callback)
+    {
+        CreateHtmlJsGrid("Files ToolBarFalse", function (retHtml)
+        {
+            $(".TableFiles").html(retHtml);
+
+            var param = {};
+            param.QuanteID = QuonteID;
+
+            var Options = {};
+            Options.Name = $("#TableFiles");
+            Options.Url = '@Url.Action("GetQuoteFileList", "Quote")';
+            Options.Data = [];
+            Options.LoadParam = param;
+            Options.Width = "200px"
+            Options.Fields = [
+                {
+                    name: "DOC_NAME", title: "Name", type: "text", width: 80,
+                    itemTemplate: function (_, item)
+                    {
+
+                        var element = "<i class='" + item.FONT_AWESOME_ICON + "'></i>";
+
+                        return $("<span>").html(element + " " + item.DOC_NAME);
+                    }
+                },
+                { name: "DOC_DESC", title: "Desc.", type: "text", width: 150 },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    editButton: false,
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var $customEditButton = $("<i>").attr("class", "fas fa-external-link-alt text-cyan mx-2").attr("title", "Open")
+                            .click(function (e) {
+                                var param = {};
+                                param.folderPath = item.DOC_PATH;
+                                $.ajax({
+                                    url: '@Url.Action("OpenFolder", "Quote")',
+                                    type: 'GET',
+                                    data: $.param(param),
+                                    success: function (retdata)
+                                    {
+
+                                    }
+                                });
+                                e.stopPropagation();
+                            });
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add($customEditButton).add(element);
+                    }
+                }
+                ]
+
+                CreateJsGrid(Options, function (retGrid)
+                {
+                    FileTable = retGrid.Grid;
+                    callback();
+                });
+
+            });
+    }
+
+    $('input[type="file"]').change(function(e){
+
+         var file = e.target.files[0];
+         if (file != null)
+         {
+
+             var FileType = $('#FileType option:selected').attr("alt");
+             var addfileType = file.name.substring(file.name.indexOf(".") + 1, file.name.length);
+
+             if (FileType.indexOf(addfileType) < 0)
+             {
+                 toastr.error("File Type missmacting.Please select correct type in file types combo", "Error was found");
+                 $('input[type="file"]').val("");
+                 return;
+             }
+
+             if (IsUndefinedOrNullOrEmpty($("#FILE_DESC").val()) == true)
+             {
+                 toastr.error("File Description is requried", "Error was found");
+                 $('input[type="file"]').val("");
+                 return;
+             }
+             var request = new FormData();
+             request.append("QuoteID", QuonteID);
+             request.append("File", file);
+             request.append("FileDesc", $("#FILE_DESC").val());
+             request.append("FileType", $("#FileType").val());
+
+             $.ajax({
+                    url: '@Url.Action("UpdateFile", "Quote")',
+                    type: 'POST',
+                    data: request,
+                    processData: false,
+                    contentType: false,
+                    success: function (data)
+                    {
+                        if (data.success == true)
+                        {
+                            toastr.success("File Updating", "Success");
+                            FileTable.jsGrid("loadData");
+                        }
+                        else
+                        {
+                            toastr.error(data.message, "Error was found");
+                        }
+
+                        $('input[type="file"]').val("");
+                 },
+                 error: function (xhr, status, error) {
+                     toastr.error(xhr.responseText, "Error!");
+                 }
+             });
+         }
+         else
+         {
+             toastr.error("No File found", "Warning");
+         }
+    });
+</script>

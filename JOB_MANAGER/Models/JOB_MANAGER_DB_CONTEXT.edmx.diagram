@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d2b88417836a48d1987b79822308c476" Name="Diagram1" ZoomLevel="43">
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.CONTRACT_TYPES" Width="1.5" PointX="0.5" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.DEPARTMENTS" Width="1.5" PointX="0.5" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.EMPLOYEES" Width="1.5" PointX="4" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.TITLES" Width="1.5" PointX="6.5" PointY="7.75" IsExpanded="true" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_EMP_CONTRACT_TYPES" ManuallyRouted="false" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_EMP_DEPARTMENTS" ManuallyRouted="false" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_EMP_TITLES" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.COUNTRIES" Width="1.5" PointX="8.375" PointY="0.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.STATES" Width="1.5" PointX="10.625" PointY="0.75" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_STATES_COUNTRIES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.CITIES" Width="1.5" PointX="12.875" PointY="0.75" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CITIES_COUNTRIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CITIES_STATES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.STREET" Width="1.5" PointX="9.375" PointY="5.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PARAMETERS" Width="1.5" PointX="9.375" PointY="9.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.COMPANY_TYPES" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.COMPANY" Width="1.5" PointX="15.125" PointY="4.25" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_COMPANY_CITIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_COMPANY_COMPANY_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_COMPANY_COUNTRIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_COMPANY_STATES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.VEHICLE_BODY_TYPES" Width="1.5" PointX="11.375" PointY="12.25" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.VEHICLE_MAKES" Width="1.5" PointX="11.375" PointY="16.25" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.VEHICLE_MODELS" Width="1.5" PointX="13.625" PointY="12" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLE_MODELS_VEHICLE_BODY_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLE_MODELS_VEHICLE_MAKES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.STATUS" Width="1.5" PointX="11.375" PointY="6" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_EMP_EMPLOYEE_STATUS1" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.VEHICLES" Width="1.5" PointX="17.875" PointY="8.125" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLES_EMPLOYEES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLES_STATUS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLES_VEHICLE_BODY_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLES_VEHICLE_MAKES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLES_MODEL" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_VEHICLES_VEHICLE_MODELS" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.SUPPLIERS" Width="1.5" PointX="18.125" PointY="1.375" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_SUPPLIERS_CITIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_SUPPLIERS_COUNTRIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_SUPPLIERS_STATES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_SUPPLIERS_STATUS" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.SUPERVISOR_AREAS" Width="1.5" PointX="15.125" PointY="0.75" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_SUPERVISOR_AREAS_CITIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_SUPERVISOR_AREAS_EMPLOYEES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.ROLE_MENU" Width="1.5" PointX="8.625" PointY="14.5" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.CLIENTS" Width="1.5" PointX="20.375" PointY="4.125" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CLIENTS_CITIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CLIENTS_COMPANY" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CLIENTS_COMPANY_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CLIENTS_COUNTRIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CLIENTS_STATES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CLIENTS_STATUS" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.CONTACTS" Width="1.5" PointX="20.375" PointY="0.75" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CONTACTS_COMPANY" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CONTACTS_STATUS" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.ROLES" Width="1.5" PointX="0.75" PointY="9.375" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_CONTACTS_ROLES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_EMP_ROLES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_MENU_ROLES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.FLOOR_TYPES" Width="1.5" PointX="5.75" PointY="11.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.MATERIALS" Width="1.5" PointX="0.75" PointY="13.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PROJECT_TYPES" Width="1.5" PointX="2.75" PointY="14.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.QUOTES" Width="1.5" PointX="22.625" PointY="4.75" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_CITIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_CLIENTS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_COMPANY" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_COUNTRIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_FLOOR_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_MATERIALS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_PROJECT_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_STATES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_QUOTES_STATUS" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.NOTE_TYPES" Width="1.5" PointX="22.625" PointY="1.125" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.NOTES" Width="1.5" PointX="24.875" PointY="3.125" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_NOTE_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_NOTES_QUOTES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.DOCUMENT_TYPES" Width="1.5" PointX="22.625" PointY="15" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.DOCUMENTS" Width="1.5" PointX="24.875" PointY="7.5" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_DOCUMENTS_DOCUMENT_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_DOCUMENTS_QUOTES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PROJECTS" Width="1.5" PointX="27.875" PointY="3.75" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_CITIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_CLIENTS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_COMPANY" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_CONTACTS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_COUNTRIES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_INSTALLER" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_SUPERVISOR" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_FLOOR_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_MATERIALS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_PROJECT_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_QUOTES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_STATES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_STATUS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECTS_STREET" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.DEF_PROJECT_PHASES" Width="1.5" PointX="16.625" PointY="15.5" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.DEF_TASKS" Width="1.5" PointX="18.875" PointY="15.375" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_DEF_PROJECT_PHASES_CORRESPONDANT_STATUS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_DEF_PROJECT_PHASES_PROJECT_TYPES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_DEF_TASKS_DEF_PROJECT_PHASES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_DEF_TASKS_PROJECT_TYPES" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PROJECT_MEMBERS" Width="1.5" PointX="30.125" PointY="6.375" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PROJECT_PHASES" Width="1.5" PointX="33.125" PointY="7.875" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PROJECT_TASK" Width="1.5" PointX="35.375" PointY="9.125" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_PHASES_DEF_PROJECT_PHASES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_TASK_DEF_TASKS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_MEMBERS_EMPLOYEES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_MEMBERS_EMPLOYEES1" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_PHASES_EMPLOYEES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_MEMBERS_PROJECT_PHASES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_MEMBERS_PROJECT_TASK" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_MEMBERS_PROJECTS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_PHASES_projects" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_PHASES_STATUS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_TASK_PROJECT_PHASES" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_TASK_PROJECTS" />
+        <AssociationConnector Association="JOB_MANAGER_DBModel.FK_PROJECT_TASK_STATUS" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.PROJECT_MEMBER_VIEW" Width="1.5" PointX="5.375" PointY="15.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.NOTE_VIEW" Width="1.5" PointX="13.375" PointY="17.125" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.DOC_VIEW" Width="1.5" PointX="7.375" PointY="18.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.JOB_CALENDAR_VIEW" Width="1.5" PointX="0.75" PointY="20" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.HOLIDAYS" Width="1.5" PointX="9.375" PointY="19.75" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.JOBSPHASESSUMMARY_VIEW" Width="1.5" PointX="3.375" PointY="20.875" />
+        <EntityTypeShape EntityType="JOB_MANAGER_DBModel.JOBSSUMMARY_VIEW" Width="1.5" PointX="15.375" PointY="20.875" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

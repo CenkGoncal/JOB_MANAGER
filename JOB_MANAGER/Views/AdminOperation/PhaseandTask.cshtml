@@ -1,0 +1,611 @@
+﻿
+@{
+    ViewBag.Title = "Phase&Task";
+    ViewBag.ActiveMenu = "PhaseandTask";
+    ViewBag.MenuOpen = "Administrator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>           
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Phase&Task</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div id="body-container" class="col-xs-12">
+        <div class="card card-success card-outline card-outline-tabs">
+            <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="ViewTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#Phases" data-toggle="pill" role="tab" aria-selected="true">
+                            <i class="fas fa-list"></i> Def.Phases
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Task" data-toggle="pill" role="tab" aria-selected="false" Onclick="Task()">
+                            <i class="fas fa-list"></i> Def.Task
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Status" data-toggle="pill" role="tab" aria-selected="false">
+                            <i class="fas fa-list"></i> Status
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-0">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="Phases" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button class="RefreshItem btn btn-info btn-sm float-sm-right" onClick="OperationGrid(this,1)" style="margin-right:5px">
+                                    <i class="fas fas fa-sync"></i> Refresh
+                                </button>
+                                <button class="addItem btn btn-success btn-sm float-sm-right" onClick="OperationGrid(this,2)" style="margin-right:5px">
+                                    <i class="fas fa-plus-circle"></i> Add New Item
+                                </button>
+                            </div>
+                            <div class="col-sm-12">
+                                <div id="TablePhases"></div>
+                            </div>                            
+                        </div>                        
+                    </div>
+                    <div class="tab-pane fade" id="Task" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <select class="selectpicker" id="ProjectType"></select>
+                                <button class="RefreshItem btn btn-info btn-sm float-sm-right" onClick="OperationGrid(this,1)" style="margin-right:5px">
+                                    <i class="fas fas fa-sync"></i> Refresh
+                                </button>
+                                <button class="addItem btn btn-success btn-sm float-sm-right" onClick="OperationGrid(this,2)" style="margin-right:5px">
+                                    <i class="fas fa-plus-circle"></i> Add New Item
+                                </button>
+                            </div>
+                            <div class="col-sm-12">
+                                <div id="TableTask"></div>
+                            </div>
+                        </div>                   
+                    </div>
+                    <div class="tab-pane fade" id="Status" role="tabpanel">
+                        <div class="card-body active spinner StatusGrid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="main">
+    var Classes = [
+        { Name: "Primary", Class: "primary", id: 1 },
+        { Name: "Secondary", Class: "secondary", id: 2 },
+        { Name: "Success", Class: "success", id: 3 },
+        { Name: "Danger", Class: "danger", id: 4 },
+        { Name: "Warning", Class: "warning", id: 5 },
+        { Name: "Info", Class: "info", id: 6 },
+        { Name: "Light", Class: "light", id: 7 },
+        { Name: "Dark", Class: "dark", id: 8 },
+        { Name: "Blue", Class: "blue", id: 9 },
+        { Name: "Indigo", Class: "indigo", id: 10 },
+        { Name: "Purple", Class: "purple", id: 11 },
+        { Name: "Pink", Class: "pink", id: 11 },
+        { Name: "Red", Class: "red", id: 12 },
+        { Name: "Orange", Class: "orange", id: 13 },
+        { Name: "Yellow", Class: "yellow", id: 13 },
+        { Name: "Green", Class: "green", id: 14 },
+        { Name: "Teal", Class: "teal", id: 15 },
+        { Name: "Cyan", Class: "cyan", id: 16 },
+        { Name: "White", Class: "white", id: 17 },
+        { Name: "Gray", Class: "gray", id: 18 },
+        { Name: "Gray", Class: "gray-dark", id: 19 },
+        { Name: "Custom", Class: "custom", id: 19 },
+    ];
+     
+    var ActivePhase = {};
+    ActivePhase.Grid = null;
+    ActivePhase.ProjectTypeID = 0;
+
+    var ActiveTask = {};
+    ActiveTask.Grid = null;
+    ActiveTask.TaskID = 0;
+
+    var StatusGrid = null;
+
+    $(document).ready(function () {
+
+         $.ajax({
+            url: '@Url.Action("DefPhasesTask", "AdminOperation")',
+            type: 'GET',
+            success: function (retdata)
+            {
+                InitPhases(retdata);
+            }
+         });
+
+        InitStatus();
+    });
+
+    function InitStatus()
+    {
+         CreateHtmlJsGrid("Status", function (retHtml) {
+
+            $(".StatusGrid").html(retHtml);
+
+            var param = {};
+            param.StatusType = 7;
+
+            var Options = {};
+            Options.Name = $("#TableStatus");
+            Options.Url = '@Url.Action("GetStatusList", "AdminOperation")';
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "STATUS_NAME", title: "Status", type: "text", width: "150", validate: "required" },
+                {
+                    align: "center", name: "DISPLAY_CLASS", title: "Display Class", type: "select", items: Classes, valueField: "Class", textField: "Name", width: "50",
+                    itemTemplate: function (_, item) {
+
+                        if (IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) == false) {
+                            var cssClass = item.DISPLAY_CLASS.replace("alert-", "");
+                            var Upper = cssClass.charAt(0).toUpperCase() + cssClass.slice(1);
+
+                            return $("<div class='alert " + item.DISPLAY_CLASS + " role='alert' style='font-size: small'>").html(Upper);
+                        }
+                    }
+                },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                {
+                     type: "control", modeSwitchButton: false, width: "50", align: "center",
+                     itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+                StatusGrid = retGrid.Grid;
+            });
+
+        });
+    }
+
+    function Task()
+    {
+        $.ajax({
+            url: '@Url.Action("DefPhasesTask", "AdminOperation")',
+            type: 'GET',
+            success: function (retdata)
+            {
+                InitTask(retdata);                
+            }
+         });
+    }
+
+    function InitPhases(data)
+    {
+        data.ProjectStatus.push({ STATUS_ID: 0, STATUS_NAME: "" });
+
+        $("#ProjectType").find('option').remove();
+        $('#ProjectType').selectpicker('refresh');
+        if (IsUndefinedOrNullOrEmpty(data.Getlist) == false && data.Getlist.length > 0) {
+            var ProjecType = data.Getlist;
+            for (var i = 0; i < ProjecType.length; i++) {
+                var option = $('<option></option>').attr("value", ProjecType[i].PROJECT_TYPE_ID).text(ProjecType[i].PROJECT_TYPE_NAME);
+                if (i == 0)
+                    option.prop("selected", true);
+                $("#ProjectType").append(option);
+            }
+        }
+
+        $("#TablePhases").jsGrid({
+            height: 400,
+            width: "100%",
+
+            paging: true,
+            autoload: true,
+            //pageSize: 2,
+
+            controller: {
+                loadData: function () {
+                    return data.Getlist;
+                }
+            },
+
+            rowRenderer: function (item)
+            {
+                var $row = $("<tr>").addClass("card card-info card-outline");
+                var $cell = $("<td>").addClass("card-header col-sm-12 p-0");
+
+                var PhaseGrid = $("<div>").css("border","none").hide();
+
+
+                var Options = {};
+                Options.Name = PhaseGrid;//$("#TableProjectTypes");
+                Options.Url = "null";
+                Options.Width = "150px";
+                Options.Data = item.PHASE;
+                Options.Fields = [
+                    { name: "PHASE_NAME", title: "Phase", type: "text", width: "100", validate: "required" },
+                    { name: "PHASE_DESC", title: "Desciription", type: "text", width: "150", validate: "required" },                 
+                    {
+                        align: "center", name: "PHASE_COLOR", title: "Phase Class", type: "select", items: Classes, valueField: "Class", textField: "Name", width: "50",
+                        itemTemplate: function (_, item) {
+
+                            if (IsUndefinedOrNullOrEmpty(item.PHASE_COLOR) == false)
+                            {                             
+                                return $("<div class='badge bg-" + item.PHASE_COLOR+"' role='alert'>").html(item.PHASE_COLOR.toUpperCase());
+                            }
+                        }
+                    },
+                    {  
+                        align: "center", name: "WIDGET_COLOR", title: "Widget Class", type: "select", items: Classes, valueField: "Class", textField: "Name", width: "50",
+                        itemTemplate: function (_, item) {
+
+                            if (IsUndefinedOrNullOrEmpty(item.WIDGET_COLOR) == false) {                                
+                                return $("<div class='badge bg-" + item.WIDGET_COLOR + "' role='alert'>").html(item.WIDGET_COLOR.toUpperCase());                                
+                            }
+                        }
+                    },                 
+                    { name: "CORRESPONDANT_STATUS", title: "Corr.Status", type: "select", items: data.ProjectStatus, valueField: "STATUS_ID", textField: "STATUS_NAME", width: "100" },
+                    { name: "PHASE_ORDER", title: "Order", type: "number", width: "50", validate: "required" },
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                    {
+                        type: "control", modeSwitchButton: false, width: "75", align: "center",
+                        itemTemplate: function (_, item) {
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                    }
+                ];
+
+                CreateJsGrid(Options, function (retGrid) {
+                    PhaseGrid = retGrid.Grid;
+                    PhaseGrid.jsGrid("option", "data", Options.Data);
+                    PhaseGrid.jsGrid("sort", "PHASE_ORDER");
+
+                    var _ToogleGrid = function (id) {
+
+                        PhaseGrid.toggle();
+
+                        if (PhaseGrid.is(":visible") == false) {
+                            ActivePhase.Grid = null;
+                            ActivePhase.ProjectTypeID = 0;
+                            label.removeClass("fas fa-minus").addClass("fas fa-plus");
+                        }
+                        else {
+                            ActivePhase.Grid = PhaseGrid;
+                            ActivePhase.ProjectTypeID = id;
+                            label.removeClass("fas fa-plus").addClass("fas fa-minus");
+                            CreateTooltip();
+                        }
+                    }
+                    var label = $("<i>").attr("data-id", "" + item.PROJECT_TYPE_ID + "").css("font-size", "16px").addClass("fas fa-plus float-sm-right")
+                        .click(function () {
+                            var id = $(this).attr("data-id");
+                            _ToogleGrid(id);
+                        });
+
+                    var $link = $("<a>").attr("data-id", "" + item.PROJECT_TYPE_ID + "").addClass("text-info")
+                        .css("text-decoration", "none").css("font-size", "16px").html("<i class='fas fa-circle'></i> " + item.PROJECT_TYPE_NAME)
+                        .prop("href", "#")
+                        .click(function ()
+                        {
+                            var id = $(this).attr("data-id");
+                            _ToogleGrid(id);
+                        });
+
+                    $('#ProjectType').selectpicker('refresh');
+                    $cell.append($link).append(label).append(PhaseGrid);
+                });
+
+
+                return $row.append($cell);
+            }
+        });
+    }
+
+    function InitTask(data) {
+
+        data.Employee.push({ EMP_ID: 0, EMP_NAME: "" });
+
+        var Phase = $.map(data.Getlist, function (row, index) {
+            if (row.PROJECT_TYPE_ID == $("#ProjectType").val())
+                return row.PHASE;
+        });
+
+        $("#TableTask").jsGrid({
+            height: 400,
+            width: "100%",
+
+            paging: true,
+            autoload: true,
+            //pageSize: 2,
+
+            controller: {
+                loadData: function () {
+                    return Phase;
+                }
+            },
+
+            rowRenderer: function (item) {
+                var $row = $("<tr>").addClass("card card-info card-outline");
+                var $cell = $("<td>").addClass("card-header col-sm-12 p-0");
+
+                var TaskGrid = $("<div>").css("border", "none").hide();
+
+                var Options = {};
+                Options.Name = TaskGrid;//$("#TableProjectTypes");
+                Options.Url = "null";
+                Options.Width = "150px";
+                Options.Data = item.TASK;
+                Options.Fields = [
+                    { name: "TASK_NAME", title: "Task", type: "text", width: "100", validate: "required" },
+                    { name: "TASK_DESC", title: "Desciription", type: "text", width: "150", validate: "required" },
+                    { name: "TASK_ORDER", title: "Order", type: "number", width: "50", validate: "required" },
+                    { name: "COMPLETE_ON_UPLOAD", title: "Complate on Upload", type: "checkbox", width: "50" },
+                    { name: "ALLOCATE_SUPERVISOR", title: "Allocated to", type: "select", items: data.Employee, valueField: "EMP_ID", textField: "EMP_NAME", width: "100", validate: "required"  },
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: "50" },
+                    {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                    }
+                ];
+
+                CreateJsGrid(Options, function (retGrid) {
+                    TaskGrid = retGrid.Grid;
+                    TaskGrid.jsGrid("option", "data", Options.Data);
+                    TaskGrid.jsGrid("sort", "TASK_ORDER");
+
+                    var _ToogleGrid = function (id)
+                    {
+                        TaskGrid.toggle();
+
+                        if (TaskGrid.is(":visible") == false) {
+                            ActiveTask.Grid = null;
+                            ActiveTask.TaskID = 0;
+                            label.removeClass("fas fa-minus").addClass("fas fa-plus");
+                        }
+                        else {
+                            ActiveTask.Grid = TaskGrid;
+                            ActiveTask.TaskID = id;
+                            label.removeClass("fas fa-plus").addClass("fas fa-minus");
+                            CreateTooltip();
+                        }
+                    }
+
+                    var label = $("<i>").attr("data-id", "" + item.PHASE_ID + "").css("font-size", "16px").addClass("fas fa-plus float-sm-right")
+                        .click(function () {
+                            var id = $(this).attr("data-id");
+                            _ToogleGrid(id);
+                        });
+
+                    var $link = $("<a>").attr("data-id", "" + item.PHASE_ID + "").addClass("text-info")
+                        .css("text-decoration", "none").css("font-size", "16px").html("<i class='fas fa-circle'></i> " + item.PHASE_NAME)
+                        .prop("href", "#")
+                        .click(function () {
+                            var id = $(this).attr("data-id");
+                            _ToogleGrid(id);
+                        });
+
+                    $cell.append($link).append(label).append(TaskGrid);
+                });
+
+
+                return $row.append($cell);
+            }
+        });
+    }
+
+    $("#ProjectType").change(function () {
+        Task();
+    });
+
+    function OperationGrid(obj,Type)
+    {
+        if (Type == 1) {
+              $.ajax({
+                  url: '@Url.Action("DefPhasesTask", "AdminOperation")',
+                  type: 'GET',
+                  success: function (retdata)
+                  {
+                      var Active = $('#ViewTabs a.active').attr("href");
+                      if (Active == "#Phases")
+                          InitPhases(retdata);
+                      else
+                          InitTask(retdata);
+                    }
+                });
+        }
+        else
+        {
+            var Active = $('.nav-tabs li.active a').attr("href") == "#Phases" ? ActivePhase : ActiveTask;
+            if (IsUndefinedOrNullOrEmpty(Active.Grid)) {
+                var tabname = $('.nav-tabs li.active a').attr("href").replace("#", "");
+                toastr.error("Selected " + tabname + " Not Found");
+                return;
+            }
+
+            if (Type == 2)
+                Active.Grid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+        }
+    }
+
+    function OnAddNewItem(args)
+    {
+        showHideLoader(true);
+
+        var Active = $('#ViewTabs a.active').attr("href");
+        var Url = "";
+        if (Active == "#Phases") {
+            args.item.PROJECT_TYPE_ID = ActivePhase.ProjectTypeID;
+            args.item.PHASE_ID = args.item.PHASE_ID == null ? -1 : args.item.PHASE_ID;
+            Url = '@Url.Action("AddOrUpdatePhases", "AdminOperation")';
+        }
+        else if (Active == "#Task")
+        {
+            args.item.PROJECT_TYPE_ID = $("#ProjectType").val();
+            args.item.PHASE_ID = ActiveTask.TaskID;
+            args.item.TASK_ID = args.item.TASK_ID == null ? -1 : args.item.TASK_ID;
+            Url = '@Url.Action("AddOrUpdateTask", "AdminOperation")';
+        }
+        else
+        {
+            args.item.STATUS_ID = args.item.STATUS_ID == null ? -1 : args.item.STATUS_ID;
+            args.item.DISPLAY_CLASS = "alert-" + args.item.DISPLAY_CLASS;
+            args.item.STATUS_TYPE = 7;
+            Url = '@Url.Action("AddOrUpdateStatus", "AdminOperation")';
+        }
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    if (Active == "#Phases") {
+                        $.ajax({
+                            url: '@Url.Action("DefPhases", "AdminOperation")',
+                            type: 'GET',
+                            success: function (retdata) {
+                                InitPhases(retdata);
+                            }
+                        });
+                    }
+                    else if (Active == "#Task") {
+                        Task();
+                    }
+                    else {
+                        StatusGrid.jsGrid("loadData");
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        toastr.success(retdata.Message);
+                    }
+                }
+                else {
+                    toastr.error(retdata.Message);
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function OnDeleteITem(args)
+    {
+        showHideLoader(true);
+
+        var _url;
+
+        var Active = $('#ViewTabs a.active').attr("href");
+        if (Active == "#Phases") {
+            _url = '@Url.Action("RemovePhases", "AdminOperation")';
+        }
+        else if (Active == "#Task") {
+            _url = '@Url.Action("RemoveTask", "AdminOperation")';
+        }
+        else {
+            _url = '@Url.Action("RemoveStatus", "AdminOperation")';
+        }
+
+        $.ajax({
+            url: _url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    if (Active == "#Phases")
+                        ActivePhase.Grid.jsGrid("loadData");
+                    else
+                        ActiveTask.Grid.jsGrid("loadData");
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        toastr.success(retdata.Message);
+                    }
+                }
+                else
+                {
+                    toastr.error(retdata.Message);
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function AddGrid(obj) {
+
+        $(obj.children).hasClass('active');
+        StatusGrid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+
+    function SearchGrid(obj) {
+        $(obj.children).hasClass('active');
+        StatusGrid.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function ChangeGrid(obj) {
+        var size = parseInt(obj.value, 10);
+        StatusGrid.jsGrid("option", "pageSize", size);
+    };
+
+
+    function RefreshGrid(obj) {
+
+        var Active = $('#ViewTabs a.active').attr("href");
+        if (Active == "#Phases")
+            ActivePhase.Grid.jsGrid("loadData");
+        else if (Active == "#Task") 
+            ActiveTask.Grid.jsGrid("loadData");
+        else        
+            StatusGrid.jsGrid("loadData");
+    }
+
+</script>

@@ -1,0 +1,498 @@
+﻿
+@{
+    ViewBag.Title = "Location";
+    ViewBag.ActiveMenu = "Location";
+    ViewBag.MenuOpen = "Administrator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Location</li>
+            </ol>
+        </nav>
+    </div>
+
+
+    <div class="col-sm-12">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-location-arrow"></i> Location</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" onclick="StepperPrevious()">
+                        <i class="far fa-arrow-alt-circle-left fa-2x text-primary"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" onclick="StepperNext()">
+                        <i class="far fa-arrow-alt-circle-right fa-2x text-primary"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <!-- your steps here -->
+                        <div class="step" data-target="#Country-part" onclick="ChangeStaperWithIndex(1)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Country-part" id="Country-part-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fa fa-globe" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">Country</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#State-part" onclick="ChangeStaperWithIndex(2)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="State-part" id="State-part-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fa fa-road" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">State</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#Suburb-part" onclick="ChangeStaperWithIndex(3)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Suburb-part" id="Suburb-part-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fas fa-city" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">City</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#Suffix-part" onclick="ChangeStaperWithIndex(4)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Suffix-part" id="Suffix-part-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fa fa-street-view" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">Street</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bs-stepper-content">
+                        <!-- your steps content here -->
+                        <div id="Country-part" class="content spinner" role="tabpanel" aria-labelledby="Country-part-trigger">
+                        </div>
+                        <div id="State-part" class="content spinner" role="tabpanel" aria-labelledby="State-part-trigger">
+                        </div>
+                        <div id="Suburb-part" class="content spinner" role="tabpanel" aria-labelledby="Suburb-part-trigger">
+                            <button class="btn btn-primary" onclick="StepperNext()">Next</button>
+                        </div>
+                        <div id="Suffix-part" class="content spinner" role="tabpanel" aria-labelledby="Suffix-part-trigger">
+                            <button class="btn btn-primary" onclick="StepperNext()">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="main">
+        var stepper;
+        var Contrytb, StateTb, SuburbTb, SuffixTb;
+
+        $(document).ready(function () {
+
+            stepper = new Stepper(document.querySelector('.bs-stepper'))
+            InitGrids();
+            //LoadGridsData();
+        })
+
+
+        function InitGrids() {
+
+
+            CreateHtmlJsGrid("Suffix", function (retHtml) {
+                $("#Suffix-part").html(retHtml);
+
+                var Options = {};
+                Options.Name = $("#TableSuffix");
+                Options.Url = "@Url.Action("GetSteetList", "AdminOperation")";
+                Options.Data = [];
+                Options.Fields = [
+                    { name: "STREET_NAME", title: "Street", type: "text", width: 150, validate: "required" },
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50},
+                    {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid) {
+                    SuffixTb = retGrid.Grid;
+
+                });
+
+            });
+
+
+            CreateHtmlJsGrid("Country", function (retHtml)
+            {
+                $("#Country-part").html(retHtml);
+
+                $("#Country-part").find(".btn-toolbox").append("<button class='btn btn-danger btn-sm' onclick='OnLoadWebCountites()' style='margin-right: 5px'><i class='fas fa-globe'> Load Countries On Web</button>")
+
+                var Options = {};
+                Options.Name = $("#TableCountry");
+                Options.Url = "@Url.Action("GetCountyiesList", "AdminOperation")";
+                Options.Data = [];
+                Options.Fields = [
+                    {
+                        itemTemplate: function (_, item)
+                        {
+                            var flag = "<img src='" + item.FLAG_URL + "' width='50' height='30'>"
+                            return $("<div>").html(flag);
+                        }
+                        , align: "center", width: 50
+                    },
+                    { name: "COUNTRY_NAME", title: "Country", type: "text", width: 150, validate: "required" },
+                    { name: "COUNTRY_CODE", title: "Country Code", type: "text", width: 50, validate: "required" },
+                    { name: "IS_DEFAULT", title: "Default", type: "checkbox", width: 50},
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                    {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid)
+                {
+                    Contrytb = retGrid.Grid;
+
+                    OnStateGridCreate(retGrid.Data);
+
+                });
+            });
+        }
+
+        function OnStateGridCreate(CountryData)
+        {
+            CreateHtmlJsGrid("State", function (retHtml) {
+                $("#State-part").html(retHtml);
+
+                CountryData.push({ COUNTRY_NAME: "", COUNTRY_ID: 0 });
+
+                var Options = {};
+                Options.Name = $("#TableState");
+                Options.Url = "@Url.Action("GetStateList", "AdminOperation")";
+                Options.Data = [];
+                Options.Fields = [
+                    { name: "COUNTRY_ID", title: "Country", type: "select", items: CountryData, valueField: "COUNTRY_ID", textField: "COUNTRY_NAME", validate: "required" },
+                    { name: "STATE_NAME", title: "State", type: "text", width: 150, validate: "required" },
+                    { name: "STATE_ABBREVIATION", title: "State Abb.", type: "text" },
+                    { name: "IS_DEFAULT", title: "Default", type: "checkbox", width: 50},
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                    {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid) {
+                    StateTb = retGrid.Grid;
+
+                    OnCitiesGridCreate(CountryData, retGrid.Data);
+
+                });
+
+            });
+        }
+
+        function OnCitiesGridCreate(CountryData,StateData)
+        {
+            CreateHtmlJsGrid("Suburb", function (retHtml) {
+                    $("#Suburb-part").html(retHtml);
+
+                    CountryData.push({ COUNTRY_NAME: "", COUNTRY_ID: 0 });
+                    StateData.push({ STATE_NAME: "", STATE_ID: 0 });
+
+                    var Options = {};
+                    Options.Name = $("#TableSuburb");
+                    Options.Url = "@Url.Action("GetCitiesList", "AdminOperation")";
+                    Options.Data = [];
+                    Options.Fields = [
+                        { name: "COUNTRY_ID", title: "Country", type: "select", items: CountryData, valueField: "COUNTRY_ID", textField: "COUNTRY_NAME", validate: "required" },
+                        { name: "STATE_ID", title: "State", type: "select", items: StateData, valueField: "STATE_ID", textField: "STATE_NAME", validate: "required" },
+                        { name: "CITY_NAME", title: "City", type: "text", validate: "required" },
+                        { name: "POSTAL_CODE", title: "Postal", type: "text" },
+                        { name: "IS_DEFAULT", title: "Default", type: "checkbox", width: 50},
+                        { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50},
+                        {
+                            type: "control", modeSwitchButton: false, width: "50", align: "center",
+                            itemTemplate: function (_, item) {
+
+                                var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                                var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                                var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                                var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                                var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                                return $result.add(element);
+                            }
+                        }
+                    ]
+
+                    CreateJsGrid(Options, function (retGrid) {
+                        SuburbTb = retGrid.Grid;
+
+                        $('[data-toggle="tooltip"]').tooltip({
+                            show: {
+                                effect: "slideDown",
+                                delay: 250
+                            },
+                            content: function () {
+                                return $(this).attr('title');
+                            }
+                        });
+                    });
+
+            });
+        }
+
+
+
+        function OnAddNewItem(args){
+
+            showHideLoader(true);
+
+            var Url;
+            var Grid;
+
+            var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+            if (ActiveID == "Country-part") {
+
+                args.item.COUNTRY_ID = args.item.COUNTRY_ID == null ? -1 : args.item.COUNTRY_ID;
+                Url = '@Url.Action("AddOrUpdateCountry", "AdminOperation")';
+                Grid = Contrytb;
+            }
+            else
+            if (ActiveID == "State-part")
+            {
+                args.item.STATE_ID = args.item.STATE_ID == null ? -1 : args.item.STATE_ID;
+                Url = '@Url.Action("AddOrUpdateState", "AdminOperation")';
+                Grid = StateTb;
+            }
+            else
+            if (ActiveID == "Suburb-part")
+            {
+                args.item.CITY_ID = args.item.CITY_ID == null ? -1 : args.item.CITY_ID;
+                Url = '@Url.Action("AddOrUpdateCity", "AdminOperation")';
+                Grid = SuburbTb;
+            }
+            else
+            {
+                args.item.STREET_ID = args.item.STREET_ID == null ? -1 : args.item.STREET_ID;
+                Url = '@Url.Action("AddOrUpdateStreet", "AdminOperation")';
+                Grid = SuffixTb;
+            }
+
+            $.ajax({
+                url: Url,
+                type: 'POST',
+                data: JSON.stringify(args.item),
+                contentType: "application/jsonp; charset=utf-8",
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        Grid.jsGrid("loadData");
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+
+                        if (retdata.success)
+                        {
+                            toastr.success(retdata.Message);
+                        }
+                        else
+                        {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    showHideLoader(false);
+                }
+            });
+        }
+
+        function OnDeleteITem(args)
+        {
+              showHideLoader(true);
+
+            var Url;
+            var Grid;
+            var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+            if (ActiveID == "Country-part") {
+                Url = '@Url.Action("RemoveCountries", "AdminOperation")';
+            }
+            else
+            if (ActiveID == "State-part")
+            {
+                Url = '@Url.Action("RemoveState", "AdminOperation")';
+                Grid = StateTb;
+            }
+            else
+            if (ActiveID == "Suburb-part")
+            {
+                Url = '@Url.Action("RemoveCity", "AdminOperation")';
+                Grid = SuburbTb;
+            }
+            else
+            {
+                Url = '@Url.Action("RemoveSteet", "AdminOperation")';
+                Grid = SuffixTb;
+            }
+
+            $.ajax({
+                url: Url,
+                type: 'POST',
+                data: JSON.stringify(args.item),
+                contentType: "application/json; charset=utf-8",
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        Grid.jsGrid("loadData");
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    showHideLoader(false);
+                }
+            });
+        }
+
+        function SearchGrid(obj) {
+            var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+            var grid = ActiveID == "Country-part" ? Contrytb : (ActiveID == "State-part" ? StateTb : ActiveID == "Suburb-part" ? SuburbTb : SuffixTb);
+
+            $(obj.children).toggleClass('active');
+            grid.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+        }
+
+        function RefreshGrid(obj)
+        {
+            var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+            var grid = ActiveID == "Country-part" ? Contrytb : (ActiveID == "State-part" ? StateTb : ActiveID == "Suburb-part" ? SuburbTb : SuffixTb);
+
+            grid.jsGrid("loadData");
+        }
+
+        function AddGrid(obj) {
+            var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+            var grid = ActiveID == "Country-part" ? Contrytb : (ActiveID == "State-part" ? StateTb : ActiveID == "Suburb-part" ? SuburbTb : SuffixTb);
+
+            $(obj.children).toggleClass('active');
+            grid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+        }
+
+        function ChangeGrid(obj) {
+
+            var size = parseInt(obj.value, 10);
+            var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+            var grid = ActiveID == "Country-part" ? Contrytb : (ActiveID == "State-part" ? StateTb : ActiveID == "Suburb-part" ? SuburbTb : SuffixTb);
+
+            $(obj.children).toggleClass('active');
+            grid.jsGrid("option", "pageSize", size);
+
+        }
+
+        function StepperNext() {
+            stepper.next();
+        }
+
+        function StepperPrevious() {
+            stepper.previous();
+        }
+
+        function ChangeStaperWithIndex(index) {
+            stepper.to(index);
+        }
+
+
+        function OnLoadWebCountites(){
+
+            showHideLoader(true);
+
+            var Countries = [];
+            $.getJSON("https://restcountries.eu/rest/v2/all", function (result) {
+
+                if (IsUndefinedOrNullOrEmpty(result) == false)
+                {
+                    $.each(result, function (i, field) {
+                        Countries.push({ COUNTRY_NAME: field.name, COUNTRY_CODE: field.alpha2Code, FLAG: field.flag })
+                    });
+
+                    $.ajax({
+                        url: '@Url.Action("OnLoadWebCountriesSave", "AdminOperation")',
+                        type: 'POST',
+                        data: JSON.stringify(Countries),
+                        contentType: "application/json; charset=utf-8",
+                        success: function (retdata) {
+
+                            if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                                LoadGridsData();
+                            }
+
+                            showHideLoader(false);
+                        }
+                    });
+
+                }
+            });
+        }
+</script>

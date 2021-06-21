@@ -1,0 +1,293 @@
+﻿
+@{
+    ViewBag.Title = "Menu Authority";
+    ViewBag.ActiveMenu = "MenuAuthority";
+    ViewBag.MenuOpen = "Administrator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Menu Authority</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="card card-default">
+            <div class="card-header">
+                <label>List Of Menu Roles</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-1" style="display: block;">
+                <div class="active spinner RolesGrid " style="display: block;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-offset-1 col-sm-4 col-sm-offset-1">
+        <div class="card card-default" id="MenuEdit">
+            <div class="card-header text-success">
+                <label>Menus<span class="roleName"></span></label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" onclick="OnYetkiSave()">
+                        <i class="fas fa-save text-primary"></i> Save
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" style="display: block;">
+                <div class="row">
+                    <ul id="treeview">
+                        <li data-icon-cls="fas fa-tachometer-alt">
+                            <span class="Dashboard">Dashboard</span>
+                        </li>
+                        <li data-icon-cls="fas fa-calendar">
+                            <span class="Calendar">Calendar</span>
+                        </li>
+                        <li data-icon-cls="fas fa-home" data-expanded="true">
+                            <span class="MyCompany">My Company</span>
+                            <ul>
+                                <li data-icon-cls="fas fa-circle"><span class="Profile">Profile</span></li>
+                                <li data-icon-cls="fas fa-users"><span class="Employees">Employees</span></li>
+                                <li data-icon-cls="fas fa-truck"><span class="Vehicles">Vehicles</span></li>
+                                <li data-icon-cls="fas fa-people-carry"><span class="Supplier">Supplier</span></li>
+                                <li data-icon-cls="fas fa-address-book"><span class="SupervisorAreas">Supervisor Areas</span></li>
+                                <li data-icon-cls="fas fa-calendar-day"><span class="Holidays">Holidays</span></li>
+                            </ul>
+                        </li>
+                        <li data-icon-cls="fas fa-quote-right">
+                            <span class="Quotes">Quotes</span>
+                        </li>
+                        <li data-icon-cls="fas fa-briefcase" data-expanded="true">
+                            <span class="Jobs">Jobs</span>
+                        </li>
+                        <li data-icon-cls="fas fa-briefcase" data-expanded="true">
+                            <span class="Client">Client</span>
+                            <ul>
+                                <li data-icon-cls="fas fa-users"><span class="Clients">Clients</span></li>
+                                <li data-icon-cls="far fa-address-book"><span class="ClientContacts">Client Contacts</span></li>
+                            </ul>
+                        </li>
+                        <li data-icon-cls="fas fas fa-table">
+                            <span class="Installers">Installers</span>
+                        </li>
+                        <li data-icon-cls="fas fa-tools" data-expanded="true">
+                            <span class="Administrator">Administrator</span>
+                            <ul>
+                                <li data-icon-cls="fas fa-ellipsis-h" data-expanded="true">
+                                    <span class="Genaral">Genaral</span>
+                                    <ul>
+                                        <li data-icon-cls="fas fa-file-contract"><span class="Contract">Contract</span></li>
+                                        <li data-icon-cls="fas fa-building"><span class="Department">Department</span></li>
+                                        <li data-icon-cls="fas fa-user"><span class="Employee">Employee</span></li>
+                                        <li data-icon-cls="far fa-building"><span class="CompanyType">Company Type</span></li>
+                                        <li data-icon-cls="fas fa-user"><span class="SupplierStatus">Supplier Status</span></li>
+                                        <li data-icon-cls="fas fa-list"><span class="SupplierStatus">Client Status</span></li>
+                                    </ul>
+                                </li>
+                                <li data-icon-cls="fas fa-location-arrow"><span class="Location">Location</span></li>
+                                <li data-icon-cls="fas fa-truck"><span class="Vehicle">Vehicle</span></li>
+                                <li data-icon-cls="fas fa-clipboard-list"><span class="QuoteAndJob">Quote & Job</span></li>
+                                <li data-icon-cls="fas fa-tasks"><span class="PhaseandTask">Phase & Task</span></li>
+                                <li data-icon-cls="fas fa-cogs"><span class="SystemConfiguration">System Configuration</span></li>
+                                <li data-icon-cls="fas fa-sitemap"><span class="MenuAuthority">Menu Authority</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <br />
+                <p><span id="checkedCount" class="text-success"></span></p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    var RoleTable = null;
+    var _RoleID = 0;
+    $(document).ready(function ()
+    {
+
+        $("#treeview").shieldTreeView({
+            checkboxes: {
+                enabled: true,
+                children: true
+            },
+            events: {
+                check: onCheck
+            }
+        });
+
+        $("#MenuEdit").hide();
+        InitGrids();
+    });
+
+    function InitGrids()
+    {
+        CreateHtmlJsGrid("Roles", function (retHtml)
+        {
+            $(".RolesGrid").html(retHtml);
+
+            $('.searchItem').hide();
+            $('.addItem').hide();
+
+            var Options = {};
+            Options.Name = $("#TableRoles");
+            Options.Url = '@Url.Action("GetRolesMenuList", "AdminOperation")';
+            Options.Data = [];
+            Options.Fields = [
+                {
+                    type: "text", width: 10,
+                    itemTemplate: function (_, item)
+                    {
+                        var text = IsUndefinedOrNullOrEmpty(item.MENU_ID) == false && item.MENU_ID > 0 ? "<i class='far fa-check-square fa-2x text-success'></i>" : "";
+
+                        return $("<td>").html(text);
+                    }
+                },
+                {
+                    name: "ROLE_NAME", title: "Role", type: "text", width: 100
+                },
+                {
+                    type: "control", width: 10,
+                    itemTemplate: function (_, item) {
+                        var controlCustimoze = "<button type='button' class='btn btn-outline-info btn-sm'  onclick = 'EditRoles(" + JSON.stringify(item) + ",this)'><i class='fas fa fa-arrow-right'></i></button>";
+
+                        return $("<td>").html(controlCustimoze);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                RoleTable = retGrid.Grid;
+                RoleTable.jsGrid("option", "editing", false);
+            });
+        });
+    }
+
+    function RefreshGrid() {
+        RoleTable.jsGrid("loadData");
+    }
+
+    function ChangeGrid(obj) {
+
+        var size = parseInt(obj.value, 10);                
+        RoleTable.jsGrid("option", "pageSize", size);
+    }
+
+    function EditRoles(item,obj)
+    {
+        
+        $("#MenuEdit").toggle("slide", function () {
+
+            var menuStr = JSON.parse(item.MENUS_STR);
+            var checkArray = $("#treeview").swidget("TreeView").element.find("li");
+
+
+            if ($("#MenuEdit").is(":visible")) {
+
+                if (IsUndefinedOrNullOrEmpty(menuStr) == false)
+                {
+                    for (var i = 0; i < menuStr.length; i++) {
+                        checkArray.each(function (index) {
+                            var name = $(this).find("span:last").attr("class");
+                            if (name == menuStr[i].name)
+                                $("#treeview").swidget("TreeView").checked(menuStr[i].state, checkArray.eq(index));
+                        });
+                    }
+                }
+
+                $(obj).children("i").removeClass("fa-arrow-right").addClass("fa-arrow-left");
+                $(".roleName").html(" [" + item.ROLE_NAME + "]");
+                _RoleID = item.ROLE_ID;
+            }
+            else
+            {
+                checkArray.each(function (index) {
+
+                    $("#treeview").swidget("TreeView").checked(false, checkArray.eq(index));
+                });
+
+                $(obj).children("i").removeClass("fa-arrow-left").addClass("fa-arrow-right");
+                $(".roleName").html("");
+            }
+        });
+    }
+
+    function onCheck() {
+        // find all LI elements in the treeview and determine how many are checked
+        var checkedCount = $("#treeview").swidget("TreeView").element.find("li").filter(function () {
+            return $("#treeview").swidget("TreeView").checked($(this));
+        }).length;
+        $("#checkedCount").html(checkedCount + " menus checked");
+    }
+
+    function OnYetkiSave()
+    {
+        if (_RoleID <= 0)
+            return;
+
+        var menus = [];
+        var checkArray = $("#treeview").swidget("TreeView").element.find("li");
+        checkArray.each(function (index)
+        {
+            var checkitem = { name: $(this).find("span:last").attr("class"), state: $("#treeview").swidget("TreeView").checked($(this)) };
+            menus.push(checkitem);
+        });
+
+        var param = {};
+        param.RoleID = _RoleID;
+        param.Menus = menus;
+
+       showHideLoader(true);
+        $.ajax({
+            url: '@Url.Action("SaveMenuRoles", "AdminOperation")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata)
+            {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    RoleTable.jsGrid("loadData");
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            }
+        });
+
+    }
+</script>

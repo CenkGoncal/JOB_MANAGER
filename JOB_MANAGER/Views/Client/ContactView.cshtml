@@ -1,0 +1,68 @@
+﻿@model JOB_MANAGER.Models.ContactViewDto
+@{
+    Layout = null;
+}
+
+
+<div class="card-body">
+    @{
+        if ((int)ViewBag.Layout == 1)
+        {
+            <label class="pull-right text-info"><i class="far fa-clock"></i>Crete @Model.CREATION_DATE,Update @Model.MODIFIED_DATE</label>
+        }
+    }
+    <div class="row ">
+        <div class="col-sm-6 table-responsive">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th><strong><i class="fas fa-users"></i> Client</strong></th>
+                        <td class="CLIENT_NAME">@Model.CLIENT_NAME</td>
+                    </tr>
+                    <tr>
+                        <th><strong><i class="fas fa-user-tag"></i> Position</strong></th>
+                        <td class="CONTACT_TITLE">@Model.CONTACT_TITLE</td>
+                    </tr>
+                    <tr>
+                        <th><strong><i class="fas fa-list"></i> Role</strong></th>
+                        <td class="ROLE_NAME">@Model.ROLE_NAME</td>
+                    </tr>
+                    <tr>
+                        <th><strong><i class="fas fa-envelope"></i> Email</strong></th>
+                        <td class="CONTACT_EMAIL">@( (string.IsNullOrEmpty(Model.CONTACT_EMAIL)) ? "N/A" : Model.CONTACT_EMAIL)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6 table-responsive">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th><strong><i class="fas fa-phone"></i> Phone/Ext</strong></th>
+                        <td class="CONTACT_PHONE_ALL">@Model.CONTACT_PHONE_ALL</td>
+                    </tr>
+                    <tr>
+                        <th><strong><i class="fas fa-mobile"></i> Mobile</strong></th>
+                        <td class="CONTACT_MOBILE">@( (string.IsNullOrEmpty(Model.CONTACT_MOBILE)) ? "N/A" : Model.CONTACT_MOBILE)</td>
+                    </tr>
+                    <tr>
+                        <th><strong><i class="fas fa-user-check"></i> Primary</strong></th>
+                        <td class="IS_PRIMARY">
+                            @{ if (Model != null && Model.IS_PRIMARY)
+                                {
+                                    <i class="fas fa-check"></i>
+                                };
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><strong><i class="fas fa-list"></i> Status</strong></th>
+                        <td class="IS_PRIMARY">
+                            <label class="alert col-sm-5 @Model.DISPLAY_CLASS STATUS">@Model.STATUS_NAME</label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1149 @@
+﻿@using JOB_MANAGER.Models;
+@{
+    ViewBag.Title = "Jobs";
+    ViewBag.ActiveMenu = "Jobs";
+    ViewBag.MenuOpen = "";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int DefPhaseID = (int)ViewBag.PROJECT_PHASE;
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>List of Jobs</li>
+            </ol>
+        </nav>
+    </div>
+
+
+    <!--Advaced Search And List-->
+    <div class="col-sm-12 col-xs-12">
+        <div class="card card-default card-primary card-outline collapsed-card" id="AdvacedSearch">
+            <div class="card-header">
+                <label><i class="fas fa-search text-primary"></i> Show Advaced Search</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormSeach'))">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="FormSeach">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="FromStart" class="col-sm-4 control-label">From Start Date</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        </div>
+                                        <input type="date" class="form-control float-right" id="FromStart" name="FromStart">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="EndStart" class="col-sm-4 control-label">End Start Date</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        </div>
+                                        <input type="date" class="form-control float-right" id="EndStart" name="EndStart">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="LotNumber" class="col-sm-4 control-label">Lot.#</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control form-control-sm" id="LotNumber" name="LotNumber">
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="Client" class="col-sm-4 control-label">Client</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Client", ViewBag.CLIENT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Client", @name = "Client", @title = "Select Client" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="Material" class="col-sm-4 control-label">Material</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Material", ViewBag.MATERIAL_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Material", @name = "Material", @title = "Select Material" })
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="Floor" class="col-sm-4 control-label">Floor</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Floor", ViewBag.FLOOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Floor", @name = "Floor", @title = "Select Floor" })
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="ProjectType" class="col-sm-4 control-label">Project Type</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("ProjectType", ViewBag.PROJECT_TYPE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "ProjectType", @name = "ProjectType", @title = "Select Project Type" })
+                                </div>
+                            </div>
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="Clientlist" class="col-sm-4 control-label">Supervisor</label>
+                                <div class="col-sm-8">
+                                    @Html.DropDownList("Supervisor", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "Supervisor", @name = "Supervisor", @title = "Select Supervisor" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-info btn-sm float-sm-right" Onclick="SearchAdvaced()"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <div class="card card-cyan card-outline" id="ListJobs">
+            <div class="card-header">
+                <label><i class="fa fas fa-briefcase text-cyan"></i> List Of Jobs</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-1 active spinner JobGrid" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <!--Edit Jobs-->
+    <div class="col-sm-12 col-xs-12">
+        <div id="card edit-Job">
+            <div class="card card-info displaynone" id="EditOrCreateJob">
+                <div class="card-header">
+                    <h3 class="card-title editTitle">Client Details</h3>
+                    <div class="card-tools">
+                        <label class="TempName"></label>
+                        <button class="btn btn-warning dialogbt importbt" onclick="OpenTempDialog(2)" data-toggle='modal' data-target='#TemplateDialog'><i class="fas fa-file-import"></i> İmport Template</button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormReset'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Expand" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Maximaze" OnClick="ScaleProfile('#EditOrCreateJob')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Close" OnClick="CloseEditProfile()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body bg-light">
+                    <!--TODO colsmler kaldırılacak-->
+                    <div class="content spinner">
+                        <div class="sk-spinner sk-spinner-double-bounce">
+                            <div class="sk-double-bounce1"></div>
+                            <div class="sk-double-bounce2"></div>
+                        </div>
+                        <form id="FormReset">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <div class="card card-info card-outline">
+                                        <div class="card-header">
+                                            <div class="card-title">Job Details</div>
+                                        </div>
+                                        <div class="card-body row">
+                                            <div class="col-sm-6">
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="PROJECT_NAME" class="col-sm-4 control-label">Job</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control form-control-sm" id="PROJECT_NAME" required data-required-message="Job is Required!" />
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="PROJECT_TYPE_ID" class="col-sm-4 control-label">Job Type</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("PROJECT_TYPE_ID", ViewBag.PROJECT_TYPE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_TYPE_ID", @name = "PROJECT_TYPE_ID", @title = "Select Project Type", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="CLIENT_ID" class="col-sm-4 control-label">Client</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("CLIENT_ID", ViewBag.CLIENT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_ID", @name = "CLIENT_ID", @title = "Select Client", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="CLIENT_SUPRVISOR" class="col-sm-4 control-label">Contact</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("CLIENT_SUPRVISOR", ViewBag.CONTACT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_SUPRVISOR", @name = "CLIENT_SUPRVISOR", @title = "Select Contact", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="CLIENT_PO_NBR" class="col-sm-4 control-label">Po.#</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control form-control-sm" id="CLIENT_PO_NBR" required data-required-message="Job is Required!" />
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblClient" for="PROJECT_SUPERVISOR" class="col-sm-4 control-label">Supervisor</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("PROJECT_SUPERVISOR", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_SUPERVISOR", @name = "PROJECT_SUPERVISOR", @title = "Select Supervisor ", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblClient" for="INSTALLER_ID" class="col-sm-4 control-label">Installer</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("INSTALLER_ID", ViewBag.INSTALER_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "INSTALLER_ID", @name = "INSTALLER_ID", @title = "Select Installer ", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblMaterial" for="MATERIAL_ID" class="col-sm-4 control-label">Material</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("MATERIAL_ID", ViewBag.MATERIAL_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "MATERIAL_ID", @name = "MATERIAL_ID", @title = "Select Material", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblMaterial" for="FLOOR_TYPE" class="col-sm-4 control-label">Floor</label>
+                                                    <div class="col-sm-8">
+                                                        @Html.DropDownList("FLOOR_TYPE_ID", ViewBag.FLOOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "FLOOR_TYPE", @name = "FLOOR_TYPE", @title = "Select Floor", @required = "true" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <input type="checkbox" id="DISPLAY">
+                                                    <label class="control-label" for="DISPLAY">Display</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblStatus" for="PROJECT_STATUS" class="col-sm-4 control-label">Status</label>
+                                                    <div class="col-sm-8">
+                                                        <select class="selectpicker form-control form-control-sm" id="STATUS_ID" required>
+                                                            @{
+                                                                foreach (var item in (List<StatusDto>)ViewBag.STATUS_LIST)
+                                                                {
+                                                                    string color = string.Format("Color:{0}", item.DISPLAY_CLASS);
+                                                                    <option value="@item.STATUS_ID" data-content="<span><i class='fas fa-circle' style='@color'></i> @item.STATUS_NAME</span>"> @item.STATUS_NAME</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblStartDate" for="PROJECT_START_DATE" class="col-sm-4 control-label">Start Date</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                                            </div>
+                                                            <input type="date" class="form-control float-right" id="PROJECT_START_DATE" required data-required-message="Inititation is Required!">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblExpiryDate" for="INSTALLATION_DATE" class="col-sm-4 control-label">Inititation Date</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                                            </div>
+                                                            <input type="date" class="form-control float-right" id="INSTALLATION_DATE" required data-required-message="Intial Date is Required!">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="TIME" class="col-sm-4 control-label">Instalition Time</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                                            </div>
+                                                            <input type="time" class="form-control float-right" id="TIME" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblAmount" for="PROJECT_AMOUNT" class="col-sm-4 control-label">Amount</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                                            </div>
+                                                            <input type="text" class="form-control float-right" id="PROJECT_AMOUNT" required data-required-message="Amount is Required!">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label for="PROJECT_PROGRESS" class="col-sm-4 control-label">Progress</label>
+                                                    <div class="col-sm-8">
+                                                        <div class="input-group input-group-sm">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="fas fa-percent"></i></span>
+                                                            </div>
+                                                            <input type="number" class="form-control float-right" id="PROJECT_PROGRESS" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblCabinets" for="CABINETS_NBR" class="col-sm-4 control-label">Cabinets</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" class="form-control form-control-sm" id="CABINETS_NBR" required data-required-message="Cabinets is Required!" />
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="form-row">
+                                                    <label id="lblContractDesc" for="PROJECT_DESC" class="col-sm-4 control-label">Desc.</label>
+                                                    <div class="col-sm-8">
+                                                        <textarea class="form-control form-control-sm" rows="3" id="PROJECT_DESC"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card card-info card-outline">
+                                        <div class="card-header">
+                                            <div class="card-title">Address Details</div>
+                                        </div>
+                                        <div class="card-body">
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblCountry" for="PROJECT_COUNTRY" class="col-sm-4 control-label">Country</label>
+                                                <div class="col-sm-8">
+                                                    @Html.DropDownList("COUNTRY_ID", ViewBag.COUNTRIES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_COUNTRY", @name = "PROJECT_COUNTRY", @title = "Select Company", @required = "true" })
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblState" for="PROJECT_STATE" class="col-sm-4 control-label">State</label>
+                                                <div class="col-sm-8">
+                                                    @Html.DropDownList("STATE_ID", ViewBag.STATES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_STATE", @name = "PROJECT_STATE", @title = "Select State", @required = "true" })
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblCity" for="PROJECT_CITY" class="col-sm-4 control-label">City</label>
+                                                <div class="col-sm-8">
+                                                    @Html.DropDownList("CITY_ID", ViewBag.CITIES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "PROJECT_CITY", @name = "PROJECT_CITY", @title = "Select City", @required = "true" })
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblPostCode" for=">PROJECT_POSTAL_CODE" class="col-sm-4 control-label">Post Code</label>
+                                                <div class="col-sm-8">
+                                                    <div class="input-group input-group-sm">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                        </div>
+                                                        <input type="text" class="form-control float-right" id="PROJECT_POSTAL_CODE" onChange="changeAddress();" name="PROJECT_POSTAL_CODE" disabled required data-required-message="Post Code is required">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblLot" for="ADR_LOT_NBR" class="col-sm-3 control-label">Lot #</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control form-control-sm" id="ADR_LOT_NBR" name="ADR_LOT_NBR" onChange="changeAddress();" required data-required-message="Lot # is Required!" />
+                                                </div>
+                                                <label id="lblUnit" for="ADR_UNIT_NBR" class="col-sm-3 control-label">Unit #</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control form-control-sm" id="ADR_UNIT_NBR" name="ADR_UNIT_NBR" onChange="changeAddress();" required data-required-message="Unit # is Required!" />
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblStLot" for="ADR_STREET_NBR" class="col-sm-3 control-label">Street #</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control form-control-sm" id="ADR_STREET_NBR" name="ADR_STREET_NBR" onChange="changeAddress();" />
+                                                </div>
+                                                <label id="lblUnit" for="STREET_SUFFIX_ID" class="col-sm-3 control-label">Suffix</label>
+                                                <div class="col-sm-3">
+                                                    @Html.DropDownList("STREET_SUFFIX_ID", ViewBag.STREET_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "STREET_SUFFIX_ID", @name = "STREET_SUFFIX_ID", @onChange = "changeAddress();", @title = "Select Suffix" })
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblStreet" for="ADR_STREET_NAME" class="col-sm-4 control-label">Street</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control form-control-sm" id="ADR_STREET_NAME" name="ADR_STREET_NAME" onChange="changeAddress();" required data-required-message="Street is Required!" />
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="form-row">
+                                                <label id="lblStrettAdres" for="PROJECT_ADDRESS" class="col-sm-4 control-label">Address</label>
+                                                <div class="col-sm-8">
+                                                    <textarea class="form-control form-control-sm" rows="3" id="PROJECT_ADDRESS" name="PROJECT_ADDRESS" required data-required-message="Address is required"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <input type="hidden" name="PROJECT_ID" id="PROJECT_ID" />
+                    <button class="btn btn-danger btn-sm" onclick="CloseEditProfile()"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveJob(false)"><i class="far fa-save"></i> Save</button>
+                    <button class="btn btn-info btn-sm dialogbt" onclick="OpenTempDialog(1)" data-toggle='modal' data-target='#TemplateDialog'><i class="fas fa-save"></i> Save As Template</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Dialog-->
+    <!-- CopyContact.modal -->
+    <div id="TemplateDialog" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h4 class="modal-title text-white"><i class="fas fa-copy"></i> <span class="titleMd">Select Template</span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 col-xs-12 ImportTemplate">
+                        <select class="form-control selectpicker" title="Select Template" id="TEMPID" data-style="btn-outline-info">
+                        </select>
+                    </div>
+                    <div class="col-sm-12 col-xs-12 SaveTemplate">
+                        <div class="form-group form-group-sm bottom">
+                            <label id="lblQuante" for="TEMPNAME" class="col-sm-4 col-xs-4 control-label">Template Name</label>
+                            <div class="col-sm-8 col-xs-8">
+                                <input type="text" class="form-control" id="TEMPNAME" name="TEMPNAME" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-success" data-dismiss="modal" onclick="DialogOperation()">Select</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--View Jobs-->
+    <div class="col-sm-12 ViewJob">
+    </div>
+</div>
+
+
+<script id="main">
+
+    var JobTable = null;
+    var _DefPhaseID = @DefPhaseID;
+    $(document).ready(function () {
+
+        $("#PROJECT_COUNTRY").attr("data-required-message", "Country is requried");
+        $("#PROJECT_STATE").attr("data-required-message", "State is requried");
+        $("#PROJECT_CITY").attr("data-required-message", "City is requried");
+        $("#PROJECT_STATUS").attr("data-required-message", "Status is requried");
+        $("#PROJECT_TYPE_ID").attr("data-required-message", "Project Type is requried");
+        $("#CLIENT_ID").attr("data-required-message", "Client Type is requried");
+        $("#MATERIAL_ID").attr("data-required-message", "Material Type is requried");
+        $("#FLOOR_TYPE").attr("data-required-message", "Floor Type is requried");
+        $('#STREET_SUFFIX_ID').attr("data-required-message", "Suffix is requried");
+
+
+        $('.selectpicker').attr("data-live-search", "true");
+        $('.selectpicker').selectpicker();
+
+        CreateHtmlJsGrid("Job", function (retHtml) {
+
+            $(".JobGrid").html(retHtml);
+            if (_DefPhaseID > 0)
+            {
+                var str = {};
+                str.FromStart = "";
+                str.EndStart = "";
+                str.LotNumber = "";
+                str.Material = -1;
+                str.Floor = -1;
+                str.ProjectType = -1;
+                str.Client = -1;
+                str.Supervisor = -1;
+                str.Phase = _DefPhaseID;
+                InitGrids(str);
+            }
+            else 
+                InitGrids(null);
+        });
+    });
+
+    function InitGrids(AdvacedSearch)
+    {
+        $.ajax({
+                url: '@Url.Action("GetListFilters", "Job")',
+                type: 'GET',
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == true)
+                    {
+                        retdata = {};
+                        retdata.City = [];
+                        retdata.Client = [];
+                        retdata.Project = [];
+                        retdata.Status = [];
+
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                    {
+                        retdata.City.push({ CITY_NAME: "", CITY_ID: 0 });
+                        retdata.Client.push({ CLIENT_NAME: "", CLIENT_ID: 0 });
+                        retdata.Project.push({ PROJECT_TYPE_NAME: "", PROJECT_TYPE_ID: 0 });
+                        retdata.Status.push({ STATUS_NAME: "", STATUS_ID: 0 });
+
+                        var Url = "";
+                        var param = {};
+                        if (IsUndefinedOrNullOrEmpty(AdvacedSearch) == false) {
+                            param = AdvacedSearch;
+                            Url='@Url.Action("GetJobAdvacedList", "Job")';
+                        }
+                        else
+                        {
+                            param.ProjectID = -1;
+                            param.IsTemplate = false;
+                            Url='@Url.Action("GetJobList", "Job")';
+                        }
+
+
+                        var Options = {};
+                        Options.Name = $("#TableJob");
+                        Options.Url = Url;
+                        Options.Data = [];
+                        Options.LoadParam = param;
+                        Options.Fields = [
+                            {
+                                name: "PROJECT_NUMBER", title: "Job.#", type: "text", width: 80,
+                                itemTemplate: function (_, item) {
+
+                                    item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+                                    var textColor = lightOrDark(item.DISPLAY_CLASS);
+                                    return $("<span>").text(item.PROJECT_NUMBER + " ").append($("<div class='badge' style='background-color:" + item.DISPLAY_CLASS + ";color:" + textColor + "'>")
+                                        .html(item.STATUS_NAME));
+                                }
+                            },
+                            { name: "PROJECT_NAME", title: "Job", type: "text", width: 100 },
+                            { name: "CLIENT_ID", title: "Client", type: "select", items: retdata.Client, valueField: "CLIENT_ID", textField: "CLIENT_NAME", width: 80 },
+                            { name: "PROJECT_CITY", title: "City", type: "select", items: retdata.City, valueField: "CITY_ID", textField: "CITY_NAME", width: 80 },
+                            { name: "PROJECT_TYPE_ID", title: "Job Type", type: "select", items: retdata.Project, valueField: "PROJECT_TYPE_ID", textField: "PROJECT_TYPE_NAME", width: 80 },                          
+                            {
+                                type: "control",
+                                modeSwitchButton: false,
+                                editButton: false,
+                                width: 60,
+                                align: "center",
+                                itemTemplate: function (_, item)
+                                {
+
+                                        var $editButton = $("<button>").attr("type", "button").addClass("btn btn-xs btn-outline-info").attr("title", "edit").css("margin-left", "5px")
+                                        .html("<i class='fas fa-edit'></i>")
+                                         .click(function ()
+                                         {
+                                             EditJob(item,false);
+                                         });
+
+                                     var $viewButton = $("<button>").attr("type", "button").addClass("btn btn-xs btn-outline-success").attr("title", "view").css("margin-left", "5px")
+                                         .html("<i class='fas fa-eye'></i>")
+                                         .click(function () {
+                                             ViewJob(item.PROJECT_ID);
+                                         });
+
+                                    var $deleteButton = $("<button>").attr("type", "button").addClass("btn btn-xs btn-outline-danger").attr("title", "delete").css("margin-left", "5px")
+                                        .html("<i class='fas fa-trash-alt'></i>")
+                                        .click(function () {
+                                            DeleteJob(item.PROJECT_ID);
+                                        });
+
+                                    return $("<div class='btn-toolbox'>").append($editButton).append($viewButton).append($deleteButton);
+
+                                }
+                            }
+                        ]
+
+                        CreateJsGrid(Options, function (retGrid) {
+                            JobTable = retGrid.Grid;
+                            JobTable.jsGrid("option", "editing", false);
+                        });
+                    }
+                }
+        });
+    }
+
+    function EditJob(Dto, IsSablon)
+    {
+        if (!IsSablon) {
+            //EditProfile('#EditOrCreateJob', '#ListJobs');
+
+            var Name = "<i class='fas fa-edit'></i> Edit Job <b>(" + Dto.PROJECT_NUMBER + ")</b>";
+            $("#EditOrCreateJob .editTitle").html(Name);
+            $('.ImportTemplate').hide();
+            $('.importbt').hide();
+            $('.TempName').html("");
+            $("#AdvacedSearch").slideUp();
+            $("#ListJobs").slideUp();
+            $("#EditOrCreateJob").slideDown();
+        }
+
+        var data = {};
+        for (var key in Dto) {
+            if (Dto.hasOwnProperty(key)) {
+                var cntrl = $("#" + key + "");
+                if (cntrl.is("input:text") || key == "CABINETS_NBR" || cntrl.is("textarea") || cntrl.is("input:hidden")
+                    || key == "CONTACT_EMAIL" || key == "PROJECT_START_DATE" || key == "PROJECT_END_DATE" || key == "PROJECT_PROGRESS" || key == "INSTALLATION_DATE"
+                    || key == "TIME"
+                )
+                {
+                    cntrl.val(Dto[key]);
+                }
+                else
+                if (cntrl.is("input:checkbox")) {
+                    document.getElementById(key).checked = Dto[key];
+                }
+                else
+                if (cntrl.is("select")) {
+                        if (key =="CLIENT_ID")
+                        {
+                            cntrl.selectpicker('val', Dto[key]);
+                            data.ClientID = Dto[key];
+                        }
+                        else
+                        if (key =="CLIENT_SUPRVISOR")
+                        {
+                            data.ContactID = Dto[key];
+                            getContactListByClient(data.ClientID, function ()
+                            {
+                                $('#CLIENT_SUPRVISOR').selectpicker('val', data.ContactID);
+                            });
+                        }
+                        else
+                        if (key == "PROJECT_COUNTRY")
+                        {
+                            data.CountryID = Dto[key];
+                            cntrl.selectpicker('val', Dto[key]);
+                        }
+                        else if (key == "PROJECT_STATE") {
+                            data.StateID = Dto[key];
+                        }
+                        else if (key == "PROJECT_CITY") {
+                            data.CityID = Dto[key];
+
+                            var param = {};
+                            param.CountryID = data.CountryID;
+                            GetStateListByCompany(param, function () {
+                                $('#PROJECT_STATE').selectpicker('val', data.StateID);
+                                GetCityListByState(data, function () {
+                                    $('#PROJECT_CITY').selectpicker('val', data.CityID);
+                                });
+                            });
+                        }
+                        else
+                            cntrl.selectpicker('val', Dto[key]);
+                    }
+            }
+        }      
+    }
+
+    function ViewJob(ProjectID)
+    {
+        $("#EditOrCreateJob").slideUp();
+        $("#ListJobs").slideUp();
+        $("#AdvacedSearch").slideUp();
+
+        var url = "@Url.Action("JobView", "Job")" + "/?id=" + ProjectID +"&Layout=0";
+        $.get(url, function (data) {
+            $(".ViewJob").html(data);
+            $(".ViewJob").slideDown();            
+        });
+
+    }
+
+    $("#CLIENT_ID").change(function ()
+    {
+        getContactListByClient($("#CLIENT_ID").val(), function () {
+        });
+    });
+
+    function getContactListByClient(ClientID, callback)
+    {
+        var param = {};
+        param.ClientID = ClientID;
+
+        $.ajax({
+                url: '@Url.Action("GetContactList", "Client")',
+                data: $.param(param),
+                type: 'GET',
+                success: function (retdata)
+                {
+                    var Getlist = retdata.Getlist;
+                    $("#CLIENT_SUPRVISOR").find('option').remove();
+                    $('#CLIENT_SUPRVISOR').selectpicker('refresh');
+                    for (var i = 0; i < Getlist.length; i++)
+                    {
+                            var option = $('<option></option>').attr("value", Getlist[i].CONTACT_ID).text(Getlist[i].CONTACT_NAME);
+                            $("#CLIENT_SUPRVISOR").append(option);
+
+                    }
+                    $('#CLIENT_SUPRVISOR').selectpicker('refresh');
+                    callback();
+                }
+        });
+    }
+
+    function AddGrid(obj)
+    {
+        $("#EditOrCreateJob").slideDown();
+        $("#ListJobs").slideUp();
+        $("#AdvacedSearch").slideUp();
+        $('.ImportTemplate').show();
+        $('.importbt').show();
+
+        FormReset($("#FormReset"));
+        $("#EditOrCreateJob .editTitle").html("<i class='fas fa-plus-circle'></i> Create New Job");
+    }
+
+    function SearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active');
+        JobTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function ChangeGrid(obj) {
+
+        var grid = null;
+        if ($("#ViewQuonte").is(":visible"))
+        {
+            var Active = $('.nav-tabs li.active a').attr("href");
+            var grid = Active == "#Notes" ? NoteTable : null;
+        }
+        else
+        {
+            grid = JobTable;
+        }
+
+        var size = parseInt($(this).val(), 10);
+        grid.jsGrid("option", "pageSize", size);
+    };
+
+    $("#PROJECT_COUNTRY").change(function () {
+        var param = {};
+        param.CountryID = this.value;
+
+        GetStateListByCompany(param, function () {
+        });
+    });
+
+    $("#PROJECT_STATE").change(function () {
+        var param = {};
+        param.StateID = this.value;
+
+        GetCityListByState(param, function () {
+        });
+    });
+
+    $("#PROJECT_CITY").change(function () {
+        var PostalCode = $(this).find("option:selected").attr("alt");
+        $("#PROJECT_POSTAL_CODE").val(PostalCode);
+    });
+
+    function GetStateListByCompany(param,callback)
+    {
+         $.ajax({
+                url: '@Url.Action("GetStateByCompanyID", "Company")',
+                data: $.param(param),
+                type: 'POST',
+                success: function (retdata) {
+                    $("#PROJECT_STATE").find('option').remove();
+                    $('#PROJECT_STATE').selectpicker('refresh');
+
+                    $("#PROJECT_CITY").find('option').remove();
+                    $('#PROJECT_CITY').selectpicker('refresh');
+                    if (IsUndefinedOrNullOrEmpty(retdata.StateList) == false && retdata.StateList.length > 0)
+                    {
+                        var StateList = retdata.StateList;
+                        for (var i = 0; i < StateList.length; i++) {
+                            var option = $('<option></option>').attr("value", StateList[i].STATE_ID).text(StateList[i].STATE_NAME);
+                            $("#PROJECT_STATE").append(option);
+
+                        }
+
+                        $('#PROJECT_STATE').selectpicker('refresh');
+                        changeAddress();
+                        callback();
+                    }
+                }
+            });
+    }
+
+    function GetCityListByState(data, callback)
+    {
+        var param = {};
+        param.StateID = data.StateID;
+
+        $.ajax({
+            url: '@Url.Action("GetCityCompanyID", "Company")',
+            data: $.param(param),
+            type: 'POST',
+            success: function (retdata)
+            {
+                $("#PROJECT_CITY").find('option').remove();
+                $('#PROJECT_CITY').selectpicker('refresh');
+                if (IsUndefinedOrNullOrEmpty(retdata.CityList) == false && retdata.CityList.length > 0) {
+                    var CityList = retdata.CityList;
+                    for (var i = 0; i < CityList.length; i++) {
+                        var option = $('<option></option>').attr("value", CityList[i].CITY_ID).attr("alt", CityList[i].POSTAL_CODE).text(CityList[i].CITY_NAME);
+                        $("#PROJECT_CITY").append(option);
+                    }
+
+                    $('#PROJECT_CITY').selectpicker('refresh');
+                    changeAddress();
+                    callback();
+                }
+            }
+        });
+    }
+
+    function changeAddress()
+    {
+            var lot = $("#ADR_LOT_NBR").val();
+            var unit = $("#ADR_UNIT_NBR").val();
+            var streetN = $("#ADR_STREET_NBR").val();
+            var street = $("#ADR_STREET_NAME").val();
+            var suffix = $("#STREET_SUFFIX_ID option:selected").text();
+            var postCode = $("#PROJECT_POSTAL_CODE").val();
+            var state = $("#PROJECT_STATE option:selected").text();
+            var city = $("#PROJECT_CITY option:selected").text();
+            var addressStr = "";
+            if (lot != null && lot != "")
+                addressStr += "Lot: " + lot + ", ";
+            if (unit != null && unit != "")
+                addressStr += unit + " ";
+            if (streetN != null && streetN != "")
+                addressStr += streetN + " ";
+            if (street != null && street != "")
+                addressStr += street + " ";
+            if (suffix != null && suffix != "" && $("#STREET_SUFFIX_ID").val() != 0)
+                addressStr += suffix + " ";
+            if (city != null && city != "" && $("#PROJECT_STATE").val() != 0)
+                addressStr += city + " ";
+            if (state != null && state != "" && $("#PROJECT_CITY").val() != 0)
+                addressStr += state + " ";
+            if (postCode != null && postCode != "")
+                addressStr += postCode + " ";
+
+            $("#PROJECT_ADDRESS").val(addressStr);
+    }
+
+    function FormReset(element)
+    {
+        element.trigger("reset");
+
+        if (element.attr("id") == "FormReset")
+        {
+            var now = new Date();
+            var today = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+            $('#PROJECT_START_DATE').val(today);
+        }
+
+        $('.selectpicker').each(function (index) {
+
+            if ($(this).attr("id") == "PROJECT_STATE" || $(this).attr("id") == "PROJECT_CITY")
+                $(this).find('option').remove();
+
+            $(this).selectpicker('refresh');
+        });
+
+    }
+
+    function OpenTempDialog(Type)
+    {
+        if (Type == 1)
+        {
+            $('.ImportTemplate').hide();
+            $('.SaveTemplate').show();
+            $("#TEMPNAME").val("");
+
+            $(".titleMd").text("Select Template");
+
+            var TempName = $('.TempName').html().trim();
+            if (IsUndefinedOrNullOrEmpty(TempName) == false && TempName != "") {
+                $("#TEMPNAME").val(TempName);
+                SaveJob(true);
+                $('.dialogbt').removeAttr("data-target");
+            }
+            else
+            {
+                $('.dialogbt').attr("data-target", "#TemplateDialog");
+            }
+
+        }
+        else
+        {
+
+            $('.dialogbt').attr("data-target", "#TemplateDialog");
+            $('.ImportTemplate').show();
+            $('.SaveTemplate').hide();
+
+            $(".titleMd").text("Import Template");
+            ImportDialog();
+        }
+    }
+
+    function SaveJob(IsTemplate)
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '') {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "error");
+                allRequired = false;
+            }
+        });
+
+
+        if (allRequired == false)
+            return;
+
+        var instalitionTime = $("#INSTALLATION_DATE").val();
+        if (IsUndefinedOrNullOrEmpty($("#TIME").val()) == false)
+            instalitionTime += " " + $("#TIME").val();
+
+        param.PROJECT_NAME = $("#PROJECT_NAME").val();
+        param.ADR_LOT_NBR = $("#ADR_LOT_NBR").val();
+        param.ADR_STREET_NAME = $("#ADR_STREET_NAME").val();
+        param.ADR_STREET_NBR = $("#ADR_STREET_NBR").val();
+        param.ADR_UNIT_NBR = $("#ADR_UNIT_NBR").val();
+        param.CABINETS_NBR = $("#CABINETS_NBR").val();
+        param.CLIENT_ID = $("#CLIENT_ID").val();
+        param.CLIENT_PO_NBR = $("#CLIENT_PO_NBR").val();
+        param.CLIENT_SUPRVISOR = $("#CLIENT_SUPRVISOR").val();
+        param.INSTALLATION_DATE = instalitionTime;
+        //param.INSTALLER_ID = $("#INSTALLER_ID").val();//?
+        param.MATERIAL_ID = $("#MATERIAL_ID").val();
+        param.FLOOR_TYPE = $("#FLOOR_TYPE").val();
+        param.PROJECT_ADDRESS = $("#PROJECT_ADDRESS").val();
+        param.PROJECT_AMOUNT = $("#PROJECT_AMOUNT").val();
+        param.PROJECT_CITY = $("#PROJECT_CITY").val();
+        param.PROJECT_COUNTRY = $("#PROJECT_COUNTRY").val();
+        param.PROJECT_DESC = $("#PROJECT_DESC").val();
+        param.PROJECT_POSTAL_CODE = $("#PROJECT_POSTAL_CODE").val();
+        param.PROJECT_PROGRESS = $("#PROJECT_PROGRESS").val();
+        param.PROJECT_START_DATE = $("#PROJECT_START_DATE").val();
+        param.PROJECT_STATE = $("#PROJECT_STATE").val();
+        param.PROJECT_STATUS = $("#PROJECT_STATUS").val();
+        param.PROJECT_SUPERVISOR = $("#PROJECT_SUPERVISOR").val();
+        param.INSTALLER_ID = $("#INSTALLER_ID").val();
+        param.PROJECT_TYPE_ID = $("#PROJECT_TYPE_ID").val();
+        param.QUOTE_ID = $("#QUOTE_ID").val();//?
+        param.STREET_SUFFIX_ID = $("#STREET_SUFFIX_ID").val();
+
+        if (IsTemplate)
+        {
+            param.USE_AS_TEMPLATE = true;
+            param.TEMPLATE_NAME = $("#TEMPNAME").val();
+            param.PROJECT_ID = 0;
+        }
+        else
+        {
+            param.USE_AS_TEMPLATE = false;
+            param.TEMPLATE_NAME = "";
+            param.PROJECT_ID = $("#PROJECT_ID").val();
+        }
+        param.DISPLAY = $("#DISPLAY").prop('checked');
+
+        showHideLoader(true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateJob", "Job")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                        InitGrids(null);
+
+                        if (IsTemplate)
+                        {
+                            //TemplateDiaglog.dialog("close");
+                        }
+
+                        $("#PROJECT_ID").val(retdata.ID);
+
+                        //EditOrViewQuote(false);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function DeleteJob(ProjectID)
+    {
+         if (confirm("Are You Sure?") == true)
+         {
+           showHideLoader(true);
+
+           var param = {};
+             param.ProjectID = ProjectID;
+
+            $.ajax({
+                url: '@Url.Action("DeleteJob", "Job")',
+                type: 'POST',
+                data: $.param(param),
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                            ContactTable.jsGrid("loadData");
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+                    showHideLoader(false);
+                }
+            });
+        }
+    }
+
+    function FromTemplate()
+    {
+        var TempID = $('#TEMPID').val();
+        var param = {};
+        param.ProjectID = TempID;
+        param.IsTemplate = true;
+
+        $('.TempName').html($('#TEMPID').text());
+
+        $.ajax({
+            url: '@Url.Action("GetJobList", "Job")',
+            type: 'GET',
+            data: param,
+            success: function (retdata)
+            {
+                retdata.Getlist.QUOTE_ID = 0;
+                retdata.Getlist.USE_AS_TEMPLATE = false;
+                EditJob(retdata.Getlist[0], true);
+                //TemplateDiaglog.dialog("close");
+            }
+        });
+    }
+
+    function ImportDialog()
+    {
+        $.ajax({
+            url: '@Url.Action("GetAllTemplate", "Job")',
+            type: 'GET',
+            success: function (retdata)
+            {
+                $('.ImportTemplate').show();
+                $('.SaveTemplate').hide();
+
+                var Template = retdata.Template;
+
+                $("#TEMPID").find('option').remove();
+                for (var i = 0; i < Template.length; i++) {
+                    var option = $('<option></option>').attr("value", Template[i].TEMPLATE_ID).text(Template[i].TEMPLATE_NAME);
+                    $("#TEMPID").append(option);
+                }
+
+                $('#TEMPID').selectpicker('refresh');
+                $('.TempName').html("");
+                TemplateDiaglog.dialog("option", "title", "Import Template");
+                TemplateDiaglog.dialog("open");
+            }
+        });
+    }
+
+    function SearchAdvaced() {
+        var str = {};
+        str.FromStart = $("#FromStart").val();
+        str.EndStart = $("#EndStart").val();
+        str.LotNumber = $("#LotNumber").val();
+        str.Material = $("#Material").val() == "" ? -1 : $("#Material").val();
+        str.Floor = $("#Floor").val() == "" ? -1 : $("#Floor").val();
+        str.ProjectType = $("#ProjectType").val() == "" ? -1 : $("#ProjectType").val();
+        str.Client = $("#Client").val() == "" ? -1 : $("#Client").val();
+        str.Supervisor = $("#Supervisor").val() == "" ? -1 : $("#Supervisor").val();
+        InitGrids(str);
+    }
+
+    function CloseViewJob()
+    {
+        $("#EditOrCreateJob").slideUp();
+        $("#ListJobs").slideDown();
+        $("#AdvacedSearch").slideDown();
+        $(".ViewJob").slideUp();
+    }
+
+    function CloseEditProfile() {
+        $("#EditOrCreateJob").slideUp();
+        $("#ListJobs").slideDown();
+        $("#AdvacedSearch").slideDown();
+        $(".ViewJob").slideUp();
+    }
+
+    function CloseViewAndEditPrj(ProjectID)
+    {
+        $("#EditOrCreateJob").slideDown();
+        $("#ListJobs").slideUp();
+        $("#AdvacedSearch").slideUp();
+        $(".ViewJob").slideUp();
+
+        var param = {};
+        param.ProjectID = ProjectID;
+        param.IsTemplate = false;
+
+        $.ajax({
+            url: '@Url.Action("GetJobList", "Job")',
+            type: 'GET',
+            data: param,
+            success: function (retdata)
+            {
+                EditJob(retdata.Getlist[0], false);
+            }
+        });
+    }
+
+</script>

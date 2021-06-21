@@ -1,0 +1,1303 @@
+﻿
+@{
+    ViewBag.Title = "Clients";
+    ViewBag.ActiveMenu = "Clients";
+    ViewBag.MenuOpen = "Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-users"></i> Clients
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Clients</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12 col-xs-12">
+        <div class="card card-cyan card-outline" id="ListClient">
+            <div class="card-header">
+                <label><i class="fas fa-users text-cyan"></i> List Of Clients</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body active spinner ClientGrid" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-xs-12">
+        <div id="card edit-Client">
+            <div class="card card-info displaynone" id="EditOrCreateClient">
+                <div class="card-header">
+                    <h3 class="card-title">Client Details</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormReset'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="ScaleProfile('#EditOrCreateClient')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="EditProfile('#EditOrCreateClient','#ListClient')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body spinercontrol">
+                    <form id="FormReset">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblClient" for="CLIENT_NAME" class="col-sm-4 control-label">Client</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CLIENT_NAME" name="CLIENT_NAME" required data-required-message="Client is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblShortName" for="CLIENT_SHORT_NAME" class="col-sm-4 control-label">Short Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CLIENT_SHORT_NAME" name="CLIENT_SHORT_NAME" required data-required-message="Short Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblBuilderCode" for="CLIENT_CODE" class="col-sm-4 control-label">Client Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CLIENT_CODE" name="CLIENT_CODE" required data-required-message="Client Code is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="CLIENT_TYPE_ID" class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("COMPANY_TYPE_ID", ViewBag.COMPANY_TYPE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_TYPE_ID", @name = "CLIENT_TYPE_ID", @title = "Select Type", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="CLIENT_STATUS_ID" class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("STATUS_ID", ViewBag.STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_STATUS_ID", @name = "CLIENT_STATUS_ID", @title = "Select Status", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblClientSince" for="CLIENT_SINCE" class="col-sm-4 control-label">Customer Since</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control form-control-sm float-right" id="CLIENT_SINCE" name="CLIENT_SINCE">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblWebUrl" for="SUPPLIER_URL" class="col-sm-4 control-label">Web URL</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CLIENT_URL" name="CLIENT_URL">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-info" type="button" onclick="ShowLink($('#CLIENT_URL').val())">GO</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblCountry" for="CLIENT_COUNTRY" class="col-sm-4 control-label">Country</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("COUNTRY_ID", ViewBag.COUNTRIES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_COUNTRY", @name = "CLIENT_COUNTRY", @title = "Select Company", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblState" for="CLIENT_STATE" class="col-sm-4 control-label">State</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("STATE_ID", ViewBag.STATES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_STATE", @name = "CLIENT_STATE", @title = "Select State", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblCity" for="CLIENT_CITY" class="col-sm-4 control-label">City</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("CITY_ID", ViewBag.CITIES_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_CITY", @name = "CLIENT_CITY", @title = "Select City", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPostCode" for=">POSTAL_CODE" class="col-sm-4 control-label">Post Code</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="POSTAL_CODE" name="POSTAL_CODE" disabled required data-required-message="Post Code is required">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="CLIENT_PHONE" class="col-sm-4 control-label">Phone</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CLIENT_PHONE" name="CLIENT_PHONE" data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblLinkedIN" for="CLIENT_LINKEDIN" class="col-sm-4 control-label">LinkedIN</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fab fa-linkedin-in"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CLIENT_LINKEDIN" name="CLIENT_LINKEDIN">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-info" type="button" onclick="ShowLink($('#CLIENT_LINKEDIN').val())">GO</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <label id="lblStrettAdres" for="CLIENT_ADDRESS" class="col-sm-4 control-label">Address</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control form-control-sm" rows="3" id="CLIENT_ADDRESS" name="CLIENT_ADDRESS" required data-required-message="Address is required"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <input type="hidden" name="CLIENT_ID" id="CLIENT_ID" />
+                    <button class="btn btn-danger btn-sm" onclick="EditProfile('#EditOrCreateClient','#ListClient');"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveClient()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--View Client-->
+    <div class="col-sm-12 col-xs-12">
+        <div class="card card-success displaynone" id="ViewClient">
+            <div class="card-header bg-gradient-olive  ">
+                <label class="card-title ViewTitle">List Of Clients</label>
+                <div class="card-tools">
+                    <label class="CreateInf"></label>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" onclick="ScaleProfile('#ViewClient')">
+                        <i class="fas fa-compress"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" onclick="RemoveViewClient()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" style="display: block;">
+                <div class="row">
+                    <div class="col-sm-6 table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th><strong><i class="fas fa-map-marker-alt"></i> Short Name</strong></th>
+                                    <td class="CLIENT_SHORT_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-code"></i> Client Code</strong></th>
+                                    <td class="CLIENT_CODE"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-flag"></i> Country</strong></th>
+                                    <td class="COUNTRY_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-road"></i> State</strong></th>
+                                    <td class="STATE_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-city"></i> City</strong></th>
+                                    <td class="CITY_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-address-card"></i> Address</strong></th>
+                                    <td class="CITY_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-inbox"></i> Post Code</strong></th>
+                                    <td class="POSTAL_CODE"></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th><strong><i class="fas fa-list"></i> Status</strong></th>
+                                    <td class="STATUS_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-building"></i> Type</strong></th>
+                                    <td class="COMPANY_TYPE_NAME"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-phone"></i> Phone</strong></th>
+                                    <td class="CLIENT_PHONE"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fas fa-link"></i> WebUrl</strong></th>
+                                    <td class="CLIENT_URL"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="fab fa-linkedin"></i> Linkedin</strong></th>
+                                    <td class="CLIENT_LINKEDIN"></td>
+                                </tr>
+                                <tr>
+                                    <th><strong><i class="far fa-calendar-alt"></i> Client Since</strong></th>
+                                    <td class="CLIENT_SINCE"></td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card card-success card-outline col-sm-12" id="ViewContact">
+                        <div class="card-header">
+                            <label class="card-title">List Of Contacts</label>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body" style="display: block;">
+                            <div class="col-sm-12">
+                                <div class="active spinner ContactGrid">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <label class="control-label" for="pageSize">Page Size:</label>
+                                            <select id="pageSize" class="selectpicker" data-width="fit" onchange="ChangeGrid(this)">
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                                <option value="50">50</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <button class="btn btn-info btn-sm RefreshItem float-sm-right" onClick="RefreshGrid()">
+                                                <i class="fas fas fa-sync"></i> Refresh
+                                            </button>
+                                            <button class='btn btn-warning btn-sm text-white float-sm-right' data-toggle="modal" data-target="#CopyContact" onclick='CopyContacts()' style='margin-right: 5px'>
+                                                <i class='fas fa-copy'></i> Copy Contacts
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" id="TableContact"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--Contact Edit -->
+    <div class="col-sm-12 col-xs-12">
+        <div id="card edit-Contact">
+            <div class="card card-info card-outline displaynone" id="EditOrCreateContact">
+                <div class="card-header">
+                    <h3 class="card-title">Contact Details</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormResetCon'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="ScaleProfile('#EditOrCreateContact')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="EditProfile('#EditOrCreateContact','#ViewClient')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body spinercontrol1">
+                    <form id="FormResetCon">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblClient" for="CON_CLIENT_ID" class="col-sm-4 control-label">Client</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("CLIENT_ID", ViewBag.CLIENT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CON_CLIENT_ID", @name = "CON_CLIENT_ID", @title = "Select Client", @disabled = "true", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblFirstName" for="CONTACT_FIRST_NAME" class="col-sm-4 control-label">First Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_FIRST_NAME" name="CONTACT_FIRST_NAME" required data-required-message="First Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblLastName" for="CONTACT_LAST_NAME" class="col-sm-4 control-label">Last Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_LAST_NAME" name="CONTACT_LAST_NAME" required data-required-message="Last Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPosition" for="CONTACT_TITLE" class="col-sm-4 control-label">Position</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_TITLE" name="CONTACT_TITLE" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="CONTACT_STATUS" class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("STATUS_ID", ViewBag.STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CONTACT_STATUS", @name = "CONTACT_STATUS", @title = "Select Status", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="CONTACT_ROLE" class="col-sm-4 control-label">Role</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("ROLE_ID", ViewBag.ROLE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CONTACT_ROLE", @name = "CONTACT_ROLE", @title = "Select Role", @required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="CONTACT_PHONE" class="col-sm-4 control-label">Phone</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CONTACT_PHONE" name="CONTACT_PHONE" data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblLastName" for="CONTACT_PHONE_EX" class="col-sm-4 control-label">Phone Extension</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="CONTACT_PHONE_EX" name="CONTACT_PHONE_EX" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="CONTACT_MOBILE" class="col-sm-4 control-label">Mobile</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CONTACT_MOBILE" name="CONTACT_MOBILE" data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-row">
+                                    <label id="lblEmail" for="CONTACT_EMAIL" class="col-sm-4 control-label">Email</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control float-right" id="CONTACT_EMAIL" name="CONTACT_EMAIL">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="IS_PRIMARY">
+                                        <label class="control-label" for="IS_PRIMARY">Primary</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <input type="hidden" name="CONTACT_ID" id="CONTACT_ID" />
+                    <button class="btn btn-danger btn-sm" onclick="EditProfile('#EditOrCreateContact','#ViewClient');"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveContact()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CopyContact.modal -->
+    <div id="CopyContact" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h4 class="modal-title text-white"><i class="fas fa-copy"></i> Copy Contacts</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 ">
+                        <select class="form-control selectpicker" title="Select Source Client" id="OUTERCLIENT" multiple="true" data-style="btn-outline-info">
+                        </select>
+                    </div>
+                    <div class="active spinner ContactCopyGrid" style="display: block;">
+                        <div id="TableContactCopy"></div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-info" onclick="ClientCopyContacts()">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ViewContactModal.modal -->
+    <div id="ViewContactModal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-gradient-success">
+                    <h4 class="modal-title text-white"><i class="fas fa-eye"></i> View Contacts</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal -->
+</div>
+
+<script id="main">
+    var ClientTable = null;    
+
+    var CopyContactData = null;
+    var CopyResourceTable = null;
+    var ViewClientID = 0;
+
+    $(document).ready(function ()
+    {
+        var parameters = localStorage.getItem('Parameters');
+        var defMask = "(999) 999-9999";
+
+        if (IsUndefinedOrNullOrEmpty(parameters) == false) {
+            var objParam = JSON.parse(parameters);
+            $.each(objParam.Getlist, function (i, item) {
+                if (item.PARAM_NAME == "PHONE_MASK") {
+                    defMask = item.PARAM_STR;
+                }
+            });
+        }
+
+        var mask = '"mask": "' + defMask + '"';
+        $('[data-mask]').attr("data-inputmask", mask).inputmask();
+
+
+        $("#CLIENT_COUNTRY").attr("data-required-message", "Country is requried");
+        $("#CLIENT_STATE").attr("data-required-message", "State is requried");
+        $("#CLIENT_CITY").attr("data-required-message", "City is requried");
+        $("#CLIENT_STATUS_ID").attr("data-required-message", "Status is requried");
+        $("#CLIENT_TYPE_ID").attr("data-required-message", "Client Type is requried");
+
+        $('#EditOrCreateContact .selectpicker').attr("data-live-search", "true");
+        //$('.selectpicker').selectpicker();
+
+        RefreshGrid(null);
+
+    });
+
+    function InitGrids(retdata)
+    {
+        CreateHtmlJsGrid("Client", function (retHtml)
+        {
+            $(".ClientGrid").html(retHtml);
+
+
+            retdata.City.push({ CITY_NAME: "", CITY_ID: 0 });
+            retdata.State.push({ STATE_NAME: "", STATE_ID: 0 });
+            retdata.CompanyType.push({ COMPANY_TYPE_NAME: "", COMPANY_TYPE_ID: 0 });
+
+            var Options = {};
+            Options.Name = $("#TableClient");
+            Options.Url = '@Url.Action("GetClientList", "Client")';
+            Options.Data = [];
+            Options.Fields = [
+                { name: "CLIENT_CODE", title: "Client.#", type: "text", width: 80 },
+                {
+                    name: "CLIENT_NAME", title: "Client", type: "text", width: 150,
+                    itemTemplate: function (_, item) {
+
+                        item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                        return $("<span>").text(item.CLIENT_NAME+" ").append($("<div class='badge " + item.DISPLAY_CLASS + "'>").html(item.STATUS_NAME));
+                    }
+                },
+                { name: "CLIENT_TYPE_ID", title: "Company Type", type: "select", items: retdata.CompanyType, valueField: "COMPANY_TYPE_ID", textField: "COMPANY_TYPE_NAME", width: 80 },
+                { name: "CLIENT_STATE", title: "State", type: "select", items: retdata.State, valueField: "STATE_ID", textField: "STATE_NAME", width: 80 },
+                { name: "CLIENT_CITY", title: "City", type: "select", items: retdata.City, valueField: "CITY_ID", textField: "CITY_NAME", width: 80 },
+                {
+                    type: "control",
+                    modeSwitchButton: false,
+                    editButton: false,
+                    width: 60,
+                    align: "center",
+                    itemTemplate: function (_, item)
+                    {
+                        var controlCustimoze = "<button type='button' class='btn btn-xs btn-outline-info' style='margin-left:5px' title='Edit' onclick = 'EditClient(" + JSON.stringify(item) + ")'><i class='fas fa-edit'></i></button>";
+                        controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-success' style='margin-left:5px' title='View' onclick = 'ViewClient(" + JSON.stringify(item) + ")'><i class='fas fa-eye'></i></button> ";
+                        controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-danger'  style='margin-left:5px' title='Delete' onclick = 'DeleteClient(" + item.CLIENT_ID +")'><i class='fas fa-trash-alt'></i></button> ";
+
+                        return $("<td class='btn-toolbar' >").html(controlCustimoze);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                ClientTable = retGrid.Grid;
+                ClientTable.jsGrid("option", "editing", false);
+            });
+        });
+
+    }
+
+    function CreateContactGrid()
+    {
+          $.ajax({
+                url: '@Url.Action("GetListContactFilters", "Client")',
+                type: 'GET',
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata)
+                    {
+
+                        retdata.Client.push({ CLIENT_NAME: "", CLIENT_ID: 0 });
+                        retdata.Role.push({ ROLE_NAME: "", ROLE_ID: 0 });
+
+                        var param = {};
+                        param.ClientID = ViewClientID;
+
+                        var Options = {};
+                        Options.Name = $("#TableContact");
+                        Options.Url = '@Url.Action("GetContactList", "Client")';
+                        Options.LoadParam = param;
+                        Options.Width = "250px";
+                        Options.Data = [];
+                        Options.Fields = [
+                            {
+                                name: "IS_PRIMARY", title: "Primary", type: "text", width: 40,
+                                itemTemplate: function (_, item) {
+                                    var temp = item.IS_PRIMARY ? "<i class='fas fa-user-check fa-2x text-success'></i>" : "";
+                                    return $("<td>").html(temp);
+                                }
+                            },
+                            {
+                                name: "CONTACT_NAME", title: "Contact Name", type: "text", width: 145,
+                                itemTemplate: function (_, item) {
+
+                                    item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                                    return $("<span>").text(item.CONTACT_NAME + " ").append($("<div class='badge " + item.DISPLAY_CLASS + "'>").html(item.STATUS_NAME));
+                                }
+
+                            },
+                            { name: "CONTACT_ROLE", title: "Role", type: "select", items: retdata.Role, valueField: "ROLE_ID", textField: "ROLE_NAME", width: 80 },
+                            { name: "CONTACT_TITLE", title: "Position", width: 80 },
+                            { name: "CONTACT_EMAIL", title: "Email", type: "text", width: 80 },
+                            { name: "CONTACT_PHONE", title: "Phone", type: "text", width: 80 },
+                            {
+                                type: "control",
+                                modeSwitchButton: false,
+                                editButton: false,
+                                width: 80,
+                                align: "center",
+                                itemTemplate: function (_, item)
+                                {
+                                    var controlCustimoze = "<button type='button' class='btn btn-xs btn-outline-info' style='margin-left:5px' title='Edit' onclick = 'EditContact(" + JSON.stringify(item) + ")'><i class='fas fa-edit'></i></button>";
+                                    controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-success' style='margin-left:5px' title='View' onclick = 'ViewContact(" + item.CONTACT_ID + ")' data-toggle='modal' data-target='#ViewContactModal'><i class='fas fa-eye'></i></button> ";
+                                    controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-danger'  style='margin-left:5px' title='Delete' onclick = 'DeleteContact(" + item.CONTACT_ID + ")'><i class='fas fa-trash-alt'></i></button> ";
+
+                                    return $("<td class='btn-toolbar' >").html(controlCustimoze);
+                                }
+                            }
+                        ]
+
+                        CreateJsGrid(Options, function (retGrid) {
+                            ContactTable = retGrid.Grid;
+                            ContactTable.jsGrid("option", "editing", false);
+                        });
+                    }
+                }
+            });
+    }
+
+    function CopyContacts()
+    {
+        var param = {};
+        param.SourceClient = ViewClientID;
+
+        $.ajax({
+            url: '@Url.Action("CopyContactData", "Client")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                $("#OUTERCLIENT").find('option').remove();
+                $('#OUTERCLIENT').selectpicker('refresh');
+                if (IsUndefinedOrNullOrEmpty(retdata.Getlist) == false && retdata.Getlist.length > 0) {
+                    CopyContactData = retdata.Getlist;
+                    for (var i = 0; i < CopyContactData.length; i++)
+                    {
+                        var option = $('<option></option>').attr("value", CopyContactData[i].CLIENT_ID).text(CopyContactData[i].CLIENT_NAME);
+                        $("#OUTERCLIENT").append(option);
+                    }
+
+                    $('#OUTERCLIENT').selectpicker('refresh');
+                    FixSelectPicker();
+
+                    CreateContactCopyGrid();
+                }
+                else
+                {
+                    toastr.error("There is not Contact's belogs outer clients", "error");
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+            }
+        });
+
+    }
+
+    $("#OUTERCLIENT").change(function () {
+        var ClientIDs = this.value;
+
+        var ContactData = [];
+        for (var y = 0; y < ClientIDs.length; y++)
+        {
+            for (var i = 0; i < CopyContactData.length; i++)
+            {
+                if (CopyContactData[i].CLIENT_ID == ClientIDs[y])
+                    ContactData.push(CopyContactData[i]);
+            }
+        }
+
+        CopyResourceTable.jsGrid("option", "data", ContactData);
+    });
+
+    function CreateContactCopyGrid()
+    {
+        var Options = {};
+        Options.Name = $("#TableContactCopy");
+        Options.Url = null;
+        Options.Data = [];
+        Options.Width = "240px";
+        Options.Fields = [
+            {
+                itemTemplate: function (_, item) {
+                    return $("<input>").attr("type", "checkbox").addClass("form-check")
+                        .prop("checked", $.inArray(item, selectedItems) > -1)
+                        .on("change", function () {
+                            $(this).is(":checked") ? selectItem(item) : unselectItem(item);
+                        });
+                },
+                align: "center",
+                width: 50
+            },
+            {
+                name: "CONTACT_NAME", title: "Contact Name", type: "text", width: 145,
+                itemTemplate: function (_, item) {
+
+                    item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                    return $("<span>").text(item.CONTACT_NAME + " ").append($("<div class='badge " + item.DISPLAY_CLASS + "'>").html(item.STATUS_NAME));
+                }
+            },
+            { name: "CONTACT_EMAIL", title: "Email", type: "text", width: 100 },
+            { name: "CONTACT_MOBILE", title: "Mobile", type: "text", width: 100 },
+            //{
+            //    itemTemplate: function (_, item) {
+
+            //        item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+            //        return $("<div class='alert " + item.DISPLAY_CLASS + "'>").html(item.STATUS_NAME);
+            //    }
+            //    , align: "center", width: 80, title: "Status"
+            //}
+        ]
+
+        CreateJsGrid(Options, function (retGrid) {
+            CopyResourceTable = retGrid.Grid;
+            CopyResourceTable.jsGrid("option", "editing", false);
+        });
+
+    }
+
+    var selectedItems = [];
+
+    var selectItem = function (item) {
+        selectedItems.push(item);
+    };
+
+    var unselectItem = function (item) {
+        selectedItems = $.grep(selectedItems, function (i) {
+            return i !== item;
+        });
+    };
+
+
+    function ClientCopyContacts()
+    {
+        CreateLoader($('.spinercontrol1'), true);
+
+        var param = {};
+        param.ClientID = ViewClientID;
+        param.SourceContact = $.map(selectedItems, function (e, i) { return e.CONTACT_ID; });
+
+        $.ajax({
+            url: '@Url.Action("CopyContact", "Client")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false)
+                {
+                    if (retdata)
+                    {
+                        selectedItems = [];
+                        ContactTable.jsGrid("loadData");
+                    }
+                    else
+                    {
+                        toastr.error("Could not be copied ");
+                    }
+                }
+                CreateLoader($('.spinercontrol1'), false);
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol1'), false);
+            }
+        });
+    }
+
+    function EditContact(Dto)
+    {
+        EditProfile('#EditOrCreateContact', '#ViewClient');
+
+        var ClientName = "<i class='fas fa-edit'></i>" + Dto.CLIENT_NAME + " Edit Contact <b>(" + Dto.CONTACT_FIRST_NAME + " " + Dto.CONTACT_LAST_NAME + ")</b>";
+        $("#EditOrCreateContact .card-title").html(ClientName);
+
+        for (var key in Dto) {
+
+            if (Dto.hasOwnProperty(key)) {
+                var cntrl = $("#" + key + "");
+                if (cntrl.is("input:text") || cntrl.is("textarea") || cntrl.is("input:hidden") || key == "CONTACT_EMAIL") {
+                    cntrl.val(Dto[key]);
+                    if (key == "CLIENT_ID")
+                        $("#CON_CLIENT_ID").selectpicker('val', Dto[key]);
+                }
+                else
+                if (cntrl.is("input:checkbox")) {
+                    document.getElementById(key).checked = Dto[key];
+                }
+                else
+                if (cntrl.is("select")) {
+
+                   cntrl.selectpicker('val', Dto[key]);
+                }
+            }
+        }
+    }
+
+    function ViewContact(ContactID)
+    {
+        //var url = "@Url.Action("ContactView", "Client")" + "/" + ContactID;
+        var url = "@Url.Action("ContactView", "Client")" + "/?id=" + ContactID +"&Layout=1";
+        $.get(url, function (data) {
+            $("#ViewContactModal .modal-body").html(data);
+        });
+    }
+
+    function DeleteContact(ContactID)
+    {
+         if (confirm("Are You Sure?") == true)
+         {
+             CreateLoader($('.spinercontrol1'), true);
+
+            var param = {};
+            param.ContactID = ContactID;
+
+            $.ajax({
+                url: '@Url.Action("DeleteContact", "Client")',
+                type: 'POST',
+                data: $.param(param),
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        ContactTable.jsGrid("loadData");
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+                    CreateLoader($('.spinercontrol1'), false);
+                },
+                error: function (xhr, status, error) {
+                    toastr.error(xhr.responseText, "Error!");
+                    CreateLoader($('.spinercontrol1'), false);
+                }
+            });
+        }
+    }
+
+    function SaveContact()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '') {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "Warning");
+                allRequired = false;
+            }
+        });
+
+        var email = $("#CONTACT_EMAIL").val();
+        if (email.indexOf('@@') <= 0 && email != "") {
+            toastr.warning("Email not valid", "Warning");
+            allRequired = false;
+        }
+
+        if (allRequired == false)
+            return;
+
+        param.CONTACT_ID = $("#CONTACT_ID").val();
+        param.CONTACT_FIRST_NAME = $("#CONTACT_FIRST_NAME").val();
+        param.CONTACT_LAST_NAME = $("#CONTACT_LAST_NAME").val();
+        param.CLIENT_ID = $("#CLIENT_ID").val();
+        param.CONTACT_TITLE = $("#CONTACT_TITLE").val();
+        param.CONTACT_STATUS = $("#CONTACT_STATUS").val();
+        param.CONTACT_ROLE = $("#CONTACT_ROLE").val();
+        param.CONTACT_PHONE_EX = $("#CONTACT_PHONE_EX").val();
+        param.CONTACT_PHONE = $("#CONTACT_PHONE").inputmask('unmaskedvalue');;
+        param.CONTACT_MOBILE = $("#CONTACT_MOBILE").inputmask('unmaskedvalue');;
+        param.IS_PRIMARY = $("#IS_PRIMARY").prop('checked');
+        param.CONTACT_EMAIL = $("#CONTACT_EMAIL").val();
+
+        CreateLoader($('.spinercontrol1'), true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateContact", "Client")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    ContactTable.jsGrid("loadData");
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                CreateLoader($('.spinercontrol1'), false);
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol1'), false);
+            }
+        });
+    }
+
+    function EditClient(ClientDto)
+    {
+        EditProfile('#EditOrCreateClient', '#ListClient');
+
+        var ClientName = "<i class='fas fa-edit'></i> Edit Client <b>(" + ClientDto.CLIENT_NAME + ")</b>";
+        $("#EditOrCreateClient .card-title").html(ClientName);
+
+        var data = {};
+        for (var key in ClientDto) {
+            if (ClientDto.hasOwnProperty(key)) {
+                var cntrl = $("#" + key + "");
+                if (cntrl.is("input:text") || cntrl.is("textarea") || cntrl.is("input:hidden")) {
+                    cntrl.val(ClientDto[key]);
+                }
+                else
+                if (cntrl.is("input:checkbox")) {
+                    document.getElementById(key).checked = ClientDto[key];
+                }
+                else
+                if (cntrl.is("select"))
+                {
+                    if (key == "CLIENT_COUNTRY") {
+                        data.CountryID = ClientDto[key];
+                        cntrl.selectpicker('val', ClientDto[key]);
+                    }
+                    else if (key == "CLIENT_STATE") {
+                        data.StateID = ClientDto[key];
+                    }
+                    else if (key == "CLIENT_CITY") {
+                        data.CityID = ClientDto[key];
+
+                        var param = {};
+                        param.CountryID = data.CountryID;
+                        GetStateListByCompany(param, function () {
+                            $('#CLIENT_STATE').selectpicker('val', data.StateID);
+                            GetCityListByState(data, function () {
+                                $('#CLIENT_CITY').selectpicker('val', data.CityID);
+                            });
+                        });
+                    }
+                   else
+                        cntrl.selectpicker('val', ClientDto[key]);
+               }
+            }
+        }
+    }
+
+    function SaveClient()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '') {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "Warning");
+                allRequired = false;
+            }
+        });
+
+        if (allRequired == false)
+            return;
+
+        param.CLIENT_ID = $("#CLIENT_ID").val();
+        param.CLIENT_NAME = $("#CLIENT_NAME").val();
+        param.CLIENT_SHORT_NAME = $("#CLIENT_SHORT_NAME").val();
+        param.CLIENT_TYPE_ID = $("#CLIENT_TYPE_ID").val();
+        param.CLIENT_STATUS_ID = $("#CLIENT_STATUS_ID").val();
+        param.CLIENT_COUNTRY = $("#CLIENT_COUNTRY").val();
+        param.CLIENT_STATE = $("#CLIENT_STATE").val();
+        param.CLIENT_CITY = $("#CLIENT_CITY").val();
+        param.CLIENT_PHONE = $("#CLIENT_PHONE").inputmask('unmaskedvalue');;
+        param.CLIENT_URL = $("#CLIENT_URL").val();
+        param.CLIENT_LINKEDIN = $("#CLIENT_LINKEDIN").val();
+        param.CLIENT_CODE = $("#CLIENT_CODE").val();
+        param.CLIENT_ADDRESS = $("#CLIENT_ADDRESS").val();
+        param.POSTAL_CODE = $("#POSTAL_CODE").val();
+        param.CLIENT_SINCE = $("#CLIENT_SINCE").val();
+
+        CreateLoader($('.spinercontrol'), true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateClient", "Client")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    RefreshGrid(null);
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                CreateLoader($('.spinercontrol'), false);
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol'), false);
+            }
+        });
+    }
+
+    function DeleteClient(ClientID)
+    {
+        if (confirm("Are You Sure?") == true)
+         {
+            CreateLoader($('.spinercontrol'), true);
+
+            var param = {};
+            param.ClientID = ClientID;
+
+              $.ajax({
+                url: '@Url.Action("DeleteClient", "Client")',
+                type: 'POST',
+                data: $.param(param),
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        RefreshGrid(null);
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+                    CreateLoader($('.spinercontrol'), false);
+                },
+                error: function (xhr, status, error) {
+                    toastr.error(xhr.responseText, "Error!");
+                    CreateLoader($('.spinercontrol'), false);
+                }
+            });
+        }
+    }
+
+    function ViewClient(ClientDto) {
+
+        $("#ListClient").slideUp();
+        $("#ViewClient").slideDown();
+
+        var ClientName = "<i class='fas fa-eye'></i> Contract Detail <b>(" + ClientDto.CLIENT_NAME + ")</b>";
+        $("#ViewClient .card-title").html(ClientName);
+
+        ClientName = "<i class='fas fa-eye'></i> Client Detail <b>(" + ClientDto.CLIENT_NAME + ")</b>";
+        $("#ViewClient .ViewTitle").html(ClientName);
+
+        ClientName = "<i class='far fa-clock'></i> Created " + ClientDto.CREATION_DATE + ",Updated " + ClientDto.MODIFIED_DATE;
+        $("#ViewClient .CreateInf").html(ClientName);
+
+        for (var key in ClientDto) {
+            if (ClientDto.hasOwnProperty(key)) {
+                var cntrl = $("." + key + "");
+                if (cntrl.is("td")) {
+                    cntrl.html(ClientDto[key]);
+                }
+            }
+        }
+
+        ViewClientID = ClientDto.CLIENT_ID;
+        CreateContactGrid();
+    }
+
+    function RemoveViewClient()
+    {
+        $("#ViewClient").slideUp();// addClass('displaynone');
+        $("#ListClient").slideDown();
+        ViewClientID = 0;
+    }
+
+    function AddGrid(obj) {
+        EditProfile('#EditOrCreateClient', '#ListClient');
+        $("#EditOrCreateClient .card-title").html("<i class='fas fa-plus-circle'></i> Create New Client");
+
+        //$('#CLIENT_COUNTRY').selectpicker('refresh');
+        //$('#CLIENT_STATUS_ID').selectpicker('refresh');
+        //$('#CLIENT_TYPE_ID').selectpicker('refresh');
+
+        $("#CLIENT_STATE").find('option').remove();
+        $('#CLIENT_STATE').selectpicker('refresh');
+
+        $("#CLIENT_CITY").find('option').remove();
+        $('#CLIENT_CITY').selectpicker('refresh');
+
+        FormReset($('#FormReset'));
+    }
+
+    function SearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active');
+        ClientTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    $("#CLIENT_COUNTRY").change(function ()
+    {
+        var param = {};
+        param.CountryID = this.value;
+
+        //GetSupAdreesCombo(1, param);
+        GetStateListByCompany(param, function ()
+        {
+        });
+    });
+
+    $("#CLIENT_STATE").change(function ()
+    {
+        var param = {};
+        param.StateID = this.value;
+
+        GetCityListByState(param, function () {
+        });
+    });
+
+    function GetStateListByCompany(param,callback)
+    {
+         $.ajax({
+                url: '@Url.Action("GetStateByCompanyID", "Company")',
+                data: $.param(param),
+                type: 'POST',
+                success: function (retdata) {
+                    $("#CLIENT_STATE").find('option').remove();
+                    $('#CLIENT_STATE').selectpicker('refresh');
+
+                    $("#CLIENT_CITY").find('option').remove();
+                    $('#CLIENT_CITY').selectpicker('refresh');
+                    if (IsUndefinedOrNullOrEmpty(retdata.StateList) == false && retdata.StateList.length > 0)
+                    {
+                        var StateList = retdata.StateList;
+                        for (var i = 0; i < StateList.length; i++) {
+                            var option = $('<option></option>').attr("value", StateList[i].STATE_ID).text(StateList[i].STATE_NAME);
+                            $("#CLIENT_STATE").append(option);
+
+                        }
+
+                        $('#CLIENT_STATE').selectpicker('refresh');
+                        callback();
+                    }
+             },
+             error: function (xhr, status, error) {
+                 toastr.error(xhr.responseText, "Error!");
+             }
+            });
+    }
+
+    function GetCityListByState(data, callback)
+    {
+        var param = {};
+        param.StateID = data.StateID;
+
+        $.ajax({
+            url: '@Url.Action("GetCityCompanyID", "Company")',
+            data: $.param(param),
+            type: 'POST',
+            success: function (retdata)
+            {
+                $("#CLIENT_CITY").find('option').remove();
+                $('#CLIENT_CITY').selectpicker('refresh');
+                if (IsUndefinedOrNullOrEmpty(retdata.CityList) == false && retdata.CityList.length > 0) {
+                    var CityList = retdata.CityList;
+                    for (var i = 0; i < CityList.length; i++) {
+                        var option = $('<option></option>').attr("value", CityList[i].CITY_ID).attr("alt", CityList[i].POSTAL_CODE).text(CityList[i].CITY_NAME);
+                        $("#CLIENT_CITY").append(option);
+                    }
+
+                    $('#CLIENT_CITY').selectpicker('refresh');
+                    callback();
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol'), false);
+            }
+        });
+    }
+
+    $("#CLIENT_CITY").change(function ()
+    {
+        var PostalCode = $(this).find("option:selected").attr("alt");
+        $("#POSTAL_CODE").val(PostalCode);
+    });
+
+    function RefreshGrid(obj)
+    {
+        if ($("#ViewClient").is(":visible")) {
+            ContactTable.jsGrid("loadData");
+        }
+        else
+        {
+            $.ajax({
+                    url: '@Url.Action("GetListFilters", "Client")',
+                    type: 'GET',
+                    success: function (retdata) {
+
+                        if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata) {
+                            InitGrids(retdata);
+
+                        }
+                    }
+                });
+        }
+    }
+
+    //function FormReset(element) {
+    //    element.trigger("reset");
+    //    $('.card-footer input:hidden').val("0");
+    //    $('.selectpicker').each(function (index) {
+    //        $(this).selectpicker('refresh');
+    //    });
+    //}
+
+    function ChangeGrid(obj) {
+        var size = parseInt($("#pageSize").val(), 10);
+        if ($("#ViewClient").is(":visible"))
+            ContactTable.jsGrid("option", "pageSize", size);
+        else
+            ClientTable.jsGrid("option", "pageSize", size);
+    };
+</script>

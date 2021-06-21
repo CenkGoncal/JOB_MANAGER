@@ -1,0 +1,510 @@
+﻿
+@{
+    ViewBag.Title = "Contacts";
+    ViewBag.ActiveMenu = "ClientContacts";
+    ViewBag.MenuOpen = "Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+      <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-users"></i> Clients
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Client Contacts</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12 col-xs-12">
+        <div class="card card-cyan card-outline" id="ListContact">
+            <div class="card-header">
+                <label><i class="fas fa-users text-cyan"></i> List Of Contacts</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body active spinner ContactGrid" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div id="card edit-Contact">
+            <div class="card card-info displaynone" id="EditOrCreateContact">
+                <div class="card-header">
+                    <h3 class="card-title">Contact Details</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormReset'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="ScaleProfile('#EditOrCreateContact')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="EditProfile('#EditOrCreateContact','#ListContact')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body spinercontrol">
+                    <form id="FormReset">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblClient" for="CLIENT_ID" class="col-sm-4 control-label">Client</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("CLIENT_ID", ViewBag.CLIENT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CLIENT_ID", @name = "CLIENT_ID", @title = "Select Type", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblFirstName" for="CONTACT_FIRST_NAME" class="col-sm-4 control-label">First Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_FIRST_NAME" name="CONTACT_FIRST_NAME" required data-required-message="First Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblLastName" for="CONTACT_LAST_NAME" class="col-sm-4 control-label">Last Name</label>
+                                    <div class="col-sm-8 ">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_LAST_NAME" name="CONTACT_LAST_NAME" required data-required-message="Last Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPosition" for="CONTACT_TITLE" class="col-sm-4 control-label">Position</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_TITLE" name="CONTACT_TITLE" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="CONTACT_STATUS" class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("STATUS_ID", ViewBag.STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CONTACT_STATUS", @name = "CONTACT_STATUS", @title = "Select Status", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="CONTACT_ROLE" class="col-sm-4 col-xs-4 control-label">Role</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("ROLE_ID", ViewBag.ROLE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CONTACT_ROLE", @name = "CONTACT_ROLE", @title = "Select Role", @required = "true" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="CONTACT_PHONE" class="col-sm-4 control-label">Phone</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CONTACT_PHONE" name="CONTACT_PHONE" data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblLastName" for="CONTACT_PHONE_EX" class="col-sm-4 col-xs-4 control-label">Phone Extension</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="CONTACT_PHONE_EX" name="CONTACT_PHONE_EX" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="CONTACT_MOBILE" class="col-sm-4 control-label">Mobile</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="CONTACT_MOBILE" name="CONTACT_MOBILE" data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-row">
+                                    <label id="lblEmail" for="CONTACT_EMAIL" class="col-sm-4 control-label">Email</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control float-right" id="CONTACT_EMAIL" name="CONTACT_EMAIL">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="form-check">
+                                        <input type="checkbox" id="IS_PRIMARY">
+                                        <label class="control-label" for="IS_PRIMARY">Primary</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <input type="hidden" name="CONTACT_ID" id="CONTACT_ID" />
+                    <button class="btn btn-danger btn-sm" onclick="EditProfile('#EditOrCreateContact','#ListContact');"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success btn-sm pull-right float-sm-right" onclick="SaveContact()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card card-success displaynone" id="ViewContact">
+            <div class="card-header bg-gradient-olive">
+                <label class="card-title"><i class="fas fa-users"></i> List Of Contact</label>
+                <div class="card-tools">
+                    <label class="CreateInf"></label>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" onclick="ScaleProfile('#ViewContact')">
+                        <i class="fas fa-compress"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" onclick="RemoveViewContact()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body" style="display: block;">
+            </div>
+        </div>
+    </div>
+</div>
+<script id="main">
+    var ContactTable;
+
+    $(document).ready(function ()
+    {
+        var parameters = localStorage.getItem('Parameters');
+        var defMaskPhone = "(999) 999-9999";
+        var defMaskMobile = "(999) 999-9999";
+
+        if (IsUndefinedOrNullOrEmpty(parameters) == false) {
+            var objParam = JSON.parse(parameters);
+            $.each(objParam.Getlist, function (i, item) {
+                if (item.PARAM_NAME == "PHONE_MASK") {
+                    defMaskPhone = item.PARAM_STR;
+                }
+                else
+                if (item.PARAM_NAME == "MOBILE_MASK") {
+                    defMaskMobile = item.PARAM_STR;
+                }
+            });
+        }
+
+        var mask = '"mask": "' + defMaskPhone + '"';
+        $('#CONTACT_PHONE').attr("data-inputmask", mask).inputmask();
+
+        mask = '"mask": "' + defMaskMobile + '"';
+        $('#CONTACT_MOBILE').attr("data-inputmask", mask).inputmask();
+
+        $("#CLIENT_ID").attr("data-required-message", "Country is requried");
+        $("#CONTACT_STATUS").attr("data-required-message", "State is requried");
+
+        $('.selectpicker').attr("data-live-search", "true");
+        $('.selectpicker').selectpicker();
+
+        RefreshGrid(null);
+
+    });
+
+   function RefreshGrid(obj)
+    {
+        $.ajax({
+                url: '@Url.Action("GetListContactFilters", "Client")',
+                type: 'GET',
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata) {
+                        InitGrids(retdata);
+
+                    }
+                }
+            });
+        }
+
+    function ChangeGrid(obj) {
+        var size = parseInt($("#pageSize").val(), 10);
+        ContactTable.jsGrid("option", "pageSize", size);
+    };
+
+   function InitGrids(retdata)
+    {
+        CreateHtmlJsGrid("Contact", function (retHtml)
+        {
+            $(".ContactGrid").html(retHtml);
+
+
+            retdata.Client.push({ CLIENT_NAME: "", CLIENT_ID: 0 });
+            retdata.Role.push({ ROLE_NAME: "", ROLE_ID: 0 });
+
+            var param = {};
+            param.ClientID = -1;
+
+            var Options = {};
+            Options.Name = $("#TableContact");
+            Options.Url = '@Url.Action("GetContactList", "Client")';
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                {
+                    name: "IS_PRIMARY", title: "Primary", type: "text", width: 35, filtering: false,
+                    itemTemplate: function (_, item)
+                    {
+                        var temp = item.IS_PRIMARY ? "<i class='fas fa-user-check fa-2x text-success'></i>" : "";
+                        return $("<td>").html(temp);
+                    }
+                },
+                {
+                    name: "CONTACT_NAME", title: "Contact Name", type: "text", width: 100,
+                    itemTemplate: function (_, item) {
+
+                        item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                        return $("<span>").text(item.CONTACT_NAME + " ").append($("<div class='badge " + item.DISPLAY_CLASS + "'>").html(item.STATUS_NAME));
+                    }
+                },
+                { name: "CLIENT_ID", title: "Client", type: "select", items: retdata.Client, valueField: "CLIENT_ID", textField: "CLIENT_NAME", width: 100 },
+                { name: "CONTACT_ROLE", title: "Role", type: "select", items: retdata.Role, valueField: "ROLE_ID", textField: "ROLE_NAME", width: 80 },
+                { name: "CONTACT_TITLE", title: "Position", width: 80 },
+                { name: "CONTACT_EMAIL", title: "Email", type: "text", width: 80 },
+                { name: "CONTACT_PHONE", title: "Phone", type: "text", width: 80 },
+                {
+                    type: "control",
+                    modeSwitchButton: false,
+                    editButton: false,
+                    width: 80,
+                    align: "center",
+                    itemTemplate: function (_, item)
+                    {
+                        var controlCustimoze = "<button type='button' class='btn btn-xs btn-outline-info' title='Edit' style='margin-left:5px' onclick = 'EditContact(" + JSON.stringify(item) + ")'><i class='fas fa-edit'></i></button>";
+                        controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-success' title='View' style='margin-left:5px' onclick = 'ViewContact(" + JSON.stringify(item) + ")'><i class='fas fa-eye'></i></button> ";
+                        controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-danger'  title='Delete'style='margin-left:5px' onclick = 'DeleteContact(" + item.CONTACT_ID + ")'><i class='fas fa-trash-alt'></i></button> ";
+
+
+                        return $("<td class='btn-toolbar' >").html(controlCustimoze);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                ContactTable = retGrid.Grid;
+                ContactTable.jsGrid("option", "editing", false);
+            });
+        });
+    }
+
+    function EditContact(Dto)
+    {
+        EditProfile('#EditOrCreateContact', '#ListContact');
+
+        var ClientName = "<i class='fas fa-edit'></i> Edit Client <b>(" + Dto.CONTACT_FIRST_NAME + " " + Dto.CONTACT_LAST_NAME+")</b>";
+        $("#EditOrCreateContact .card-title").html(ClientName);
+
+        for (var key in Dto) {
+            if (Dto.hasOwnProperty(key)) {
+                var cntrl = $("#" + key + "");
+                if (cntrl.is("input:text") || cntrl.is("textarea") || cntrl.is("input:hidden") || key =="CONTACT_EMAIL") {
+                    cntrl.val(Dto[key]);
+                }
+                else
+                if (cntrl.is("input:checkbox")) {
+                    document.getElementById(key).checked = Dto[key];
+                }
+                else
+                if (cntrl.is("select"))
+                {
+                    cntrl.selectpicker('val', Dto[key]);
+                }
+            }
+        }
+    }
+
+    function ViewContact(Dto) {
+
+        $("#EditOrCreateContact").slideUp();
+        $("#ListContact").slideUp();
+
+        $("#ViewContact").slideDown();
+
+        var ClientName = "<i class='fas fa-eye'></i> Contract Detail <b>(" +  Dto.CONTACT_FIRST_NAME + " " + Dto.CONTACT_LAST_NAME  + ")</b>";
+        $("#ViewContact .card-title").html(ClientName);
+
+        ClientName = "<i class='far fa-clock'></i> Created " + Dto.CREATION_DATE + ",Updated " + Dto.MODIFIED_DATE;
+        $("#ViewContact .CreateInf").html(ClientName);
+
+        //for (var key in Dto) {
+        //    if (Dto.hasOwnProperty(key)) {
+        //        var cntrl = $("." + key + "");
+        //        if (cntrl.is("label")) {
+        //            cntrl.html(Dto[key]);
+        //        }
+        //    }
+        //}
+        var url = "@Url.Action("ContactView", "Client")" + "/?id=" + Dto.CONTACT_ID +"&Layout=0";
+        $.get(url, function (data) {
+            $("#ViewContact .card-body").html(data);
+            //var ViewContact = $("#ViewContactModal").dialog({
+            //    resizable: false,
+            //    height: "auto",
+            //    width: 500,
+            //    modal: true,
+            //    autoOpen: false
+            //});
+            //ViewContact.dialog("open");
+        });
+     }
+
+    function RemoveViewContact() {
+         $("#ViewContact").slideUp();
+         $("#ListContact").slideDown();
+     }
+
+    function DeleteContact(ContactID)
+    {
+         if (confirm("Are You Sure?") == true)
+         {
+             showHideLoader(true);
+
+            var param = {};
+             param.ContactID = ContactID;
+
+              $.ajax({
+                url: '@Url.Action("DeleteContact", "Client")',
+                type: 'POST',
+                data: $.param(param),
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        RefreshGrid(null);
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+                    showHideLoader(false);
+                }
+            });
+        }
+    }
+
+    function SaveContact()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '') {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "Warning");
+                allRequired = false;
+            }
+        });
+
+        var email = $("#CONTACT_EMAIL").val();
+        if (email.indexOf('@@') <= 0 && email != "") {
+            toastr.warning("Email not valid", "Warning");
+            allRequired = false;
+        }
+
+        if (allRequired == false)
+            return;
+
+        param.CONTACT_ID = $("#CONTACT_ID").val();
+        param.CONTACT_FIRST_NAME = $("#CONTACT_FIRST_NAME").val();
+        param.CONTACT_LAST_NAME = $("#CONTACT_LAST_NAME").val();
+        param.CLIENT_ID = $("#CLIENT_ID").val();
+        param.CONTACT_TITLE = $("#CONTACT_TITLE").val();
+        param.CONTACT_STATUS = $("#CONTACT_STATUS").val();
+        param.CONTACT_ROLE = $("#CONTACT_ROLE").val();
+        param.CONTACT_PHONE_EX = $("#CONTACT_PHONE_EX").val();
+        param.CONTACT_PHONE = $("#CONTACT_PHONE").inputmask('unmaskedvalue');;
+        param.CONTACT_MOBILE = $("#CONTACT_MOBILE").inputmask('unmaskedvalue');;
+        param.IS_PRIMARY = $("#IS_PRIMARY").prop('checked');
+        param.CONTACT_EMAIL = $("#CONTACT_EMAIL").val();
+
+        CreateLoader($('.spinercontrol'), true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateContact", "Client")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    RefreshGrid(null);
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                CreateLoader($('.spinercontrol'), false);
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol'), false);
+            }
+        });
+    }
+
+    function AddGrid(obj)
+    {
+        EditProfile('#EditOrCreateContact', '#ListContact');
+        $("#EditOrCreateContact .card-title").html("<i class='fas fa-plus-circle'></i> Create New Contact");
+
+        FormReset($('#FormReset'))
+    }
+
+    function SearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active')
+        ContactTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    //function FormReset(element) {
+    //    element.trigger("reset");
+
+    //    $('.selectpicker').each(function (index) {
+    //        $(this).selectpicker('refresh');
+    //    });
+    //}
+
+</script>

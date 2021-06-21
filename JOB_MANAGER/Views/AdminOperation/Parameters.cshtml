@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "System Configuration";
+    ViewBag.ActiveMenu = "SystemConfiguration";
+    ViewBag.MenuOpen = "Administrator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+   
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>System Configuration</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body active spinner ParameterGrid p-0">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script id="main">
+    var _datDepartment = [];
+    var t1;
+
+    $(document).ready(function ()
+    {
+
+        InitGrids();
+
+    });
+
+    function InitGrids() {
+
+        CreateHtmlJsGrid("Parameter", function (retHtml) {
+            $(".ParameterGrid").html(retHtml);
+
+                var Options = {};
+                Options.Name = $("#TableParameter");
+                Options.Url = '@Url.Action("GetParameterList", "AdminOperation")';
+                Options.Data = [];
+                Options.Fields = [
+                    { name: "PARAM_NAME", title: "Param Name", type: "text", width: 150, validate: "required", editing : false },
+                    { name: "PARAM_STR", title: "Param String", type: "text", width: 100 },
+                    { name: "PARAM_INT", title: "Param İnteger", type: "number", width: 100 },
+                    { name: "PARAM_DT", title: "Param Date", type: "date", width: 100 },
+                    {
+                        itemTemplate: function (_, item) {
+
+                            var element = "";
+                            if (item.PARAM_STR == "PNG")
+                            {
+                                var base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(item.PARAM_IMG)));
+                                element = "<img src='data:image/GIF;base64," + base64String + "' class='img-circle'  width='50' height='50'>"
+                            }
+                            return $("<td>").html(element);
+                        },
+                        name: "PARAM_IMG",title: "Param Image", align: "center", width: 100, type: "file",
+                    },
+                    { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                    {
+                            type: "control", modeSwitchButton: false, width: "60", align: "center",
+                            itemTemplate: function (_, item) {
+
+                                var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                                var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                                var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                                var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                                var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                                return $result.add(element);
+                            }
+
+                    }
+                ]
+
+                CreateJsGrid(Options, function (retGrid) {
+                    t1 = retGrid.Grid;
+
+                    localStorage.setItem('Parameters', JSON.stringify(Options.Data.Getlist));
+
+                    $('[data-toggle="tooltip"]').tooltip({
+                        show: {
+                            effect: "slideDown",
+                            delay: 250
+                        },
+                        content: function () {
+                            return $(this).attr('title');
+                        }
+                    });
+
+                });
+
+            });
+    }
+
+    function OnAddNewItem(args)
+    {
+        showHideLoader(true);
+
+        if (IsUndefinedOrNullOrEmpty(args.item.PARAM_IMG) == false) {
+            readAsBytes(args.item.PARAM_IMG, function (res) {
+                // ArrayInstance assignment to .innerHTML automatically does ArrayInstance.join(',')
+                args.item.PARAM_IMG = res;
+
+                $.ajax({
+                    url: '@Url.Action("AddOrUpdateParameter", "AdminOperation")',
+                    type: 'POST',
+                    data: JSON.stringify(args.item),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+
+                        if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                            t1.jsGrid("loadData");
+                        }
+
+                        if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                            if (retdata.success) {
+                                toastr.success(retdata.Message);
+                            }
+                            else {
+                                toastr.error(retdata.Message);
+                            }
+                        }
+
+                        showHideLoader(false);
+                    }
+                });
+            });
+        }
+        else
+        {
+            $.ajax({
+                url: '@Url.Action("AddOrUpdateParameter", "AdminOperation")',
+                type: 'POST',
+                data: JSON.stringify(args.item),
+                contentType: "application/json; charset=utf-8",
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                        t1.jsGrid("loadData");
+                    }
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    showHideLoader(false);
+                }
+            });
+        }
+
+    }
+
+    function readAsBytes(file, done, doneContext) {
+        var fr = new FileReader, c = doneContext || this;
+        fr.onload = function () {
+            done.call(c, fr.result.replace(/^data.+,/, ''));
+        }
+        fr.readAsDataURL(file);
+    }
+
+    function AddGrid(obj)
+    {        
+        $(obj.children).toggleClass('active');
+        t1.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    };
+
+
+    function SearchGrid(obj)
+    {
+        $(obj.children).toggleClass('active');
+        t1.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+
+    function ChangeGrid(obj)
+    {
+        var size = parseInt(obj.value, 10);
+        t1.jsGrid("option", "pageSize", size);
+    };
+
+</script>

@@ -1,0 +1,646 @@
+﻿
+@{
+    ViewBag.Title = "Company's Employee";
+    ViewBag.ActiveMenu = "Employees";
+    ViewBag.MenuOpen = "MyCompany";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-home"></i> Company
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Employee</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12 col-xs-12">
+        <div class="card card-outline card-cyan" id="ListEmp">
+            <div class="card-header">
+                <label><b><i class="fas fa-list text-cyan"></i></b> List Of Emplooyees</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-1 active spinner EmployeeGrid" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-xs-12">
+        <div id="card edit-profile">
+            <div class="card card-info displaynone" id="EditOrCreateEmp">
+                <div class="card-header">
+                    <h3 class="card-title">Employee Personel Inf.</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormReset'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="ScaleProfile('#EditOrCreateEmp')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="EditProfile('#EditOrCreateEmp','#ListEmp')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body spinercontrol">
+                    <form id="FormReset">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblName" for="FIRST_NAME" class="col-sm-4 control-label">First Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="FIRST_NAME" name="FIRST_NAME" required data-required-message="First Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblInitial" for="EMP_INITIALS" class="col-sm-4 control-label">Initial</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="EMP_INITIALS" name="EMP_INITIALS" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblMobile" for="MOBILE_PHONE" class="col-sm-4 col-xs-4 control-label">Mobile</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-mobile"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="MOBILE_PHONE" name="MOBILE_PHONE" data-inputmask='"mask": "@ViewBag.DefaultMobileMask"' data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblTitle" for="TITLE_ID" class="col-sm-4 col-xs-4 control-label">Title</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("TITLE_ID", ViewBag.TITLE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "TITLE_ID", @name = "TITLE_ID", @title = "Select Title" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblRole" for="ROLE_ID" class="col-sm-4 control-label">Role</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("ROLE_ID", ViewBag.ROLE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "ROLE_ID", @name = "ROLE_ID", @title = "Select Role", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblUserName" for="SYSTEM_USERNAME" class="col-sm-4 col-xs-4 control-label">UserName</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <input type="text" class="form-control form-control-sm" id="SYSTEM_USERNAME" name="SYSTEM_USERNAME" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblLastName" for="LAST_NAME" class="col-sm-4 col-xs-4 control-label">Last Name</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <input type="text" class="form-control form-control-sm" id="LAST_NAME" name="LAST_NAME" required data-required-message="Last Name is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblHiredDate" for="HIRED_DATE" class="col-sm-4 col-xs-4 control-label">Hired Date</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control float-right" id="HIRED_DATE_STR" name="HIRED_DATE_STR">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhoneExt" for="PHONE_EXTENSION" class="col-sm-4 col-xs-4 control-label">Phone Extension</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <input type="text" class="form-control form-control-sm" id="PHONE_EXTENSION" name="PHONE_EXTENSION" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="TEAM_LEADER_ID" class="col-sm-4 col-xs-4 control-label">Supervisor</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("EMP_ID", ViewBag.SUPERVISOR_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm  selectpicker", @id = "TEAM_LEADER_ID", @name = "TEAM_LEADER_ID", @title = "Select Supervisor" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblSupervisor" for="Supervisor" class="col-sm-4 col-xs-4 control-label">Status</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("STATUS_ID", ViewBag.EMPLOYEE_STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "EMP_STATUS_ID", @name = "EMP_STATUS_ID", @title = "Select Status", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row" id="pwd-container">
+                                    <label id="lblPass" for="SYSTEM_PASSWORD" class="col-sm-4 col-xs-4 control-label">Password <i class="fas fa-eye ShowPS"></i> </label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                            </div>
+                                            <input type="password" class="form-control float-right" id="SYSTEM_PASSWORD" name="SYSTEM_PASSWORD">
+                                        </div>
+                                        <div class="pwstrength_viewport_progress"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblEmployeeCode" for="EMP_NUMBER" class="col-sm-4 col-xs-4 control-label">Employee #</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <input type="text" class="form-control form-control-sm" id="EMP_NUMBER" name="EMP_NUMBER" required data-required-message="Employee # is Required!" />
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-row">
+                                    <label id="lblEmail" for="EMP_EMAIL" class="col-sm-4 col-xs-4 control-label">Email</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" class="form-control form-control-sm float-right" id="EMP_EMAIL" name="EMP_EMAIL" onchange="ChangeEmail()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblPhone" for="EMP_PHONE" class="col-sm-4 col-xs-4 control-label">Phone</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="EMP_PHONE" name="EMP_PHONE" data-inputmask='"mask": "@ViewBag.DefaultPhoneMask"' data-mask>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblDepartment" for="DEPARTMENT_ID" class="col-sm-4 col-xs-4 control-label">Department</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("DEPARTMENT_ID", ViewBag.DEPARTMENT_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "DEPARTMENT_ID", @name = "DEPARTMENT_ID", @title = "Select Department", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblContract" for="CONTRACT_TYPE_ID" class="col-sm-4 col-xs-4 control-label">Contract</label>
+                                    <div class="col-sm-8 col-xs-8">
+                                        @Html.DropDownList("CONTRACT_TYPE_ID", ViewBag.CONTRACT_TYPE_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CONTRACT_TYPE_ID", @name = "CONTRACT_TYPE_ID", @title = "Select Contract", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-row">
+                                    <div class="col-xs-4">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="IS_SUPERVISOR" style="margin:0">
+                                            <label class="control-label" for="IS_SUPERVISOR">SuperVizor</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="IS_DRIVER" style="margin:0">
+                                            <label class="control-label" for="IS_DRIVER">Driver</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="IS_INSTALLER" style="margin:0">
+                                            <label class="control-label" for="IS_INSTALLER">Installer</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <input type="hidden" name="EMP_ID" id="EMP_ID" />
+                    <button class="btn btn-danger btn-sm" onclick="EditProfile('#EditOrCreateEmp','#ListEmp');"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveEmp()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script id="main">
+
+    var EmpTable;
+    var dataScore = 0;
+    var IsAdmin = false;
+
+   $(document).ready(function () {
+
+       var UserInfo = JSON.parse(localStorage.getItem('UserInfo'));
+
+       var ParamVal = "";       
+       ParamVal = GetParamVal("EMP_OPERATION_AUT_ROLES", 3);
+       IsAdmin = IsUndefinedOrNullOrEmpty(ParamVal ) ? false : (ParamVal.indexOf(UserInfo.EMP_ROLE) < 0 ? false : true);
+
+       //InitGrids();
+       InitGrids2();
+
+       $("#ROLE_ID").attr("data-required-message", "Role is requried");
+       $("#EMP_STATUS_ID").attr("data-required-message", "Status is requried");
+       $("#DEPARTMENT_ID").attr("data-required-message", "Department is requried");
+       $("#CONTRACT_TYPE_ID").attr("data-required-message", "Contract is requried");
+       //$("#TEAM_LEADER_ID").attr("data-required-message", "Contract is requried");
+
+       $('.selectpicker').attr("data-live-search", "true");
+       $('.selectpicker').selectpicker()
+       $('[data-mask]').inputmask();
+
+       pwstrength('#SYSTEM_PASSWORD');
+
+
+       //$('input[required]').on('invalid', function () {
+       //    this.setCustomValidity($(this).data("required-message"));
+       //});
+   });
+
+    function dataScoreUpd(Score)
+    {
+        dataScore = Score;
+    }
+
+    function InitGrids() {
+
+        CreateHtmlJsGrid("Employee", function (retHtml) {
+            $(".EmployeeGrid").html(retHtml);
+
+            if (!IsAdmin)
+                $(".EmployeeGrid .addItem ").hide();
+
+                var Options = {};
+                Options.Name = $("#TableEmployee");
+                Options.Url = '@Url.Action("GetEmployeeList", "Employee")';
+                Options.Data = [];
+                Options.Fields = [
+                    {
+                        itemTemplate: function (_, item) {
+
+                            var base64String = IsUndefinedOrNullOrEmpty(item.EMP_IMG) ? "@ViewBag.DefaultProfileImg" : btoa(String.fromCharCode.apply(null, new Uint8Array(item.EMP_IMG)));
+                            var img = "<img src='data:image/GIF;base64,"+base64String+"' class='img-circle'  width='50' height='50'>"
+                            return $("<td>").html(img);
+                        }
+                        , align: "center", width: 60
+                    },
+                    { name: "EMP_INITIALS", title: "Employee #", type: "text", width: 60 },
+                    { name: "EMP_NAME", title: "Employee", type: "text", width: 150 },
+                    { name: "EMP_TITLE", title: "Title", type: "text", width: 100 },
+                    { name: "EMP_CONTRACT", title: "Contract", type: "text", width: 80 },
+                    { name: "EMP_DEPARTMENT", title: "Department", type: "text", width: 100 },
+                    { name: "EMP_EMAIL", title: "Email", type: "text", width: 100 },
+                    {
+                        itemTemplate: function (_, item) {
+
+                            item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                            return $("<div class='alert " + item.DISPLAY_CLASS+"'>").html(item.EMP_STATUS);
+                        }
+                        , align: "center", width: 80, title: "State"
+                    }
+
+                ]
+
+                if (IsAdmin)
+                {
+                    Options.Fields.push({
+                        type: "control",
+                        modeSwitchButton: false,
+                        editButton: false,
+                        width: 60,
+                        align: "center",
+                        itemTemplate: function (_, item) {
+                            var controlCustimoze = "<button type='button' class='btn btn-sm btn-outline-info' title='Edit'  onclick = 'EditEmp(" + JSON.stringify(item) + ")'><i class='fas fa-user-edit'></i></button>";
+                            controlCustimoze += "<button type='button' class='btn btn-sm btn-outline-danger' title='Delete' onclick = 'DeleteEmp(" + item.EMP_ID + ")'><i class='fas fa-user-times'></i></button> "
+
+                            return $("<td class='btn-toolbar'>").html(controlCustimoze);
+                        }
+                    });
+
+                }
+
+                CreateJsGrid(Options, function (retGrid) {
+                    EmpTable = retGrid.Grid;
+                    EmpTable.jsGrid("option", "editing", false);
+                });
+
+            });
+    }
+
+    
+
+    function InitGrids2()
+    {
+        var defPageSize = 25;
+        var ParamVal = GetParamVal("GRID_DEFAULT_PAGER_RANGE", 1);
+        if (IsUndefinedOrNullOrEmpty(ParamVal) == false)
+            defPageSize = ParamVal;
+
+
+        CreateHtmlJsGrid("Employee", function (retHtml) {
+            $(".EmployeeGrid").html(retHtml);
+
+            if (!IsAdmin)
+                $(".EmployeeGrid .addItem ").hide();
+
+
+            EmpTable = $("#TableEmployee").jsGrid({
+                height: "400px",
+                width: "100%",
+                autoload: true,
+                paging: true,
+                editing: false,
+
+                pageIndex: 1,
+                pageSize: 2,
+                pageButtonCount: 15,
+                pagerFormat: "Pages: {first} {prev} {pages} {next} {last}    {pageIndex} of {pageCount}",
+                pagePrevText: "Prev",
+                pageNextText: "Next",
+                pageFirstText: "First",
+                pageLastText: "Last",
+                pageNavigatorNextText: "...",
+                pageNavigatorPrevText: "...",
+
+                controller: {
+                    loadData: function () {
+                        var d = $.Deferred();
+
+                        $.ajax({
+                            url: '@Url.Action("GetEmployeeList", "Employee")',
+                            dataType: "json"
+                        }).done(function (response) {
+                            setTimeout(function () {
+                                data = response.Getlist;
+                                d.resolve(response.Getlist);
+                            }, 2000);
+                        });
+
+                        return d.promise();
+                    }
+                },
+                rowRenderer: function (item) {
+                    
+                        var base64String = IsUndefinedOrNullOrEmpty(item.EMP_IMG) ? "@ViewBag.DefaultProfileImg" : btoa(String.fromCharCode.apply(null, new Uint8Array(item.EMP_IMG)));
+                        var img = "<img src='data:image/GIF;base64,"+base64String+"' class='img-circle'  width='128' height='128'>"
+
+                    item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                    var $photo = $("<div>").addClass("col-sm-2 text-center").append(img);
+                    var $info = $("<div>").addClass("col-sm-4")
+                        .append($("<p>").append($("<h2>").addClass("lead").text(item.EMP_NAME + "(" + item.EMP_NUMBER+")")))
+                        .append($("<p>").html("<b><i class='fas fa-user-tag'></i> Title:</b> " + item.EMP_TITLE))
+                        .append($("<p>").html("<b><i class='fas fa-envelope'></i> Contract:</b> " + item.EMP_CONTRACT))
+                        .append($("<p>").html("<b><i class='fas fa-id-badge'></i> Department:</b> " + item.EMP_DEPARTMENT));
+
+                    var $contacts = $("<div>").addClass("col-sm-4")
+                        .append($("<p>").append($("<h2>").addClass("lead").append("<span class='badge " + item.DISPLAY_CLASS + "'>" + item.EMP_STATUS + "</span>")))
+                        .append($("<p>").html("<b><i class='fas fa-phone'></i> Phone:</b>" + (IsUndefinedOrNullOrEmpty(item.EMP_PHONE) ? "N/A" : item.EMP_PHONE)  ))
+                        .append($("<p>").html("<b><i class='fas fas fa-mobile'></i> Mobile:</b>" + (IsUndefinedOrNullOrEmpty(item.MOBILE_PHONE) ? "N/A" : item.MOBILE_PHONE)  ))
+                        .append($("<p>").html("<b><i class='fas fa-envelope'></i> Email:</b> " + (IsUndefinedOrNullOrEmpty(item.EMP_EMAIL) ? "N/A" : item.EMP_EMAIL)));
+
+                    var $control = $("<div>").addClass("col-sm-2");
+                    if (IsAdmin)
+                    {
+                        var controlCustimoze = "<button type='button' style='margin-left:5px' class='btn btn-xs btn-outline-info' title='Edit'  onclick = 'EditEmp(" + JSON.stringify(item) + ")'><i class='fas fa-user-edit'></i></button>";
+                        controlCustimoze += "<button type='button' style='margin-left:5px' class='btn btn-xs btn-outline-danger' title='Delete' onclick = 'DeleteEmp(" + item.EMP_ID + ")'><i class='fas fa-user-times'></i></button> ";
+
+                        $control.append($("<div>").addClass("btn-toolbox float-sm-right").html(controlCustimoze));
+                    }
+
+                    return $("<tr>").addClass("text-dark border").append($("<td>").addClass("row").append($photo).append($info).append($contacts).append($control));
+                },
+                fields: [
+                    { title: "Emplooyees" }
+                ]
+            });
+
+
+        });
+    }
+
+
+    function ChangeEmail()
+    {
+        var email = $("#EMP_EMAIL").val();
+        var txt = email.substring(0, email.indexOf('@@'));
+        if (txt != "" && $("#SYSTEM_USERNAME").val() == "")
+            $("#SYSTEM_USERNAME").val(txt);
+    }
+
+    function AddGrid(obj)
+    {
+        EditProfile('#EditOrCreateEmp', '#ListEmp');
+        $("#EditOrCreateEmp .card-title").html("<i class='fas fa-user-plus'></i> Create New Employee");
+
+        FormReset($('#FormReset'));
+    }
+
+    function ChangeGrid(obj) {
+        var size = parseInt($("#pageSize").val(), 10);
+        EmpTable.jsGrid("option", "pageSize", size);
+    };
+
+    function EditEmp(EmpDto)
+    {
+        EditProfile('#EditOrCreateEmp', '#ListEmp');
+        $("#EditOrCreateEmp .card-title").html("<i class='fas fa-user-edit'></i> Edit Employee");
+
+        for (var key in EmpDto) {
+            if (EmpDto.hasOwnProperty(key))
+            {
+                var cntrl = $("#" + key + "");
+                if (cntrl.is("input:text") || cntrl.is("input:password") || cntrl.is("input:hidden") || key =="HIRED_DATE_STR")
+                {
+                    cntrl.val(EmpDto[key]);
+                    if (cntrl.is("input:password"))
+                        $('#SYSTEM_PASSWORD').pwstrength("forceUpdate");
+                }
+                else
+                if (cntrl.is("input:checkbox"))
+                {
+                    //cntrl.prop("cheked",EmpDto[key]);
+                    document.getElementById(key).checked = EmpDto[key];
+                }
+                else
+                if (cntrl.is("select"))
+                {
+                    cntrl.selectpicker('val', EmpDto[key]);
+                }
+            }
+        }
+    }
+
+    function FormReset(element) {
+        element.trigger("reset");
+        $('.card-footer input:hidden').val("0");
+
+        $('.selectpicker').each(function (index) {
+            $(this).selectpicker('refresh');
+        });
+    }
+
+    function RefreshGrid(obj)
+    {
+      EmpTable.jsGrid("loadData");
+    }
+
+    function SearchGrid(obj) {
+        EmpTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function SaveEmp()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '')
+            {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "Warning");
+                allRequired = false;
+            }
+        });
+
+        var email = $("#EMP_EMAIL").val();
+        if (email.indexOf('@@') <= 0 && email != "")
+        {
+            toastr.warning("Email not valid", "Warning");
+            allRequired = false;
+        }
+
+        dataScore = IsUndefinedOrNullOrEmpty(dataScore) == true ? 0 : dataScore;
+        if (dataScore < 20)
+        {
+            toastr.error("Your Password is weak", "Error!");
+            return;
+        }
+
+        if (allRequired == false)
+            return;
+        //var param = $("form").serialize();
+        param.EMP_ID = $("#EMP_ID").val();
+        param.FIRST_NAME = $("#FIRST_NAME").val();
+        param.LAST_NAME = $("#LAST_NAME").val();
+        param.EMP_INITIALS = $("#EMP_INITIALS").val();
+        param.EMP_NUMBER = $("#EMP_NUMBER").val();
+        param.TITLE_ID = $("#TITLE_ID").val();
+        param.ROLE_ID = $("#ROLE_ID").val();
+        param.CONTRACT_TYPE_ID = $("#CONTRACT_TYPE_ID").val();
+        param.DEPARTMENT_ID = $("#DEPARTMENT_ID").val();
+        param.EMP_STATUS_ID = $("#EMP_STATUS_ID").val();
+        param.EMP_PHONE = $("#EMP_PHONE").inputmask('unmaskedvalue');
+        param.MOBILE_PHONE = $("#MOBILE_PHONE").inputmask('unmaskedvalue');
+        param.PHONE_EXTENSION = $("#PHONE_EXTENSION").val();
+        param.HIRED_DATE = $("#HIRED_DATE_STR").val();//new Date($("#HIRED_DATE").val())
+        param.IS_SUPERVISOR = $("#IS_SUPERVISOR").prop('checked');
+        param.IS_DRIVER = $("#IS_DRIVER").prop('checked');
+        param.IS_INSTALLER = $("#IS_INSTALLER").prop('checked');
+        param.SYSTEM_USERNAME = $("#SYSTEM_USERNAME").val();
+        param.SYSTEM_PASSWORD = $("#SYSTEM_PASSWORD").val();
+        param.TEAM_LEADER_ID = $("#TEAM_LEADER_ID").val();
+        param.EMAIL_USERNAME = email;
+
+        CreateLoader($('.spinercontrol'),true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateEmployee", "Employee")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata)
+            {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success)
+                    {
+                        EmpTable.jsGrid("loadData");
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                CreateLoader($('.spinercontrol'), false);
+            },
+            error: function (xhr, status, error)
+            {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol'), false);
+            }
+        });
+    }
+
+    function DeleteEmp(EmpID)
+    {
+        if (confirm("Are You Sure?") == true)
+        {
+            CreateLoader($('.spinercontrol'), true);
+
+              $.ajax({
+                url: '@Url.Action("DeleteEmployee", "Employee")',
+                type: 'POST',
+                data: { EmpID:EmpID },
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                        if (retdata.success) {
+                            toastr.success(retdata.Message);
+                            EmpTable.jsGrid("loadData");
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+
+                    CreateLoader($('.spinercontrol'), false);
+                  },
+                  error: function (xhr, status, error) {
+                      toastr.error(xhr.responseText, "Error!");
+                      CreateLoader($('.spinercontrol'), false);
+                  }
+            });
+        }
+    }
+
+    $(".ShowPS")
+        .mouseover(function () {
+            $("#SYSTEM_PASSWORD").attr("type", "text");
+        })
+        .mouseout(function () {
+            $("#SYSTEM_PASSWORD").attr("type", "password");
+        });
+
+</script>

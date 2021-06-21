@@ -1,0 +1,328 @@
+﻿@model JOB_MANAGER.Models.NoteDto
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.NOTE_ID > 0 ? "Edit Note" : "Add Note";
+    ViewBag.ActiveMenu = "Jobs";
+    ViewBag.MenuOpen = "";
+
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Jobs", "Job", new { phaseID = 0 })" class="text-white">
+                        <i class="fas fa-briefcase"></i> Jobs
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>@{ if (Model.PHASE_ID > 0) { <span>Edit Note</span> } else { <span>Add Note</span> } }</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card card-success card-outline">
+            <div class="card-header">
+                <h3 class="card-title">
+                    @if (@Model.PHASE_ID > 0)
+                    {
+                        <i class="fas fa-edit text-success"></i> <span>Edit Note(@Model.NOTE_ID)</span>
+                    }
+                    else
+                    {
+                        <i class="fas fa-plus-circle text-success"></i> <span>Add Note</span>
+                    }
+                </h3>
+                <div class="card-tools">
+                    <a href="@Url.Action("JobView", "Job", new { id = Model.UNIQ_ID,Layout = 1 })" class="btn btn-danger btn-sm" style="margin-left:5px"><i class="fas fa-door-closed"></i> Back</a>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveNote()" style="margin-left:5px"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+            <div class="card-body row">
+                <div class="col-sm-12">
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="NOTE_SUBJECT" class="col-sm-4 control-label">Subject</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control form-control-sm" id="NOTE_SUBJECT" required data-required-message="Subject is Required!" />
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStrettAdres" for="NOTE_DESC" class="col-sm-4 control-label">Desc</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control  form-control-sm" rows="3" id="NOTE_DESC" required data-required-message="Desc is required"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_PHASE_ID" class="col-sm-4 control-label">Phase</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("PROJECT_PHASE_ID", ViewBag.PROJECT_PHASE_ID as SelectList, null, htmlAttributes: new { @class = "form-control  form-control-sm selectpicker", @id = "PROJECT_PHASE_ID", @title = "Select Phase" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#PROJECT_PHASE_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label for="PROJECT_TASK_ID" class="col-sm-4 control-label">Task</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("ASSINGED_MEMBERS_ARR", ViewBag.PROJECT_TASK_ID as SelectList, null, htmlAttributes: new { @class = "form-control  form-control-sm selectpicker", @id = "PROJECT_TASK_ID", @title = "Select Task" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#PROJECT_TASK_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="ASSINGED_MEMBERS_ARR" class="col-sm-4 control-label">Assinged Member</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("ASSINGED_MEMBERS_ARR", ViewBag.MEMBER_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "ASSINGED_MEMBERS_ARR", @title = "Select Member" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#ASSINGED_MEMBERS_ARR'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        <label id="lblStatus" for="NOTE_TYPE_ID" class="col-sm-4 control-label">Note Type</label>
+                        <div class="col-sm-8">
+                            <div class="btn-group col-sm-12 p-0">
+                                @Html.DropDownList("NOTE_TYPE_ID", ViewBag.NOTE_TYPE_ID as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "NOTE_TYPE_ID", @title = "Select Note Type" })
+                                <button class="btn btn-danger btn-sm" onclick="Temizle($('#NOTE_TYPE_ID'))"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-bottom: 2px">
+                        @{
+                            if (Model.SET_REMINDER)
+                            {
+                                <input type="checkbox" id="SET_REMINDER" checked="checked" onchange="ReminderChange()">
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="SET_REMINDER">
+                            }
+                        }
+                        <label class="control-label mx-2" for="SET_REMINDER"> Set Reminder</label>
+                    </div>
+                </div>
+                <div class="col-sm-12 ReminderInf displaynone">
+                    <div class="row border">
+                        <div class="col-sm-6">
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="REMINDER_DATE" class="col-sm-4 control-label">Reminder Date</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar"></i></span>
+                                        </div>
+                                        <input type="date" class="form-control float-right" id="REMINDER_DATE" value="@Model.REMINDER_DATE">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="REMINDER_TIME" class="col-sm-4 control-label">Reminder Time</label>
+                                <div class="col-sm-8">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                        </div>
+                                        <input type="time" class="form-control float-right" id="REMINDER_TIME" value="@Model.REMINDER_TIME">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-row" style="margin-bottom: 2px">
+                                <label for="TO_REMIND_ARR" class="col-sm-4 control-label">Remmind</label>
+                                <div class="col-sm-8">
+                                    <div class="btn-group col-sm-12 p-0">
+                                        @Html.DropDownList("TO_REMIND_ARR", ViewBag.MEMBER_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "TO_REMIND_ARR", @multiple = "true", @title = "Select Member" })
+                                        <button class="btn btn-danger btn-sm" onclick="Temizle($('#TO_REMIND_ARR'))"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+ <script>
+
+     $(document).ready(function ()
+     {
+        var NoteTypeID = @Model.NOTE_TYPE_ID;
+        var PhaseID = @Model.PHASE_ID;
+        var TaskID = @Model.TASK_ID;
+
+        $("#ASSINGED_MEMBERS_ARR").prop("multiple",true);
+        $("#TO_REMIND_ARR").prop("multiple",true);        
+        
+
+        $("#NOTE_SUBJECT").val("@Model.NOTE_SUBJECT");
+        $("#NOTE_DESC").val("@Model.NOTE_DESC");
+        $("#NOTE_TYPE_ID").selectpicker('val', NoteTypeID);
+        $("#PROJECT_PHASE_ID").selectpicker('val', PhaseID);
+        if (PhaseID > 0) {
+            ChangePhase(function () {
+                $("#PROJECT_TASK_ID").selectpicker('val', TaskID);
+                FixSelectPicker();
+            });
+        }
+        
+
+        var param = {};
+        param.TypeID = 2;
+        param.UniqID = @Model.UNIQ_ID;
+        param.NoteID = @Model.NOTE_ID;
+
+        $.ajax({
+            url: '@Url.Action("GetNoteList", "Job")',
+            type: 'GET',
+            data: $.param(param),
+            success: function (retdata)
+            {
+                $("#TO_REMIND_ARR").selectpicker('val', retdata.Getlist[0].TO_REMIND_ARR);
+                $("#ASSINGED_MEMBERS_ARR").selectpicker('val', retdata.Getlist[0].ASSINGED_MEMBERS_ARR);
+                FixSelectPicker();
+            }
+        });
+
+        ReminderChange();
+    });
+
+    $("#PROJECT_PHASE_ID").change(function () {
+
+        ChangePhase(function () { });
+    });
+
+    function ChangePhase(callback)
+    {
+        var param = {};
+        param.ProjectID = @Model.UNIQ_ID;
+        param.PhaseID = $("#PROJECT_PHASE_ID").val();
+        param.TaskID = 0;
+
+        $.ajax({
+            url: '@Url.Action("GetTaskList", "Job")',
+            data: $.param(param),
+            type: 'GET',
+            success: function (retdata) {
+                var Getlist = retdata.Getlist;
+                $("#PROJECT_TASK_ID").find('option').remove();
+                $('#PROJECT_TASK_ID').selectpicker('refresh');
+                for (var i = 0; i < Getlist.length; i++) {
+                    var option = $('<option></option>').attr("value", Getlist[i].PROJECT_TASK_ID).text(Getlist[i].PROJECT_TASK_NAME);
+                    $("#PROJECT_TASK_ID").append(option);
+
+                }
+                $('#PROJECT_TASK_ID').selectpicker('refresh');
+                FixSelectPicker();
+                callback();
+            }
+        });
+    };
+
+    $("#SET_REMINDER").change(function () {
+
+        ReminderChange();
+    });
+
+    function ReminderChange()
+    {
+        if ($("#SET_REMINDER").prop("checked"))
+            $('.ReminderInf').removeClass("displaynone").slideDown();
+        else
+            $('.ReminderInf').slideUp();
+    }
+
+
+    function SaveNote()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if (IsUndefinedOrNullOrEmpty($(this).val()))
+            {
+                var message = $(this).attr("data-required-message")
+                toastr.error(message, "error");
+                allRequired = false;
+            }
+        });
+
+        param.SET_REMINDER = $("#SET_REMINDER").prop("checked");
+        if (param.SET_REMINDER)
+        {
+            if (IsUndefinedOrNullOrEmpty($("#REMINDER_DATE").val()))
+            {
+                toastr.error("Reminder Date is required", "error");
+                allRequired = false;
+            }
+
+            if (IsUndefinedOrNullOrEmpty($("#TO_REMIND_ARR").val())) {
+                toastr.error("Reminder Member is required", "error");
+                allRequired = false;
+            }
+
+            param.TO_REMIND_ARR = $("#TO_REMIND_ARR").val();
+
+            param.REMINDER_DATE = $("#REMINDER_DATE").val();
+            if (IsUndefinedOrNullOrEmpty($("#REMINDER_TIME").val()) == false)
+                param.REMINDER_DATE += " " + $("#REMINDER_TIME").val();
+        }
+
+
+        if (IsUndefinedOrNullOrEmpty($("#NOTE_TYPE_ID").val())) {
+            toastr.error("Note Type is required", "error");
+            allRequired = false;
+        }
+
+        if (IsUndefinedOrNullOrEmpty($("#ASSINGED_MEMBERS_ARR").val())) {
+            toastr.error("Assinged Member is required", "error");
+            allRequired = false;
+        }
+        debugger;
+        if (allRequired == false)
+            return;
+
+        param.NOTE_KIND_ID = 2;
+        param.UNIQ_ID = @Model.UNIQ_ID;
+        param.NOTE_ID = @Model.NOTE_ID;
+        param.NOTE_TYPE_ID = $("#NOTE_TYPE_ID").val();
+        param.NOTE_DESC = $("#NOTE_DESC").val();
+        param.NOTE_SUBJECT = $("#NOTE_SUBJECT").val();
+        if ($("#PROJECT_PHASE_ID").val() != "")
+            param.PHASE_ID = $("#PROJECT_PHASE_ID").val();
+        if ($("#PROJECT_TASK_ID").val() != "")
+            param.TASK_ID = $("#PROJECT_TASK_ID").val();
+
+        param.ASSINGED_MEMBERS_ARR = $("#ASSINGED_MEMBERS_ARR").val();
+
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateNote", "Quote")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata)
+            {
+
+                if (retdata.success)
+                    toastr.success("Save Note");
+                else
+                    toastr.error(retdata.Message,"error");
+            }
+        });
+
+    }
+ </script>

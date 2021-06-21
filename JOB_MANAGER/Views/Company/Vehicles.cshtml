@@ -1,0 +1,445 @@
+﻿
+@{
+    ViewBag.Title = "Vehicles";
+    ViewBag.ActiveMenu = "Vehicles";
+    ViewBag.MenuOpen = "MyCompany";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-home"></i> Company
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Vehicle</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card card-outline card-cyan" id="ListVehicle">
+            <div class="card-header">
+                <label><i class="fas fa-list text-cyan"></i> List Of Vehicle</label>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body active spinner VehicleGrid p-1" style="display: block;">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div id="card edit-vehicle">
+            <div class="card card-info displaynone" id="EditOrCreateVec">
+                <div class="card-header">
+                    <h3 class="card-title">Vehicle Inf.</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" title="Reset" OnClick="FormReset($('#FormReset'))">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="ScaleProfile('#EditOrCreateVec')">
+                            <i class="fas fa-compress"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" onclick="EditProfile('#EditOrCreateVec','#ListVehicle')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body spinercontrol">
+                    <form id="FormReset">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblVecNbr" for="VEHICLE_NBR" class="col-sm-4 control-label">Vehicle #</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="VEHICLE_NBR" name="VEHICLE_NBR" required data-required-message="Vehicle is Required!" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStatus" for="VEHICLE_STATUS" class="col-sm-4 control-label">Status</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("STATUS_ID", ViewBag.STATUS_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "VEHICLE_STATUS", @name = "VEHICLE_STATUS", @title = "Select Status", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblDriver" for="CURRENT_DRIVER" class="col-sm-4 control-label">Driver</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("EMP_ID", ViewBag.DRIVER_LIST as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "CURRENT_DRIVER", @name = "CURRENT_DRIVER", @title = "Select Driver", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblTag" for="ASSIGNED_TAG" class="col-sm-4 control-label">Tag</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="ASSIGNED_TAG" name="ASSIGNED_TAG" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblReg" for="REGISTRATION_NUMBER" class="col-sm-4 control-label">Reg. #</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="REGISTRATION_NUMBER" name="REGISTRATION_NUMBER" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblRegDate" for="REGISTRATION_EXPIRY" class="col-sm-4 control-label">Registration Due</label>
+                                    <div class="col-sm-8">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                            </div>
+                                            <input type="date" class="form-control float-right" id="REGISTRATION_EXPIRY" name="REGISTRATION_EXPIRY">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblModel" for="VEHICLE_MAKE_ID" class="col-sm-4 control-label">Make</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("VEHICLE_MAKE_ID", ViewBag.VEHICLE_MAKES as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "VEHICLE_MAKE_ID", @name = "VEHICLE_MAKE_ID", @title = "Select Vehicle Make", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblModel" for="BODY_TYPE_ID" class="col-sm-4 control-label">Body Type</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("BODY_TYPE_ID", ViewBag.VEHICLE_BODYS as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "BODY_TYPE_ID", @name = "BODY_TYPE_ID", @title = "Select Vehicle Body Type", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblModel" for="VEHICLE_MODEL_ID" class="col-sm-4 control-label">Model</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("VEHICLE_MODEL_ID", ViewBag.VEHICLE_MODELS as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "VEHICLE_MODEL_ID", @name = "VEHICLE_MODEL_ID", @title = "Select Model", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblYear" for="VEHICLE_YEAR" class="col-sm-4 control-label">Year</label>
+                                    <div class="col-sm-8">
+                                        @Html.DropDownList("YOM_ID", ViewBag.VEHICLE_YEARS as SelectList, null, htmlAttributes: new { @class = "form-control form-control-sm selectpicker", @id = "VEHICLE_YEAR", @name = "VEHICLE_YEAR", @title = "Select Year", @required = "true" })
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblVecNbr" for="VEHICLE_COLOR" class="col-sm-4 control-label">Color</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control form-control-sm" id="VEHICLE_COLOR" name="VEHICLE_COLOR" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-row">
+                                    <label id="lblStrettAdres" for="VEHICLE_DESC" class="col-sm-4 control-label">Description</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control form-control-sm" rows="3" id="VEHICLE_DESC" name="VEHICLE_DESC" required data-required-message="Description is required"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <input type="hidden" name="VEHICLE_ID" id="VEHICLE_ID" />
+                    <button class="btn btn-danger btn-sm" onclick="EditProfile('#EditOrCreateEmp','#ListEmp');"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn btn-success btn-sm float-sm-right" onclick="SaveVec()"><i class="far fa-save"></i> Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script id="main">
+
+    var VecTable;
+
+    $(document).ready(function () {
+        
+        $("#VEHICLE_MAKE_ID").attr("data-required-message", "Vehicle Make is requried");
+        $("#BODY_TYPE_ID").attr("data-required-message", "Body Type is requried");
+        $("#VEHICLE_MODEL_ID").attr("data-required-message", "Vehicle Model is requried");
+        $("#VEHICLE_YEAR").attr("data-required-message", "Year is requried");
+        $("#CURRENT_DRIVER").attr("data-required-message", "Driver is requried");
+        $("#VEHICLE_STATUS").attr("data-required-message", "Status is requried");
+
+        $('.selectpicker').attr("data-live-search", "true");
+        $('.selectpicker').selectpicker()
+
+        InitGrids();
+
+        //pwstrength('#Pass');
+
+    });
+
+    function AddGrid(obj) {
+        EditProfile('#EditOrCreateVec', '#ListVehicle');
+        $("#EditOrCreateVec .card-title").html("<i class='fas fa-plus-circle'></i> Create New Vehicle");        
+        FormReset($('#FormReset'));
+    }
+
+    function FormReset(element) {
+        element.trigger("reset");
+
+        $('.selectpicker').each(function (index) {
+            $(this).selectpicker('refresh');
+        });
+    }
+
+    function SearchGrid(obj) {
+
+        $(obj.children).toggleClass('active');
+        VecTable.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    };
+
+    function InitGrids()
+    {
+        CreateHtmlJsGrid("Vehicle", function (retHtml)
+        {
+            $(".VehicleGrid").html(retHtml);
+
+            var Options = {};
+            Options.Name = $("#TableVehicle");
+            Options.Url = '@Url.Action("GetVeciclesList", "Company")';
+            Options.Data = [];
+            Options.Fields = [
+                {
+                    name: "VEHICLE_NBR", title: "Vehicle #", type: "text", width: 80,
+                    itemTemplate: function (_, item) {
+
+                        item.DISPLAY_CLASS = IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) ? "" : item.DISPLAY_CLASS;
+
+                        return $("<span>").text(item.VEHICLE_NBR + " ").append($("<div class='badge " + item.DISPLAY_CLASS + "'>").html(item.VEHICLE_STATUS_NAME));
+                    }                
+
+                },
+                { name: "DRIVER_NAME", title: "Driver", type: "text", width: 150 },
+                { name: "REGISTRATION_NUMBER", title: "Reg.#", type: "text", width: 150 },
+                { name: "MODELVEHICLE_MODEL_NAME", title: "Contract", type: "text", width: 80 },            
+                {
+                    type: "control",
+                    modeSwitchButton: false,
+                    editButton: false,
+                    width: 60,
+                    align: "center",
+                    itemTemplate: function (_, item)
+                    {
+                        var controlCustimoze = "<button type='button' class='btn btn-xs btn-outline-info' style='margin-left: 5px;' title='Edit'  onclick = 'EditVec(" + JSON.stringify(item) + ")'><i class='fas fa-edit'></i></button>";
+                        controlCustimoze += "<button type='button' class='btn btn-xs btn-outline-danger'  style='margin-left: 5px;' title='Delete' onclick = 'DeleteVec(" + item.VEHICLE_ID + ")'><i class='fas fa-trash-alt'></i></button> "
+
+                        return $("<td class='btn-toolbar'>").html(controlCustimoze);
+                    }
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                VecTable = retGrid.Grid;
+                VecTable.jsGrid("option", "editing", false);
+            });
+
+        });
+    }
+
+    function EditVec(VecDto)
+    {
+        EditProfile('#EditOrCreateVec', '#ListVehicle');
+        $("#EditOrCreateVec .card-title").html("<i class='fas fa-edit'></i> Edit Vehicle <b>(" + VecDto.VEHICLE_NBR + ")</b>");
+
+        for (var key in VecDto)
+        {
+            if (VecDto.hasOwnProperty(key))
+            {
+                var cntrl = $("#" + key + "");
+                if (cntrl.is("input:text") || cntrl.is("textarea") || cntrl.is("input:hidden") || key == "REGISTRATION_EXPIRY")
+                {
+                    cntrl.val(VecDto[key]);
+                }
+                else
+                if (cntrl.is("input:checkbox")) {
+                    cntrl.prop("cheked", VecDto[key]);
+                }
+                else
+                if (cntrl.is("select"))
+                {
+                    if (key == "VEHICLE_MODEL_ID")
+                    {
+                        GetVecModelList(VecDto[key]);
+                    }
+                    else
+                        cntrl.selectpicker('val', VecDto[key]);
+                }
+            }
+        }
+    }
+
+    $("#VEHICLE_MAKE_ID").change(function () {
+        GetVecModelList(null);
+    });
+
+    $("#BODY_TYPE_ID").change(function () {
+        GetVecModelList(null);
+    });
+
+
+    function GetVecModelList(Value)
+    {
+        var param = {};
+        param.VecMakesID = IsUndefinedOrNullOrEmpty($("#VEHICLE_MAKE_ID").val()) ? 0 : $("#VEHICLE_MAKE_ID").val();
+        param.VecBodysID = IsUndefinedOrNullOrEmpty($("#BODY_TYPE_ID").val()) ? 0 : $("#BODY_TYPE_ID").val();
+
+        $.ajax({
+            url: '@Url.Action("GetVecModelList", "Company")',
+            data: $.param(param),
+            type: 'POST',
+            success: function (retdata)
+            {
+                $("#VEHICLE_MODEL_ID").find('option').remove();
+                $('#VEHICLE_MODEL_ID').selectpicker('refresh');
+                if (IsUndefinedOrNullOrEmpty(retdata.ModelList) == false && retdata.ModelList.length > 0)
+                {
+                    var ModelList = retdata.ModelList;
+                    for (var i = 0; i < ModelList.length; i++) {
+                        var option = $('<option></option>').attr("value", ModelList[i].VEHICLE_MODEL_ID).text(ModelList[i].VEHICLE_MODEL_NAME);
+                        $("#VEHICLE_MODEL_ID").append(option);
+                    }
+
+                    $('#VEHICLE_MODEL_ID').selectpicker('refresh');
+
+                    if (IsUndefinedOrNullOrEmpty(Value) == false)
+                        $('#VEHICLE_MODEL_ID').selectpicker('val', Value);
+                }
+            }
+        });
+    };
+
+    function RefreshGrid(obj)
+    {
+        VecTable.jsGrid("loadData");
+    }
+
+    function ChangeGrid(obj) {
+        var size = parseInt($("#pageSize").val(), 10);
+        VecTable.jsGrid("option", "pageSize", size);
+    };
+
+    function SaveVec()
+    {
+        var required = $('input,textarea,select').filter('[required]:visible');
+
+        var allRequired = true;
+        var param = {};
+        required.each(function () {
+            if ($(this).val() == '')
+            {
+                var message = $(this).attr("data-required-message")
+                toastr.warning(message, "Warning");
+                allRequired = false;
+            }
+        });
+
+        if (allRequired == false)
+            return;
+        //var param = $("form").serialize();
+        param.VEHICLE_ID = $("#VEHICLE_ID").val();
+        param.VEHICLE_NBR = $("#VEHICLE_NBR").val();
+        param.VEHICLE_STATUS = $("#VEHICLE_STATUS").val();
+        param.VEHICLE_MODEL_ID = $("#VEHICLE_MODEL_ID").val();
+        param.VEHICLE_MAKE_ID = $("#VEHICLE_MAKE_ID").val();
+        param.BODY_TYPE_ID = $("#BODY_TYPE_ID").val();
+        param.CURRENT_DRIVER = $("#CURRENT_DRIVER").val();
+        param.REGISTRATION_NUMBER = $("#REGISTRATION_NUMBER").val();
+        param.REGISTRATION_EXPIRY = $("#REGISTRATION_EXPIRY").val();
+        param.ASSIGNED_TAG = $("#ASSIGNED_TAG").val();
+        param.VEHICLE_DESC = $("#VEHICLE_DESC").val();
+        param.VEHICLE_YEAR = $("#VEHICLE_YEAR").val();//new Date($("#HIRED_DATE").val())
+        param.VEHICLE_COLOR = $("#VEHICLE_COLOR").val();
+
+        CreateLoader($('.spinercontrol'), true);
+        $.ajax({
+            url: '@Url.Action("AddOrUpdateVehicle", "Company")',
+            type: 'POST',
+            data: $.param(param),
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                {
+                    if (retdata.success)
+                    {
+                        toastr.success(retdata.Message);
+                        VecTable.jsGrid("loadData");
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                CreateLoader($('.spinercontrol'), false);
+            },
+            error: function (xhr, status, error) {
+                toastr.error(xhr.responseText, "Error!");
+                CreateLoader($('.spinercontrol'), false);
+            }
+        });
+    }
+
+    function DeleteVec(VehicleID)
+    {
+        if (confirm("Are You Sure?") == true)
+        {
+             showHideLoader(true);
+
+            var param = {};
+            param.VehicleID = VehicleID;
+
+            CreateLoader($('.spinercontrol'), true);
+              $.ajax({
+                url: '@Url.Action("DeleteVehicle", "Company")',
+                type: 'POST',
+                data: $.param(param),
+                success: function (retdata) {
+
+                    if (IsUndefinedOrNullOrEmpty(retdata.Message) == false)
+                    {
+                        if (retdata.success)
+                        {
+                            toastr.success(retdata.Message);
+                            VecTable.jsGrid("loadData");
+                        }
+                        else {
+                            toastr.error(retdata.Message);
+                        }
+                    }
+                    CreateLoader($('.spinercontrol'), true);
+                  },
+                  error: function (xhr, status, error) {
+                      toastr.error(xhr.responseText, "Error!");
+                      CreateLoader($('.spinercontrol'), false);
+                  }
+            });
+        }
+    }
+
+</script>

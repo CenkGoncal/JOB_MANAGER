@@ -1,0 +1,95 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JOBMANAGER | Locked User</title>
+
+    <link href="~/Content/adminlte/adminlte.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome-all.min.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/nexenus")
+    @{
+        var emp = ViewBag.LockedUserName as JOB_MANAGER.Models.LockedEmpInfo;
+    }
+</head>
+<body class="hold-transition lockscreen">
+    <!-- Automatic element centering -->
+    <div class="lockscreen-wrapper" style="background-color:whitesmoke">
+        <div class="login-logo">
+            <a href="Home/Index"><b>JOB</b>MANAGER</a>
+        </div>
+        <!-- User name -->
+        <div class="lockscreen-name">@emp.EMP_NAME</div>
+
+        <!-- START LOCK SCREEN ITEM -->
+        <div class="lockscreen-item">
+            <!-- lockscreen image -->
+            <div class="lockscreen-image">
+                @if (emp.EMP_IMG == null)
+                {
+                    <img src="http://placehold.it/100x100" alt="profile image" class="img-circle prof_img" width="100" height="100" />
+                }
+                else
+                {
+                    var base64 = Convert.ToBase64String(emp.EMP_IMG);
+                    var imgsrc = string.Format("data:image/GIF;base64,{0}", base64);
+                    <img src='@imgsrc' alt="profile image" class="img-circle prof_img" width="128" height="128" />
+                }
+
+            </div>
+            <!-- /.lockscreen-image -->
+            <!-- lockscreen credentials (contains the form) -->
+            <form action="@Url.Action("LockedUser", "Login")" method="post">
+                <div class="input-group">
+                    <input type="password" class="form-control" placeholder="password" name="password">
+
+                    <div class="input-group-append">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-arrow-right text-muted"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" id="errorMessage">
+
+                </div>
+            </form>
+            <!-- /.lockscreen credentials -->
+
+        </div>
+        <!-- /.lockscreen-item -->
+        <div class="help-block text-center">
+            Enter your password to retrieve your session
+        </div>
+        <div class="text-center">
+            <a href="login.html">Or sign in as a different user</a>
+        </div>
+        <div class="lockscreen-footer text-center">
+            Copyright &copy; 2014-2020 <b><a href="#" class="text-black"><b>JOB</b>MANAGER</a></b><br>
+            All rights reserved
+        </div>
+    </div>
+    <script id="main">
+        $(document).ready(function () {
+
+            $(".lockscreen").css("background", "#495057");
+
+            var LoginFaultMessaga = "@ViewBag.LoginFaultMessage";
+            if (LoginFaultMessaga != null && LoginFaultMessaga != "")
+            {
+                var ErrorTemplate = '<div class="alert alert-danger" role="alert">'
+                ErrorTemplate += '<strong>' + LoginFaultMessaga + '</strong> Try Again.'
+                ErrorTemplate += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                ErrorTemplate += '<span aria-hidden="true">&times;</span></button>';
+
+
+                $("#errorMessage").html(ErrorTemplate);
+            }
+        });
+    </script>
+</body>
+</html>

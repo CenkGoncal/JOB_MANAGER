@@ -1,0 +1,471 @@
+﻿
+@{
+    ViewBag.Title = "Vehicle";
+    ViewBag.ActiveMenu = "Vehicle";
+    ViewBag.MenuOpen = "Administrator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-sm-12 p-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb bg-gradient-olive">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")" class="text-white">
+                        <i class="fas fa-tachometer-alt"></i> Dasboard
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-white">
+                        <i class="nav-icon fas fa-tools"></i> Administrator
+                    </a>
+                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                </li>
+                <li class="breadcrumb-item active"><i class="far fa-star text-white" aria-hidden="true"></i>Vehicle</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="card card-default">
+            <div class="card-header">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-truck"></i> Vehicle</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" onclick="StepperPrevious()">
+                        <i class="far fa-arrow-alt-circle-left fa-2x text-primary"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" onclick="StepperNext()">
+                        <i class="far fa-arrow-alt-circle-right fa-2x text-primary"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <!-- your steps here -->
+                        <div class="step" data-target="#Vehiclebody-part" onclick="ChangeStaperWithIndex(1)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Vehiclebody-part" id="Vehiclebody-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fas fa-truck-moving" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">Vehicle Body</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#Vehiclemakes-part" onclick="ChangeStaperWithIndex(2)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Vehiclemakes-part" id="Vehiclemakes-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fas fa-shipping-fast" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">Vehicle Makes</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#Vehiclemodels-part" onclick="ChangeStaperWithIndex(3)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Vehiclemodels-part" id="Vehiclemodels-part-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fas fa-truck" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">Vehicle Models</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#Vehiclestatus-part" onclick="ChangeStaperWithIndex(4)">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="Vehiclestatus-part" id="Vehiclestatus-part-trigger">
+                                <span class="bs-stepper-circle">
+                                    <i class="fas fa-ban" aria-hidden="true"></i>
+                                </span>
+                                <span class="bs-stepper-label">Vehicle Status</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bs-stepper-content">
+                        <!-- your steps content here -->
+                        <div id="Vehiclebody-part" class="content spinner" role="tabpanel" aria-labelledby="Vehiclebody-part-trigger">
+                        </div>
+                        <div id="Vehiclemakes-part" class="content spinner" role="tabpanel" aria-labelledby="Vehiclemakes-part-trigger">
+                        </div>
+                        <div id="Vehiclemodels-part" class="content spinner" role="tabpanel" aria-labelledby="Vehiclemodels-part-trigger">                            
+                        </div>
+                        <div id="Vehiclestatus-part" class="content spinner" role="tabpanel" aria-labelledby="Vehiclestatus-part-trigger">
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </div>
+</div>
+</div>
+    <script id="main">
+    var stepper;
+    var Bodytb, MakesTb, ModelTb, StatusTb;
+
+    var Classes = [
+        { Name: "Primary", Class: "alert-primary", id: 1 },
+        { Name: "Secondary", Class: "alert-secondary", id: 2 },
+        { Name: "Success", Class: "alert-success", id: 3 },
+        { Name: "Danger", Class: "alert-danger", id: 4 },
+        { Name: "Warning", Class: "alert-warning", id: 5 },
+        { Name: "Info", Class: "alert-info", id: 6 },
+        { Name: "Light", Class: "alert-light", id: 7 },
+        { Name: "Dark", Class: "alert-dark", id: 8 }
+    ];
+
+    $(document).ready(function () {
+
+        stepper = new Stepper(document.querySelector('.bs-stepper'))
+        InitGrids();
+    })
+
+    function InitGrids() {
+
+        CreateHtmlJsGrid("Vehiclestatus", function (retHtml) {
+            $("#Vehiclestatus-part").html(retHtml);
+
+            var param = {};
+            param.StatusType = 2;
+
+            var Options = {};
+            Options.Name = $("#TableVehiclestatus");
+            Options.Url = "@Url.Action("GetStatusList", "AdminOperation")";
+            Options.LoadParam = param;
+            Options.Data = [];
+            Options.Fields = [
+                { name: "STATUS_NAME", title: "Status", type: "text", width: 150, validate: "required" },
+                {
+                    align: "center", name: "DISPLAY_CLASS", title: "Display Class", type: "select", items: Classes, valueField: "Class", textField: "Name", width: "50",
+                    itemTemplate: function (_, item) {
+
+                        if (IsUndefinedOrNullOrEmpty(item.DISPLAY_CLASS) == false)
+                        {
+                            var cssClass = item.DISPLAY_CLASS.replace("alert-", "");
+                            var Upper = cssClass.charAt(0).toUpperCase() + cssClass.slice(1);
+                            return $("<div class='alert " + item.DISPLAY_CLASS + " role='alert' style='font-size: small'>").html(Upper);
+                        }
+                    }
+                },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                StatusTb = retGrid.Grid;
+
+                OnVehicleMakesGridCreate(retGrid.Data);
+
+            });
+        });
+
+        CreateHtmlJsGrid("Vehiclebody", function (retHtml) {
+            $("#Vehiclebody-part").html(retHtml);
+
+            var Options = {};
+            Options.Name = $("#TableVehiclebody");
+            Options.Url = "@Url.Action("GetVehiclebody", "AdminOperation")";
+            Options.Data = [];
+            Options.Fields = [
+                { name: "BODY_TYPE_NAME", title: "Body Type", type: "text", width: 150, validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add(element);
+                    }
+
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                Bodytb = retGrid.Grid;
+
+                OnVehicleMakesGridCreate(retGrid.Data);
+
+            });
+        });
+    }
+
+    function OnVehicleMakesGridCreate(BodyData)
+    {
+        CreateHtmlJsGrid("Vehiclemakes", function (retHtml) {
+            $("#Vehiclemakes-part").html(retHtml);
+
+            var Options = {};
+            Options.Name = $("#TableVehiclemakes");
+            Options.Url = "@Url.Action("GetVehiclemakesList", "AdminOperation")";
+            Options.Data = [];
+            Options.Fields = [
+                { name: "VEHICLE_MAKE_NAME", title: "Vehicle Make", type: "text", width: 150, validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                {
+                        type: "control", modeSwitchButton: false, width: "50", align: "center",
+                        itemTemplate: function (_, item) {
+
+                            var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                            var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                            var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                            var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                            var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                            return $result.add(element);
+                        }
+
+                }
+            ]
+
+            CreateJsGrid(Options, function (retGrid) {
+                MakesTb = retGrid.Grid;
+
+                OnVehicleModelGridCreate(BodyData, retGrid.Data);
+
+            });
+
+        });
+    }
+
+    function OnVehicleModelGridCreate(BodyData,MakesData)
+    {
+        CreateHtmlJsGrid("Vehiclemodels", function (retHtml)
+        {
+            $("#Vehiclemodels-part").html(retHtml);
+
+
+            MakesData.push({ VEHICLE_MAKE_NAME: "", VEHICLE_MAKE_ID: 0 });
+            BodyData.push({ BODY_TYPE_NAME: "", BODY_TYPE_ID: 0 });
+
+            var Options = {};
+            Options.Name = $("#TableVehiclemodels");
+            Options.Url = "@Url.Action("GetVehiclemodelsList", "AdminOperation")";
+            Options.Data = [];
+            Options.Fields = [
+                { name: "VEHICLE_MAKE_ID", title: "Vehicle Make", type: "select", items: MakesData, valueField: "VEHICLE_MAKE_ID", textField: "VEHICLE_MAKE_NAME", validate: "required" },
+                { name: "BODY_TYPE", title: "Body Type", type: "select", items: BodyData, valueField: "BODY_TYPE_ID", textField: "BODY_TYPE_NAME", validate: "required" },
+                { name: "VEHICLE_MODEL_NAME", title: "Model", type: "text", validate: "required" },
+                { name: "IS_CANCELED", title: "Cancelled", type: "checkbox", width: 50 },
+                {
+                    type: "control", modeSwitchButton: false, width: "50", align: "center",
+                    itemTemplate: function (_, item) {
+
+                        var $result = jsGrid.fields.control.prototype.itemTemplate.apply(this, arguments);
+
+                        var create = IsUndefinedOrNullOrEmpty(item.CREATION_DATE) ? "" : item.CREATION_DATE;
+                        var modified = IsUndefinedOrNullOrEmpty(item.MODIFIED_DATE) ? "" : item.MODIFIED_DATE;
+                        var createBy = IsUndefinedOrNullOrEmpty(item.CREATE_BY) ? "@HttpContext.Current.User.Identity.Name" : item.CREATE_BY;
+
+                        var element = "<i class='fas fa-info-circle mx-1' data-toggle='tooltip'  style='font-size: large;' title='Create By:" + createBy + "<br/> Create:" + create + " <br/> Modified:" + modified + "'></i>";
+
+                        return $result.add(element);
+                    }
+
+                }
+            ];
+
+            CreateJsGrid(Options, function (retGrid) {
+                ModelTb = retGrid.Grid;
+
+                $('[data-toggle="tooltip"]').tooltip({
+                    show: {
+                        effect: "slideDown",
+                        delay: 250
+                    },
+                    content: function () {
+                        return $(this).attr('title');
+                    }
+                });
+            });
+        });
+    }
+
+    function OnAddNewItem(args)
+    {
+        showHideLoader(true);
+
+        var Url;
+        var Grid;
+
+        if ($('.bs-stepper-content .active').attr("id") == "Vehiclebody-part") {
+
+            args.item.BODY_TYPE_ID = args.item.BODY_TYPE_ID == null ? -1 : args.item.BODY_TYPE_ID;
+            Url = '@Url.Action("AddOrUpdateVehiclebody", "AdminOperation")';
+            Grid = Bodytb;
+        }
+        else
+        if ($('.bs-stepper-content .active').attr("id") == "Vehiclemakes-part")
+        {
+            args.item.VEHICLE_MAKE_ID = args.item.VEHICLE_MAKE_ID == null ? -1 : args.item.VEHICLE_MAKE_ID;
+            Url = '@Url.Action("AddOrUpdateVehiclemake", "AdminOperation")';
+            Grid = MakesTb;
+        }
+        else
+        if ($('.bs-stepper-content .active').attr("id") == "Vehiclemodels-part")
+        {
+            args.item.VEHICLE_MODEL_ID = args.item.VEHICLE_MODEL_ID == null ? -1 : args.item.VEHICLE_MODEL_ID;
+            Url = '@Url.Action("AddOrUpdateVehiclemodels", "AdminOperation")';
+            Grid = ModelTb;
+        }
+        else
+        {
+            args.item.STATUS_ID = args.item.STATUS_ID == null ? -1 : args.item.STATUS_ID;
+            args.item.STATUS_TYPE = 2;
+            Url = '@Url.Action("AddOrUpdateStatus", "AdminOperation")';
+            Grid = StatusTb;
+        }
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/jsonp; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    Grid.jsGrid("loadData");
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+
+                    if (retdata.success)
+                    {
+                        toastr.success(retdata.Message);
+                    }
+                    else
+                    {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function OnDeleteITem(args)
+    {
+        showHideLoader(true);
+
+        var Url;
+        var Grid;
+
+        if ($('.bs-stepper-content .active').attr("id") == "Vehiclebody-part")
+        {
+            Url = '@Url.Action("RemoveVehiclebody", "AdminOperation")';
+            Grid = Bodytb;
+        }
+        else
+        if ($('.bs-stepper-content .active').attr("id") == "Vehiclemakes-part")
+        {
+            Url = '@Url.Action("RemoveVehiclemake", "AdminOperation")';
+            Grid = MakesTb;
+        }
+        else
+        if ($('.bs-stepper-content .active').attr("id") == "Vehiclemodels-part")
+        {
+            Url = '@Url.Action("RemoveVehiclemodels", "AdminOperation")';
+            Grid = ModelTb;
+        }
+        else
+        {
+            Url = '@Url.Action("RemoveStatus", "AdminOperation")';
+            Grid = StatusTb;
+        }
+
+        $.ajax({
+            url: Url,
+            type: 'POST',
+            data: JSON.stringify(args.item),
+            contentType: "application/json; charset=utf-8",
+            success: function (retdata) {
+
+                if (IsUndefinedOrNullOrEmpty(retdata) == false && retdata.success) {
+                    Grid.jsGrid("loadData");
+                }
+
+                if (IsUndefinedOrNullOrEmpty(retdata.Message) == false) {
+                    if (retdata.success) {
+                        toastr.success(retdata.Message);
+                    }
+                    else {
+                        toastr.error(retdata.Message);
+                    }
+                }
+
+                showHideLoader(false);
+            }
+        });
+    }
+
+    function SearchGrid(obj) {
+        var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+        var grid = ActiveID == "Vehiclebody-part" ? Bodytb :(ActiveID == "Vehiclemakes-part" ? MakesTb : (ActiveID == "Vehiclemodels-part" ? ModelTb : StatusTb));
+
+        $(obj.children).toggleClass('active');
+        grid.jsGrid("option", "filtering", $(obj.children).hasClass('active'));
+    }
+
+    function AddGrid(obj) {
+        var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+        var grid = ActiveID == "Vehiclebody-part" ? Bodytb : (ActiveID == "Vehiclemakes-part" ? MakesTb : (ActiveID == "Vehiclemodels-part" ? ModelTb : StatusTb));
+
+        $(obj.children).toggleClass('active');
+        grid.jsGrid("option", "inserting", $(obj.children).hasClass('active'));
+    }
+
+    function RefreshGrid(obj) {
+        var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+        var grid = ActiveID == "Vehiclebody-part" ? Bodytb : (ActiveID == "Vehiclemakes-part" ? MakesTb : (ActiveID == "Vehiclemodels-part" ? ModelTb : StatusTb));
+
+        grid.jsGrid("loadData");
+    }
+
+
+    function ChangeGrid(obj) {
+
+        var size = parseInt(obj.value, 10);
+        var ActiveID = $('.bs-stepper-content .dstepper-block').attr("id");
+        var grid = ActiveID == "Vehiclebody-part" ? Bodytb : (ActiveID == "Vehiclemakes-part" ? MakesTb : (ActiveID == "Vehiclemodels-part" ? ModelTb : StatusTb));
+
+        grid.jsGrid("option", "pageSize", size);
+
+    }
+
+    function StepperNext() {
+        stepper.next();
+    }
+
+    function StepperPrevious() {
+        stepper.previous();
+    }
+
+    function ChangeStaperWithIndex(index) {
+        stepper.to(index);
+    }
+
+</script>
