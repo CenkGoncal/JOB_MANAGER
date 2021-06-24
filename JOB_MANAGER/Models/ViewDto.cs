@@ -437,4 +437,17 @@ namespace JOB_MANAGER.Models
         public string MODIFIED_DATE { get; set; }
     }
 
+    public class VehicleModelExtented : VEHICLE_MODELS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class StatusExtented : STATUS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
 }

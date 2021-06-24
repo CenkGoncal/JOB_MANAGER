@@ -169,11 +169,13 @@
     <Compile Include="Models\Concrete\ParameterDal.cs" />
     <Compile Include="Models\Concrete\RoleDal.cs" />
     <Compile Include="Models\Concrete\StateDal.cs" />
+    <Compile Include="Models\Concrete\StatusDal.cs" />
     <Compile Include="Models\Concrete\StreetDal.cs" />
     <Compile Include="Models\Concrete\TitleDal.cs" />
     <Compile Include="Models\Concrete\VehicleBodyDal.cs" />
     <Compile Include="Models\Concrete\VehicleDal.cs" />
     <Compile Include="Models\Concrete\VehicleMakeDal.cs" />
+    <Compile Include="Models\Concrete\VehicleModelDal.cs" />
     <Compile Include="Models\CONTACTS.cs">
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>

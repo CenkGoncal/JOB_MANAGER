@@ -386,242 +386,48 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclemodelsList()
         {
-            var data = (from vm in db.VEHICLE_MODELS
-
-                        join e in db.EMPLOYEES
-                        on vm.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-
-                        select new
-                        {
-                            VEHICLE_MAKE_ID = vm.VEHICLE_MAKE_ID,
-                            BODY_TYPE = vm.BODY_TYPE,
-                            VEHICLE_MODEL_ID = vm.VEHICLE_MODEL_ID,
-                            VEHICLE_MODEL_NAME = vm.VEHICLE_MODEL_NAME,
-                            IS_CANCELED = vm.IS_CANCELED,
-                            CREATION_DATE = vm.CREATION_DATE != null ?
-                                                    vm.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                    (vm.CREATION_DATE.Month > 9 ? vm.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + vm.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                    vm.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = vm.MODIFIED_DATE != null ?
-                                                    vm.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                    (vm.MODIFIED_DATE.Month > 9 ? vm.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + vm.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                    vm.MODIFIED_DATE.Day : null,
-                            CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                        }
-           ).OrderBy(o => o.VEHICLE_MODEL_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            VehicleModelDal vehicle = new VehicleModelDal(UserInfo);
+            return Json(new { Getlist = vehicle.GetAll2() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclemodels(VEHICLE_MODELS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            VehicleModelDal vehicle = new VehicleModelDal(UserInfo);
+            var control = vehicle.AddorUpdate(param, (f => f.VEHICLE_MODEL_ID == param.VEHICLE_MODEL_ID));
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
 
-            try
-            {
-                VEHICLE_MODELS body = db.VEHICLE_MODELS.Where(w => w.VEHICLE_MODEL_ID == param.VEHICLE_MODEL_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (body == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.VEHICLE_MODELS.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    body.BODY_TYPE = param.BODY_TYPE;
-                    body.VEHICLE_MAKE_ID = param.VEHICLE_MAKE_ID;
-                    body.VEHICLE_MODEL_ID = param.VEHICLE_MODEL_ID;
-                    body.IS_CANCELED = param.IS_CANCELED;
-                    body.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.VEHICLE_MODELS.Attach(body);
-                    db.Entry(body).Property(x => x.BODY_TYPE).IsModified = true;
-                    db.Entry(body).Property(x => x.VEHICLE_MAKE_ID).IsModified = true;
-                    db.Entry(body).Property(x => x.VEHICLE_MODEL_ID).IsModified = true;
-                    db.Entry(body).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(body).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
         }
 
         [HttpPost]
         public JsonResult RemoveVehiclemodels(VEHICLE_MODELS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                VEHICLE_MODELS bodyType = db.VEHICLE_MODELS.Where(w => w.VEHICLE_MAKE_ID == param.VEHICLE_MAKE_ID).FirstOrDefault();
-                if (bodyType != null)
-                {
-                    db.VEHICLE_MODELS.Remove(bodyType);
-                    db.SaveChanges();
-
-                    _success = true;
-                    _message = "Operation Successful";
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            VehicleModelDal vehicle = new VehicleModelDal(UserInfo);
+            var control = vehicle.Delete(param);
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpGet]
         public JsonResult GetStatusList(int StatusType)
         {
-            var data = (from s in db.STATUS
-
-                        join e in db.EMPLOYEES
-                        on s.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-                        where  s.STATUS_TYPE == StatusType
-                        select new
-                        {
-                            STATUS_ID = s.STATUS_ID,
-                            STATUS_NAME = s.STATUS_NAME,
-                            DISPLAY_CLASS = s.DISPLAY_CLASS,
-                            IS_CANCELED = s.IS_CANCELED,
-                            CREATION_DATE = s.CREATION_DATE != null ?
-                                                    s.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                    (s.CREATION_DATE.Month > 9 ? s.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + s.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                    s.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = s.MODIFIED_DATE != null ?
-                                                    s.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                    (s.MODIFIED_DATE.Month > 9 ? s.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + s.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                    s.MODIFIED_DATE.Day : null,
-                            CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                        }
-                       ).OrderBy(o => o.STATUS_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            StatusDal status = new StatusDal(UserInfo);
+            return Json(new { Getlist = status.GetAll2().Where(w=>w.STATUS_ID == StatusType).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateStatus(STATUS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                STATUS Status = db.STATUS.Where(w => w.STATUS_ID == param.STATUS_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (Status == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.STATUS.Add(param);
-                    db.SaveChanges();
-
-                }
-                else
-                {
-
-                    Status.MODIFIED_DATE = DateTime.Now;
-                    Status.STATUS_NAME = param.STATUS_NAME;
-                    Status.IS_CANCELED = param.IS_CANCELED;
-                    Status.DISPLAY_CLASS = param.DISPLAY_CLASS;
-                    Status.UPDATED_BY = GetUserID();
-                    Status.STATUS_TYPE = param.STATUS_TYPE;
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.STATUS.Attach(Status);
-                    db.Entry(Status).Property(x => x.STATUS_NAME).IsModified = true;
-                    db.Entry(Status).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(Status).Property(x => x.DISPLAY_CLASS).IsModified = true;
-                    db.Entry(Status).Property(x => x.UPDATED_BY).IsModified = true;
-                    db.Entry(Status).Property(x => x.STATUS_TYPE).IsModified = true;
-
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-
-            return Json(new { success = _success, Message = _message });
+            StatusDal status = new StatusDal(UserInfo);
+            var control = status.AddorUpdate(param, (f => f.STATUS_ID == param.STATUS_ID));
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveStatus(STATUS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                var checkEmployee = db.EMPLOYEES.Where(w => w.EMP_STATUS_ID == param.STATUS_ID).FirstOrDefault();
-                //var checkVehicle = db.ve.Where(w => w.EMP_STATUS_ID == param.STATUS_ID).FirstOrDefault();TODO
-                if (checkEmployee != null)
-                {
-                    _message = "Employees are available to use this employee status!! Please try to check cancelled.";
-                }
-                else
-                {
-                    STATUS Status = db.STATUS.Where(w => w.STATUS_ID == param.STATUS_ID).FirstOrDefault();
-                    if (Status != null)
-                    {
-                        db.STATUS.Remove(Status);
-                        db.SaveChanges();
-
-                        _success = true;
-                        _message = "Operation Successful";
-                    }
-                    else
-                    {
-                        _message = "Status not found!!";
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            StatusDal status = new StatusDal(UserInfo);
+            var control = status.Delete(param);
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
