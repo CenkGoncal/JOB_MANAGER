@@ -402,4 +402,39 @@ namespace JOB_MANAGER.Models
         public int COUNTRY_ID { get; set; }
         public bool IS_DEFAULT { get; set; }
     }
+
+    public class ParameterExtented : PARAMETERS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class CompanyTypesExtented : COMPANY_TYPES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+    public class VehiclesExtented : VEHICLES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }       
+    }
+
+    public class VehicleBodysExtented : VEHICLE_BODY_TYPES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class VehicleMakeExtented : VEHICLE_MAKES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
 }

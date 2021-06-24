@@ -14,11 +14,19 @@ namespace JOB_MANAGER.Models.Concrete
         where TEntity : class, IEntity, new()
         where TContext : DbContext, new()
         where TDto : class, IViewDto, new()
-    {
+    {       
+
+        protected TContext context;
+
+        public EntityRepositoryBase()
+        {
+            context = (TContext)Activator.CreateInstance(typeof(TContext));
+        }
+
 
         public ShowState AddorUpdate(TEntity param, Expression<Func<TEntity, bool>> filter)
         {
-            using (TContext context = new TContext())
+            using (context)
             {
                 ShowState showState = new ShowState();
 
@@ -54,7 +62,7 @@ namespace JOB_MANAGER.Models.Concrete
 
         public ShowState Delete(TEntity param)
         {
-            using (TContext context = new TContext())
+            using (context)
             {
                 ShowState showState = new ShowState();             
 

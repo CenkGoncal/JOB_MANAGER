@@ -161,14 +161,19 @@
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Concrete\CitiesDal.cs" />
+    <Compile Include="Models\Concrete\CompanyTypeDal.cs" />
     <Compile Include="Models\Concrete\ContractTypeDal.cs" />
     <Compile Include="Models\Concrete\CountyDal.cs" />
     <Compile Include="Models\Concrete\DepartmentDal.cs" />
     <Compile Include="Models\Concrete\EntityRepositoryBase.cs" />
+    <Compile Include="Models\Concrete\ParameterDal.cs" />
     <Compile Include="Models\Concrete\RoleDal.cs" />
     <Compile Include="Models\Concrete\StateDal.cs" />
     <Compile Include="Models\Concrete\StreetDal.cs" />
     <Compile Include="Models\Concrete\TitleDal.cs" />
+    <Compile Include="Models\Concrete\VehicleBodyDal.cs" />
+    <Compile Include="Models\Concrete\VehicleDal.cs" />
+    <Compile Include="Models\Concrete\VehicleMakeDal.cs" />
     <Compile Include="Models\CONTACTS.cs">
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>

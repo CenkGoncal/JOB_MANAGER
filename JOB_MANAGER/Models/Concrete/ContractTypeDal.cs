@@ -8,20 +8,18 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class ContractTypeDal:EntityRepositoryBase<CONTRACT_TYPES, JOB_MANAGER_DBEntities, ContractTypesExtented>
-    {
-        public JOB_MANAGER_DBEntities db;
+    {        
         public GlobalTools.UserInfo UserInfo;
         public ContractTypeDal(GlobalTools.UserInfo _userInfo)
         {
-            db = new JOB_MANAGER_DBEntities();
             UserInfo = _userInfo;
         }
     
         public override void SaveControls(CONTRACT_TYPES entity,ShowState showState)
         {            
-            if (!db.CONTRACT_TYPES.Any(w => w.CONTRACT_TYPE_ID == entity.CONTRACT_TYPE_ID))
+            if (!context.CONTRACT_TYPES.Any(w => w.CONTRACT_TYPE_ID == entity.CONTRACT_TYPE_ID))
             {
-                if (db.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == UserInfo.CompanyId)))
+                if (context.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == UserInfo.CompanyId)))
                 {
                     showState.ErrorMessage = "Type already exists";
                     showState.isError = true;
@@ -29,7 +27,7 @@ namespace JOB_MANAGER.Models.Concrete
             }
             else
             {
-                if (db.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.CONTRACT_TYPE_ID != entity.CONTRACT_TYPE_ID && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == UserInfo.CompanyId)))
+                if (context.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.CONTRACT_TYPE_ID != entity.CONTRACT_TYPE_ID && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == UserInfo.CompanyId)))
                 {
                     showState.ErrorMessage = "Type already exists.";
                     showState.isError = false;
@@ -62,7 +60,7 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void DeleteControls(CONTRACT_TYPES entity, ShowState showState)
         {
-            var checkEmployee = db.EMPLOYEES.Where(w => w.CONTRACT_TYPE_ID == entity.CONTRACT_TYPE_ID).FirstOrDefault();
+            var checkEmployee = context.EMPLOYEES.Where(w => w.CONTRACT_TYPE_ID == entity.CONTRACT_TYPE_ID).FirstOrDefault();
             if (checkEmployee != null)
             {
                 showState.ErrorMessage = "Employees are available to use this contact types!! Please try to check cancelled.";
@@ -72,12 +70,12 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override List<ContractTypesExtented> GetAll2(Expression<Func<CONTRACT_TYPES, bool>> filter = null)
         {
-            var _contactTypes = filter != null ? db.Set<CONTRACT_TYPES>().Where(filter).ToList()
-                            : db.Set<CONTRACT_TYPES>().ToList();            
+            var _contactTypes = filter != null ? context.Set<CONTRACT_TYPES>().Where(filter).ToList()
+                            : context.Set<CONTRACT_TYPES>().ToList();            
 
             var data = (from ct in _contactTypes
 
-                        from e_left in  db.EMPLOYEES.Where(w=>w.EMP_ID == ct.CREATED_BY).DefaultIfEmpty()
+                        from e_left in context.EMPLOYEES.Where(w=>w.EMP_ID == ct.CREATED_BY).DefaultIfEmpty()
 
                         select new ContractTypesExtented
                         {

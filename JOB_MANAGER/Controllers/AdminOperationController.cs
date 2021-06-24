@@ -284,92 +284,17 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetParameterList()
         {
-            var data = (from p in db.PARAMETERS
-                        join e in db.EMPLOYEES
-                        on p.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-
-                        select new
-                        {
-                            PARAM_NAME = p.PARAM_NAME,
-                            PARAM_STR = p.PARAM_STR,
-                            PARAM_IMG = p.PARAM_IMG,
-                            PARAM_INT = p.PARAM_INT,
-                            COMPANY_ID = p.COMPANY_ID,
-                            CREATION_DATE = p.CREATION_DATE != null ?
-                                                    p.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                    (p.CREATION_DATE.Month > 9 ? p.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + p.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                    p.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = p.MODIFIED_DATE != null ?
-                                                    p.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                    (p.MODIFIED_DATE.Month > 9 ? p.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + p.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                    p.MODIFIED_DATE.Day : null,
-                            CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-
-                        }
-                       ).OrderBy(o => o.PARAM_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            ParameterDal parameter = new ParameterDal(UserInfo);
+            return Json(new { Getlist = parameter.GetAll2() }, JsonRequestBehavior.AllowGet);
         }
         
         [HttpPost]
         public JsonResult AddOrUpdateParameter(PARAMETERS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
 
-            try
-            {
-                PARAMETERS parameters = db.PARAMETERS.Where(w => w.PARAM_NAME == param.PARAM_NAME).FirstOrDefault();
-
-                bool isNew = false;
-                if (parameters == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-                    param.COMPANY_ID = -1;
-
-                    db.PARAMETERS.Add(param);
-                    db.SaveChanges();
-
-                }
-                else
-                {
-                    parameters.COMPANY_ID = -1;
-                    //street.MODIFIED_DATE = DateTime.Now;
-                    parameters.PARAM_NAME = param.PARAM_NAME;
-                    parameters.PARAM_STR = param.PARAM_STR;
-                    parameters.PARAM_INT = param.PARAM_INT;
-                    parameters.PARAM_DT = param.PARAM_DT;
-                    parameters.PARAM_IMG = param.PARAM_IMG;
-                    parameters.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.PARAMETERS.Attach(parameters);
-                    db.Entry(parameters).Property(x => x.PARAM_NAME).IsModified = true;
-                    db.Entry(parameters).Property(x => x.PARAM_STR).IsModified = true;
-                    db.Entry(parameters).Property(x => x.PARAM_INT).IsModified = true;
-                    db.Entry(parameters).Property(x => x.PARAM_DT).IsModified = true;
-                    db.Entry(parameters).Property(x => x.PARAM_IMG).IsModified = true;
-                    db.Entry(parameters).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            ParameterDal parameter = new ParameterDal(UserInfo);
+            var control = parameter.AddorUpdate(param, (f => f.PARAM_NAME == param.PARAM_NAME));
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
@@ -384,124 +309,24 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetCompanyTypeList()
         {
-            var data = (from ct in db.COMPANY_TYPES
-
-                        join e in db.EMPLOYEES
-                        on ct.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-
-                        select new
-                        {
-                            COMPANY_TYPE_ID = ct.COMPANY_TYPE_ID,
-                            COMPANY_TYPE_NAME = ct.COMPANY_TYPE_NAME,
-                            COMPANY_TYPE_DESC = ct.COMPANY_TYPE_DESC,
-                            IS_CANCELED = ct.IS_CANCELED,
-                            CREATION_DATE = ct.CREATION_DATE != null ?
-                                                    ct.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                    (ct.CREATION_DATE.Month > 9 ? ct.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + ct.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                    ct.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = ct.MODIFIED_DATE != null ?
-                                                    ct.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                    (ct.MODIFIED_DATE.Month > 9 ? ct.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + ct.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                    ct.MODIFIED_DATE.Day : null,
-                            CREATE_BY = e_left.FIRST_NAME+ SqlConstants.stringWhiteSpace+e_left.LAST_NAME
-                        }
-                       ).OrderBy(o => o.COMPANY_TYPE_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            CompanyTypeDal companyType = new CompanyTypeDal(UserInfo);
+            return Json(new { Getlist = companyType.GetAll2() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCompanyType(COMPANY_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                COMPANY_TYPES companyType = db.COMPANY_TYPES.Where(w => w.COMPANY_TYPE_ID == param.COMPANY_TYPE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (companyType == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();                    
-
-                    db.COMPANY_TYPES.Add(param);
-                    db.SaveChanges();
-
-                }
-                else
-                {                    
-                    companyType.COMPANY_TYPE_NAME = param.COMPANY_TYPE_NAME;
-                    companyType.COMPANY_TYPE_DESC = param.COMPANY_TYPE_DESC;
-                    companyType.IS_CANCELED = param.IS_CANCELED;
-                    companyType.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.COMPANY_TYPES.Attach(companyType);
-                    db.Entry(companyType).Property(x => x.COMPANY_TYPE_NAME).IsModified = true;
-                    db.Entry(companyType).Property(x => x.COMPANY_TYPE_DESC).IsModified = true;
-                    db.Entry(companyType).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(companyType).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            CompanyTypeDal companyType = new CompanyTypeDal(UserInfo);
+            var control = companyType.AddorUpdate(param, (f => f.COMPANY_TYPE_ID == param.COMPANY_TYPE_ID));
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveCompanyType(COMPANY_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                var checCity = db.COMPANY.Where(w => w.COMPANY_TYPE_ID == param.COMPANY_TYPE_ID).FirstOrDefault();
-                COMPANY_TYPES companyType = db.COMPANY_TYPES.Where(w => w.COMPANY_TYPE_ID == param.COMPANY_TYPE_ID).FirstOrDefault();
-
-                if (checCity != null)
-                {
-                    _message = "Company Type is available to use company!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (companyType != null)
-                {
-                    db.COMPANY_TYPES.Remove(companyType);
-                    db.SaveChanges();
-
-                    _success = true;
-                    _message = "Operation Successful";
-                }
-                else
-                {
-                    _message = "Company Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            CompanyTypeDal companyType = new CompanyTypeDal(UserInfo);
+            var control = companyType.Delete(param);
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
@@ -515,238 +340,47 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclebody()
         {
-            var data = (from vb in db.VEHICLE_BODY_TYPES
-
-                        join e in db.EMPLOYEES
-                        on vb.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-
-                        select new
-                        {
-                            BODY_TYPE_ID = vb.BODY_TYPE_ID,
-                            BODY_TYPE_NAME = vb.BODY_TYPE_NAME,
-                            IS_CANCELED = vb.IS_CANCELED,
-                            CREATION_DATE = vb.CREATION_DATE != null ?
-                                                    vb.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                    (vb.CREATION_DATE.Month > 9 ? vb.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + vb.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                    vb.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = vb.MODIFIED_DATE != null ?
-                                                    vb.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                    (vb.MODIFIED_DATE.Month > 9 ? vb.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + vb.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                    vb.MODIFIED_DATE.Day : null,
-                            CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                        }
-           ).OrderBy(o => o.BODY_TYPE_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            VehicleBodyDal vehicle = new VehicleBodyDal(UserInfo);
+            return Json(new { Getlist = vehicle.GetAll2() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclebody(VEHICLE_BODY_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                VEHICLE_BODY_TYPES body = db.VEHICLE_BODY_TYPES.Where(w => w.BODY_TYPE_ID == param.BODY_TYPE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (body == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.VEHICLE_BODY_TYPES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    body.BODY_TYPE_NAME = param.BODY_TYPE_NAME;
-                    body.IS_CANCELED = param.IS_CANCELED;
-                    body.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.VEHICLE_BODY_TYPES.Attach(body);
-                    db.Entry(body).Property(x => x.BODY_TYPE_NAME).IsModified = true;                    
-                    db.Entry(body).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(body).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            VehicleBodyDal vehicle = new VehicleBodyDal(UserInfo);
+            var control = vehicle.AddorUpdate(param, (f => f.BODY_TYPE_ID == param.BODY_TYPE_ID));
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveVehiclebody(VEHICLE_BODY_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-
-                VEHICLE_BODY_TYPES bodyType = db.VEHICLE_BODY_TYPES.Where(w => w.BODY_TYPE_ID == param.BODY_TYPE_ID).FirstOrDefault();
-                var checkModel = db.VEHICLE_MODELS.Where(w => w.BODY_TYPE == param.BODY_TYPE_ID).FirstOrDefault();
-                if (checkModel != null)
-                {
-                    _message = "Vehicle Body Type is available to use vehicle model!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (bodyType != null)
-                {
-                    db.VEHICLE_BODY_TYPES.Remove(bodyType);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }            
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            VehicleBodyDal vehicle = new VehicleBodyDal(UserInfo);
+            var control = vehicle.Delete(param);
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpGet]
         public JsonResult GetVehiclemakesList()
         {
-            var data = (from vm in db.VEHICLE_MAKES
-
-                        join e in db.EMPLOYEES
-                        on vm.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-
-                        select new
-                        {
-                            VEHICLE_MAKE_ID = vm.VEHICLE_MAKE_ID,
-                            VEHICLE_MAKE_NAME = vm.VEHICLE_MAKE_NAME,
-                            IS_CANCELED = vm.IS_CANCELED,
-                            CREATION_DATE = vm.CREATION_DATE != null ?
-                                                    vm.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                    (vm.CREATION_DATE.Month > 9 ? vm.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + vm.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                    vm.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = vm.MODIFIED_DATE != null ?
-                                                    vm.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                    (vm.MODIFIED_DATE.Month > 9 ? vm.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + vm.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                    vm.MODIFIED_DATE.Day : null,
-                            CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                        }
-           ).OrderBy(o => o.VEHICLE_MAKE_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            VehicleMakeDal vehicle = new VehicleMakeDal(UserInfo);
+            return Json(new { Getlist = vehicle.GetAll2() }, JsonRequestBehavior.AllowGet);            
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclemake(VEHICLE_MAKES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                VEHICLE_MAKES body = db.VEHICLE_MAKES.Where(w => w.VEHICLE_MAKE_ID == param.VEHICLE_MAKE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (body == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.VEHICLE_MAKES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    body.VEHICLE_MAKE_NAME = param.VEHICLE_MAKE_NAME;
-                    body.IS_CANCELED = param.IS_CANCELED;
-                    body.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.VEHICLE_MAKES.Attach(body);
-                    db.Entry(body).Property(x => x.VEHICLE_MAKE_NAME).IsModified = true;
-                    db.Entry(body).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(body).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            VehicleMakeDal vehicle = new VehicleMakeDal(UserInfo);
+            var control = vehicle.AddorUpdate(param, (f => f.VEHICLE_MAKE_ID == param.VEHICLE_MAKE_ID));
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveVehiclemake(VEHICLE_MAKES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
-
-            try
-            {
-                VEHICLE_MAKES bodyType = db.VEHICLE_MAKES.Where(w => w.VEHICLE_MAKE_ID == param.VEHICLE_MAKE_ID).FirstOrDefault();
-                var checkModel = db.VEHICLE_MODELS.Where(w => w.VEHICLE_MAKE_ID == param.VEHICLE_MAKE_ID).FirstOrDefault();
-                if(checkModel != null)
-                {
-                    _message = "Vehicle make is available to use vehicle model!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (bodyType != null)
-                {
-                    db.VEHICLE_MAKES.Remove(bodyType);
-                    db.SaveChanges();
-                    
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Make not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            VehicleMakeDal vehicle = new VehicleMakeDal(UserInfo);
+            var control = vehicle.Delete(param);
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpGet]
