@@ -8,21 +8,19 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class ParameterDal : EntityRepositoryBase<PARAMETERS, JOB_MANAGER_DBEntities, ParameterExtented>
-    {
-        public JOB_MANAGER_DBEntities db;
+    {        
         public GlobalTools.UserInfo UserInfo;
         public ParameterDal(GlobalTools.UserInfo _userInfo)
-        {
-            db = new JOB_MANAGER_DBEntities();
+        {            
             UserInfo = _userInfo;
         }
         public override List<ParameterExtented> GetAll2(Expression<Func<PARAMETERS, bool>> filter = null)
         {
-            var _parametersTypes = filter != null ? db.Set<PARAMETERS>().Where(filter).ToList()
-                            : db.Set<PARAMETERS>().ToList();
+            var _parametersTypes = filter != null ? context.Set<PARAMETERS>().Where(filter).ToList()
+                            : context.Set<PARAMETERS>().ToList();
 
             var data = (from p in _parametersTypes
-                        join e in db.EMPLOYEES
+                        join e in context.EMPLOYEES
                         on p.CREATED_BY equals e.EMP_ID into e_join
                         from e_left in e_join.DefaultIfEmpty()
 

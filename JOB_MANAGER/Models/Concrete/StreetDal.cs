@@ -9,20 +9,18 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class StreetDal : EntityRepositoryBase<STREET, JOB_MANAGER_DBEntities, StreetExtented>
     {
-
-        public JOB_MANAGER_DBEntities db;
+        
         public GlobalTools.UserInfo UserInfo;
 
         public StreetDal(GlobalTools.UserInfo _userInfo)
         {
-            db = new JOB_MANAGER_DBEntities();
             UserInfo = _userInfo;
         }
         public override List<StreetExtented> GetAll2(Expression<Func<STREET, bool>> filter = null)
         {
-            var data = (from ct in db.COUNTRIES
+            var data = (from ct in context.COUNTRIES
 
-                        join e in db.EMPLOYEES
+                        join e in context.EMPLOYEES
                         on ct.CREATED_BY equals e.EMP_ID into e_join
                         from e_left in e_join.DefaultIfEmpty()
                         select new StreetExtented
@@ -69,7 +67,7 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void DeleteControls(STREET entity, ShowState showState)
         {
-            if(!db.STREET.Any(w => w.STREET_ID == entity.STREET_ID))
+            if(!context.STREET.Any(w => w.STREET_ID == entity.STREET_ID))
             {
                 showState.isError = true;
                 showState.ErrorMessage = "Street not found";

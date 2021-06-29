@@ -8,24 +8,23 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class TitleDal : EntityRepositoryBase<TITLES, JOB_MANAGER_DBEntities, TitleExtented>
-    {
-        public JOB_MANAGER_DBEntities db;
+    {        
         public GlobalTools.UserInfo UserInfo;
 
         public TitleDal(GlobalTools.UserInfo _userInfo)
         {
-            db = new JOB_MANAGER_DBEntities();
+            context = new JOB_MANAGER_DBEntities();
             UserInfo = _userInfo;
         }
 
         public override List<TitleExtented> GetAll2(Expression<Func<TITLES, bool>> filter = null)
         {
-            var _titles = filter != null ? db.Set<TITLES>().Where(filter).ToList()
-                     : db.Set<TITLES>().ToList();
+            var _titles = filter != null ? context.Set<TITLES>().Where(filter).ToList()
+                     : context.Set<TITLES>().ToList();
 
             var data = (from t in _titles
 
-                        join e in db.EMPLOYEES
+                        join e in context.EMPLOYEES
                         on t.CREATED_BY equals e.EMP_ID into e_join
                         from e_left in e_join.DefaultIfEmpty()
                         select new TitleExtented
@@ -66,14 +65,14 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void DeleteControls(TITLES entity, ShowState showState)
         {
-            var checkEmployee = db.EMPLOYEES.Where(w => w.TITLE_ID == entity.TITLE_ID).FirstOrDefault();
+            var checkEmployee = context.EMPLOYEES.Where(w => w.TITLE_ID == entity.TITLE_ID).FirstOrDefault();
             if (checkEmployee != null)
             {
                 showState.ErrorMessage = "Staff are available to use this titles!! You can change cancelled type.";
                 showState.isError = true;
             }
 
-            if (!db.TITLES.Any(w => w.TITLE_ID == entity.TITLE_ID))
+            if (!context.TITLES.Any(w => w.TITLE_ID == entity.TITLE_ID))
             {
                 showState.ErrorMessage = "Title not found!!";
                 showState.isError = true;

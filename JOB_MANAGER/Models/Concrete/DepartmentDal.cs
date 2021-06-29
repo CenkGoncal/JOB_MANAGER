@@ -8,25 +8,23 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class DepartmentDal : EntityRepositoryBase<DEPARTMENTS, JOB_MANAGER_DBEntities, DepartmentExtented>
-    {
-        public JOB_MANAGER_DBEntities db;
+    {        
         public GlobalTools.UserInfo UserInfo;
 
         public DepartmentDal(GlobalTools.UserInfo _userInfo)
-        {
-            db = new JOB_MANAGER_DBEntities();
+        {            
             UserInfo = _userInfo;
         }
 
 
         public override List<DepartmentExtented> GetAll2(Expression<Func<DEPARTMENTS, bool>> filter = null)
         {
-            var _department = filter != null ? db.Set<DEPARTMENTS>().Where(filter).ToList()
-                     : db.Set<DEPARTMENTS>().ToList();
+            var _department = filter != null ? context.Set<DEPARTMENTS>().Where(filter).ToList()
+                     : context.Set<DEPARTMENTS>().ToList();
 
             var data = (from dt in _department
 
-                        join e in db.EMPLOYEES
+                        join e in context.EMPLOYEES
                         on dt.CREATED_BY equals e.EMP_ID into e_join
                         from e_left in e_join.DefaultIfEmpty()
                         select new DepartmentExtented
@@ -72,14 +70,14 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void DeleteControls(DEPARTMENTS entity, ShowState showState)
         {
-            var checkEmployee = db.EMPLOYEES.Where(w => w.DEPARTMENT_ID == entity.DEPARTMENT_ID).FirstOrDefault();
+            var checkEmployee = context.EMPLOYEES.Where(w => w.DEPARTMENT_ID == entity.DEPARTMENT_ID).FirstOrDefault();
             if (checkEmployee != null)
             {
                 showState.ErrorMessage = "Departmant is available to use this department!! Please try to check cancelled.";
                 showState.isError = true;
             }
 
-            if (!db.DEPARTMENTS.Any(w => w.DEPARTMENT_ID == entity.DEPARTMENT_ID))
+            if (!context.DEPARTMENTS.Any(w => w.DEPARTMENT_ID == entity.DEPARTMENT_ID))
             {
                 showState.ErrorMessage = "Departmant not found!!";
                 showState.isError = true;

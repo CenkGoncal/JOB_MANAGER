@@ -131,6 +131,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Bussiness\Abstract\IService.cs" />
+    <Compile Include="Bussiness\Concrete\CityManager.cs" />
+    <Compile Include="Bussiness\Concrete\ContractTypeManager.cs" />
+    <Compile Include="Bussiness\Concrete\CompanyTypeManager.cs" />
+    <Compile Include="Bussiness\Concrete\CountyManager.cs" />
     <Compile Include="Controllers\AdminOperationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
@@ -165,7 +170,7 @@
     <Compile Include="Models\Concrete\ContractTypeDal.cs" />
     <Compile Include="Models\Concrete\CountyDal.cs" />
     <Compile Include="Models\Concrete\DepartmentDal.cs" />
-    <Compile Include="Models\Concrete\EntityRepositoryBase.cs" />
+    <Compile Include="Models\Concrete\Core\EntityRepositoryBase.cs" />
     <Compile Include="Models\Concrete\ParameterDal.cs" />
     <Compile Include="Models\Concrete\RoleDal.cs" />
     <Compile Include="Models\Concrete\StateDal.cs" />
@@ -179,7 +184,7 @@
     <Compile Include="Models\CONTACTS.cs">
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ContractDto.cs" />
+    <Compile Include="Models\ComplexType\ContractDto.cs" />
     <Compile Include="Models\CONTRACT_TYPES.cs">
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>
@@ -311,7 +316,7 @@
     <Compile Include="Models\VEHICLE_MODELS.cs">
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ViewDto.cs" />
+    <Compile Include="Models\ComplexType\ViewDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

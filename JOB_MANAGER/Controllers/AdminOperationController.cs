@@ -1,7 +1,9 @@
-﻿using JOB_MANAGER.Helper;
+﻿using JOB_MANAGER.Bussiness.Concrete;
+using JOB_MANAGER.Helper;
 using JOB_MANAGER.Models;
 using JOB_MANAGER.Models.Concrete;
 using JOB_MANAGER.Models.Login;
+using JOB_MANAGER_BUSSINESS.Concrete;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -31,9 +33,9 @@ namespace JOB_MANAGER.Controllers
 
         [HttpGet]
         public JsonResult GetContractTypeList()
-        {            
-            ContractTypeDal contractType = new ContractTypeDal(UserInfo);
-            return Json(new { Getlist = contractType.GetAll2() }, JsonRequestBehavior.AllowGet);
+        {
+            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal(UserInfo));
+            return Json(new { Getlist = contractType.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -47,17 +49,15 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateContractType(CONTRACT_TYPES param)
         {
-
-            ContractTypeDal contractType = new ContractTypeDal(UserInfo);
-            var control = contractType.AddorUpdate(param, (f=>f.CONTRACT_TYPE_ID == param.CONTRACT_TYPE_ID) );
-
+            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal(UserInfo));
+            var control = contractType.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveContractType(CONTRACT_TYPES param)
         {
-            ContractTypeDal contractType = new ContractTypeDal(UserInfo);
+            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal(UserInfo));
             var control = contractType.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -156,15 +156,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetCountyiesList()
         {
-            CountyDal county = new CountyDal(UserInfo);             
-            return Json(new { Getlist = county.GetAll2() }, JsonRequestBehavior.AllowGet);
+            CountyManager county = new CountyManager(new CountyDal(UserInfo));
+            return Json(new { Getlist = county.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCountry(COUNTRIES param)
         {
-            CountyDal county = new CountyDal(UserInfo);
-            var control = county.AddorUpdate(param, (f => f.COUNTRY_ID == param.COUNTRY_ID));
+            CountyManager county = new CountyManager(new CountyDal(UserInfo));
+            var control = county.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -172,7 +172,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveCountries(COUNTRIES param)
         {
-            CountyDal county = new CountyDal(UserInfo);
+            CountyManager county = new CountyManager(new CountyDal(UserInfo));
             var control = county.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.isError, GetList = GetDepartmentList() });
@@ -184,7 +184,7 @@ namespace JOB_MANAGER.Controllers
 
             foreach(WebLoadCountries country in param)
             {                
-                WebClient webClient = new WebClient();
+                //WebClient webClient = new WebClient();
                 //var imageData = webClient.DownloadData(country.FLAG);
 
                 COUNTRIES insert = new COUNTRIES();
@@ -228,15 +228,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetCitiesList()
         {
-            CitiesDal cities = new CitiesDal(UserInfo);
-            return Json(new { Getlist = cities.GetAll2() }, JsonRequestBehavior.AllowGet);
+            CityManager cityManager = new CityManager(new CitiesDal(UserInfo));
+            return Json(new { Getlist = cityManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCity(CITIES param)
         {
-            CitiesDal cities = new CitiesDal(UserInfo);
-            var control = cities.AddorUpdate(param, (f => f.CITY_ID == param.CITY_ID));
+            CityManager cityManager = new CityManager(new CitiesDal(UserInfo));
+            var control = cityManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -244,8 +244,9 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveCity(CITIES param)
         {
-            CitiesDal city = new CitiesDal(UserInfo);
-            var control = city.Delete(param);
+            CityManager cityManager = new CityManager(new CitiesDal(UserInfo));
+            var control = cityManager.Delete(param);
+
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
@@ -309,22 +310,22 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetCompanyTypeList()
         {
-            CompanyTypeDal companyType = new CompanyTypeDal(UserInfo);
-            return Json(new { Getlist = companyType.GetAll2() }, JsonRequestBehavior.AllowGet);
+            CompanyTypeManager companyType = new CompanyTypeManager(new CompanyTypeDal(UserInfo));
+            return Json(new { Getlist = companyType.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCompanyType(COMPANY_TYPES param)
         {
-            CompanyTypeDal companyType = new CompanyTypeDal(UserInfo);
-            var control = companyType.AddorUpdate(param, (f => f.COMPANY_TYPE_ID == param.COMPANY_TYPE_ID));
+            CompanyTypeManager companyType = new CompanyTypeManager(new CompanyTypeDal(UserInfo));
+            var control = companyType.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveCompanyType(COMPANY_TYPES param)
         {
-            CompanyTypeDal companyType = new CompanyTypeDal(UserInfo);
+            CompanyTypeManager companyType = new CompanyTypeManager(new CompanyTypeDal(UserInfo));
             var control = companyType.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }

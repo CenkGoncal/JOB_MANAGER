@@ -10,7 +10,7 @@ using static JOB_MANAGER.Models.Abstact.Entity;
 
 namespace JOB_MANAGER.Models.Concrete
 {
-    public class EntityRepositoryBase<TEntity, TContext, TDto > : IEntityRepository<TEntity,TDto>
+    public class EntityRepositoryBase<TEntity, TContext, TDto > : IEntityRepository<TEntity,TDto> 
         where TEntity : class, IEntity, new()
         where TContext : DbContext, new()
         where TDto : class, IViewDto, new()
@@ -140,5 +140,24 @@ namespace JOB_MANAGER.Models.Concrete
 
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this); //if you call this, prevent GC to call this. If you did not call this, GC will call this
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if(isDisposing)
+            {
+                if(context != null)
+                {
+                    context.Dispose();
+                    context = null;
+                }
+            }
+        }
+
+        
     }
 }

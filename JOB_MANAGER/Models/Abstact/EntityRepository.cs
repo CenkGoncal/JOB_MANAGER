@@ -6,7 +6,7 @@ using System.Web;
 
 namespace JOB_MANAGER.Models.Abstact
 {
-    public interface IEntityRepository<T,TDto>
+    public interface IEntityRepository<T,TDto> : IDisposable
     {
         List<T> GetAll(Expression<Func<T, bool>> filter = null);
         List<TDto> GetAll2(Expression<Func<T, bool>> filter = null);

@@ -8,23 +8,21 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class CitiesDal : EntityRepositoryBase<CITIES, JOB_MANAGER_DBEntities, CitiesExtented>
-    {
-        public JOB_MANAGER_DBEntities db;
+    {        
         public GlobalTools.UserInfo UserInfo;
 
         public CitiesDal(GlobalTools.UserInfo _userInfo)
-        {
-            db = new JOB_MANAGER_DBEntities();
+        {            
             UserInfo = _userInfo;
         }
 
         public override List<CitiesExtented> GetAll2(Expression<Func<CITIES, bool>> filter = null)
         {
-            var query = (from c in db.CITIES
-                         join st in db.STATES on c.STATE_ID equals st.STATE_ID
-                         join ct in db.COUNTRIES on c.COUNTRY_ID equals ct.COUNTRY_ID
+            var query = (from c in context.CITIES
+                         join st in context.STATES on c.STATE_ID equals st.STATE_ID
+                         join ct in context.COUNTRIES on c.COUNTRY_ID equals ct.COUNTRY_ID
 
-                         join e in db.EMPLOYEES
+                         join e in context.EMPLOYEES
                          on c.CREATED_BY equals e.EMP_ID into e_join
                          from e_left in e_join.DefaultIfEmpty()
                          select new CitiesExtented
@@ -55,9 +53,9 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void SaveControls(CITIES entity, ShowState showState)
         {
-            if (db.CITIES.Any(w => w.CITY_ID == entity.CITY_ID))
+            if (context.CITIES.Any(w => w.CITY_ID == entity.CITY_ID))
             {
-                if (db.CITIES.Any(x => x.CITY_NAME.Equals(entity.CITY_NAME) && x.POSTAL_CODE.Equals(entity.POSTAL_CODE) && 
+                if (context.CITIES.Any(x => x.CITY_NAME.Equals(entity.CITY_NAME) && x.POSTAL_CODE.Equals(entity.POSTAL_CODE) && 
                                        x.STATE_ID == entity.STATE_ID && x.IS_CANCELED == false))
                 {
                     showState.ErrorMessage = "City already exists.";
@@ -65,7 +63,7 @@ namespace JOB_MANAGER.Models.Concrete
                 }
                 if (entity.IS_DEFAULT)
                 {
-                    if (db.CITIES.Any(x => x.IS_DEFAULT == true && x.STATE_ID == entity.STATE_ID))
+                    if (context.CITIES.Any(x => x.IS_DEFAULT == true && x.STATE_ID == entity.STATE_ID))
                     {
                         showState.ErrorMessage = "Only one City can be set as default";
                         showState.isError = true;
@@ -74,14 +72,14 @@ namespace JOB_MANAGER.Models.Concrete
             }
             else
             {
-                if (db.CITIES.Any(x => x.CITY_NAME.Equals(entity.CITY_NAME) && x.CITY_ID != entity.CITY_ID && x.POSTAL_CODE.Equals(entity.POSTAL_CODE) && x.STATE_ID == entity.STATE_ID && x.IS_CANCELED == false))
+                if (context.CITIES.Any(x => x.CITY_NAME.Equals(entity.CITY_NAME) && x.CITY_ID != entity.CITY_ID && x.POSTAL_CODE.Equals(entity.POSTAL_CODE) && x.STATE_ID == entity.STATE_ID && x.IS_CANCELED == false))
                 {
                     showState.ErrorMessage = "City already exists.";
                     showState.isError = true;
                 }
                 if (entity.IS_DEFAULT)
                 {
-                    if (db.CITIES.Any(x => x.IS_DEFAULT == true && x.CITY_ID != entity.CITY_ID && x.STATE_ID == entity.STATE_ID))
+                    if (context.CITIES.Any(x => x.IS_DEFAULT == true && x.CITY_ID != entity.CITY_ID && x.STATE_ID == entity.STATE_ID))
                     {
                         showState.ErrorMessage =  "Only one City can be set as default";
                         showState.isError = true;
@@ -110,7 +108,7 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void DeleteControls(CITIES entity, ShowState showState)
         {
-            if(!db.CITIES.Any(w => w.CITY_ID == entity.CITY_ID))
+            if(!context.CITIES.Any(w => w.CITY_ID == entity.CITY_ID))
             {
                 showState.isError = true;
                 showState.ErrorMessage = "City not found";

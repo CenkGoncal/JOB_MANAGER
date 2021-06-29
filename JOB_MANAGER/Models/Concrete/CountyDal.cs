@@ -8,21 +8,19 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class CountyDal : EntityRepositoryBase<COUNTRIES, JOB_MANAGER_DBEntities, CountryExtented>
-    {
-        public JOB_MANAGER_DBEntities db;
+    {        
         public GlobalTools.UserInfo UserInfo;
 
         public CountyDal(GlobalTools.UserInfo _userInfo)
-        {
-            db = new JOB_MANAGER_DBEntities();
+        {            
             UserInfo = _userInfo;
         }
 
         public override List<CountryExtented> GetAll2(Expression<Func<COUNTRIES, bool>> filter = null)
         {
-            var data = (from ct in db.COUNTRIES
+            var data = (from ct in context.COUNTRIES
 
-                        join e in db.EMPLOYEES
+                        join e in context.EMPLOYEES
                         on ct.CREATED_BY equals e.EMP_ID into e_join
                         from e_left in e_join.DefaultIfEmpty()
                         select new CountryExtented
@@ -70,18 +68,18 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void SaveControls(COUNTRIES entity, ShowState showState)
         {
-            COUNTRIES Countryies = db.COUNTRIES.Where(w => w.COUNTRY_ID == entity.COUNTRY_ID).FirstOrDefault();
+            COUNTRIES Countryies = context.COUNTRIES.Where(w => w.COUNTRY_ID == entity.COUNTRY_ID).FirstOrDefault();
             
             if (Countryies == null)
             {
-                if (db.COUNTRIES.Any(x => x.COUNTRY_NAME.Equals(entity.COUNTRY_NAME) && x.IS_CANCELED == false))
+                if (context.COUNTRIES.Any(x => x.COUNTRY_NAME.Equals(entity.COUNTRY_NAME) && x.IS_CANCELED == false))
                 {
                     showState.ErrorMessage = "Country already exists.";
                     showState.isError = true;
                 }
                 if (entity.IS_DEFAULT)
                 {
-                    if (db.COUNTRIES.Any(x => x.IS_DEFAULT == true))
+                    if (context.COUNTRIES.Any(x => x.IS_DEFAULT == true))
                     {
                         showState.ErrorMessage = "Only one country can be set as default";
                         showState.isError = true;
@@ -90,14 +88,14 @@ namespace JOB_MANAGER.Models.Concrete
             }
             else
             {
-                if (db.COUNTRIES.Any(x => x.COUNTRY_NAME.Equals(entity.COUNTRY_NAME) && x.COUNTRY_ID != entity.COUNTRY_ID && x.IS_CANCELED == false))
+                if (context.COUNTRIES.Any(x => x.COUNTRY_NAME.Equals(entity.COUNTRY_NAME) && x.COUNTRY_ID != entity.COUNTRY_ID && x.IS_CANCELED == false))
                 {
                     showState.ErrorMessage = "Country already exists.";
                     showState.isError = true;
                 }
                 if (entity.IS_DEFAULT)
                 {
-                    if (db.COUNTRIES.Any(x => x.IS_DEFAULT == true && x.COUNTRY_ID != entity.COUNTRY_ID))
+                    if (context.COUNTRIES.Any(x => x.IS_DEFAULT == true && x.COUNTRY_ID != entity.COUNTRY_ID))
                     {
                         showState.ErrorMessage = "Only one country can be set as default";
                         showState.isError = true;
@@ -108,8 +106,8 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override void DeleteControls(COUNTRIES entity, ShowState showState)
         {
-            var checkState = db.STATES.Where(w => w.COUNTRY_ID == entity.COUNTRY_ID).FirstOrDefault();
-            var checCity = db.CITIES.Where(w => w.COUNTRY_ID == entity.COUNTRY_ID).FirstOrDefault();
+            var checkState = context.STATES.Where(w => w.COUNTRY_ID == entity.COUNTRY_ID).FirstOrDefault();
+            var checCity = context.CITIES.Where(w => w.COUNTRY_ID == entity.COUNTRY_ID).FirstOrDefault();
 
             if (checkState != null)
             {

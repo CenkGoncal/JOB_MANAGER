@@ -418,6 +418,7 @@ namespace JOB_MANAGER.Models
     }
     public class VehiclesExtented : VEHICLES, IViewDto
     {
+        public string BODY_TYPE_NAME { get; set; }
         public string CREATE_BY { get; set; }
         public string CREATION_DATE { get; set; }
         public string MODIFIED_DATE { get; set; }       
