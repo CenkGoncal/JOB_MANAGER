@@ -15,13 +15,26 @@ namespace JOB_MANAGER.Controllers
     public class BaseController : Controller
     {
         public JOB_MANAGER_DBEntities db;
-        public GlobalTools.UserInfo UserInfo;
+        public GlobalCache _globalCache;        
+
         public BaseController()
         {
             db = new JOB_MANAGER_DBEntities();
-            
-            GlobalTools globalTools = new GlobalTools();
-            UserInfo = new GlobalTools.UserInfo("cenkgoncal");
+
+            if(_globalCache == null)
+                _globalCache = new GlobalCache();            
+        }
+
+        public UserInfo GetUserInfo()
+        {
+            var tool = _globalCache.GetUserInfo();
+            if (tool == null)
+            {
+                LoginPage();
+                throw new Exception("Sesion not start or expired");
+            }
+
+            return tool;
         }
 
         public string GetUserName()
@@ -45,14 +58,11 @@ namespace JOB_MANAGER.Controllers
         {
             try
             {
-                string cookieName = FormsAuthentication.FormsCookieName; //Find cookie name
-                HttpCookie authCookie = HttpContext.Request.Cookies[cookieName]; //Get the cookie by it's name
-                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value); //Decrypt it
-                string UserName = ticket.Name; //You have the UserName!
+                var userinfo =  GetUserInfo();
+                if (userinfo == null)
+                    return -1;
 
-                var empID = db.EMPLOYEES.Where(w => w.SYSTEM_USERNAME == UserName).Select(s => s.EMP_ID).FirstOrDefault();
-
-                return empID == null ? -1 : empID;
+                return userinfo.UserId;
             }
             catch (Exception)
             {
@@ -64,14 +74,11 @@ namespace JOB_MANAGER.Controllers
         {
             try
             {
-                string cookieName = FormsAuthentication.FormsCookieName; //Find cookie name
-                HttpCookie authCookie = HttpContext.Request.Cookies[cookieName]; //Get the cookie by it's name
-                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value); //Decrypt it
-                string UserName = ticket.Name; //You have the UserName!
-
-                var CompanyID = db.EMPLOYEES.Where(w => w.SYSTEM_USERNAME == UserName).Select(s => s.COMPANY_ID).FirstOrDefault();
-
-                return CompanyID == null ? -1 : CompanyID;
+                var userinfo = GetUserInfo();
+                if (userinfo == null)
+                    return -1;
+          
+                return userinfo.CompanyId;
             }
             catch (Exception)
             {
@@ -82,6 +89,17 @@ namespace JOB_MANAGER.Controllers
         public ActionResult NotAuthority()
         {
             return View();
+        }
+
+        public ActionResult LoginPage()
+        {  
+            //clean user info
+            //Session["UserInfo"] = null;
+            Session.Clear();
+            Session.Abandon();
+            //clean user info
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "Login");            
         }
 
     }

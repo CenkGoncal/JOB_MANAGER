@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Data.Entity;
 
-
-namespace JOB_MANAGER.Helper
+namespace JOB_MANAGER.CrossCuttingConsers
 {
-    public class SqlRepositoryBase
+    public enum CacheEnum
     {
-     
+        userinfo,
+        parameter
     }
 }

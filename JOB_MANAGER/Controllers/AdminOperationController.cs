@@ -17,11 +17,10 @@ namespace JOB_MANAGER.Controllers
 {    
     public class AdminOperationController : BaseController
     {        
+        protected UserInfo UserInfo;
         public AdminOperationController()
-        {            
-          //  UserInfo.CompanyId = GetCompanyID();
-          // UserInfo.UserName = GetUserName();
-          //UserInfo.UserId = GetUserID();
+        {
+            UserInfo = this.GetUserInfo();
         }
 
         #region Contract
@@ -285,16 +284,16 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetParameterList()
         {
-            ParameterDal parameter = new ParameterDal(UserInfo);
-            return Json(new { Getlist = parameter.GetAll2() }, JsonRequestBehavior.AllowGet);
+            //ParameterManager parameter = new ParameterManager(new ParameterDal(UserInfo));
+            GlobalCache global = new GlobalCache();
+            return Json(new { Getlist = global.GetCacheParameter() }, JsonRequestBehavior.AllowGet);
         }
         
         [HttpPost]
         public JsonResult AddOrUpdateParameter(PARAMETERS param)
         {
-
-            ParameterDal parameter = new ParameterDal(UserInfo);
-            var control = parameter.AddorUpdate(param, (f => f.PARAM_NAME == param.PARAM_NAME));
+            ParameterManager parameter = new ParameterManager(new ParameterDal(UserInfo));
+            var control = parameter.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion

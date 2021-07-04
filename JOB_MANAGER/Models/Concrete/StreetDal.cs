@@ -10,9 +10,9 @@ namespace JOB_MANAGER.Models.Concrete
     public class StreetDal : EntityRepositoryBase<STREET, JOB_MANAGER_DBEntities, StreetExtented>
     {
         
-        public GlobalTools.UserInfo UserInfo;
+        public UserInfo UserInfo;
 
-        public StreetDal(GlobalTools.UserInfo _userInfo)
+        public StreetDal(UserInfo _userInfo)
         {
             UserInfo = _userInfo;
         }

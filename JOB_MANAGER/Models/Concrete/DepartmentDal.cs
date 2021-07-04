@@ -5,13 +5,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 
+
 namespace JOB_MANAGER.Models.Concrete
 {
     public class DepartmentDal : EntityRepositoryBase<DEPARTMENTS, JOB_MANAGER_DBEntities, DepartmentExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
+        public UserInfo UserInfo;
 
-        public DepartmentDal(GlobalTools.UserInfo _userInfo)
+        public DepartmentDal(UserInfo _userInfo)
         {            
             UserInfo = _userInfo;
         }

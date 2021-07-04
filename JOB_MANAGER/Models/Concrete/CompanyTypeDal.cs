@@ -9,8 +9,8 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class CompanyTypeDal : EntityRepositoryBase<COMPANY_TYPES, JOB_MANAGER_DBEntities, CompanyTypesExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
-        public CompanyTypeDal(GlobalTools.UserInfo _userInfo)
+        public UserInfo UserInfo;
+        public CompanyTypeDal(UserInfo _userInfo)
         {          
             UserInfo = _userInfo;
         }

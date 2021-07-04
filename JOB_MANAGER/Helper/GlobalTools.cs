@@ -13,10 +13,11 @@ namespace JOB_MANAGER.Helper
 {
     public class GlobalTools        
     {
-        private static JOB_MANAGER_DBEntities db;        
+        private static JOB_MANAGER_DBEntities db;
+        
         public GlobalTools()
         {
-            db = new JOB_MANAGER_DBEntities();
+            db = new JOB_MANAGER_DBEntities();            
         }
 
         #region Encryption/Decryption
@@ -39,21 +40,6 @@ namespace JOB_MANAGER.Helper
             return anStr;
         }
         #endregion
-
-        public class UserInfo
-        {
-            public int UserId;
-            public string UserName;
-            public int CompanyId;
-
-            public UserInfo(string userName)
-            {
-                var emp =  db.EMPLOYEES.Where(w => w.SYSTEM_USERNAME == userName).FirstOrDefault();
-                UserId = emp.EMP_ID;
-                UserName = emp.SYSTEM_USERNAME;
-                CompanyId = emp.COMPANY_ID;
-            }
-        }
 
         public static DataTable YearTable(int companyID)
         {
@@ -82,11 +68,13 @@ namespace JOB_MANAGER.Helper
         }
 
         public static string GetParamStrVal(string ParamName,int CompanyID)
-        {            
-            string paramStr = db.PARAMETERS.Where(w => w.PARAM_NAME == ParamName).Select(s => s.PARAM_STR).FirstOrDefault();
+        {
+            GlobalCache paramCache = new GlobalCache();
+            string paramStr = paramCache.GetCacheParameter().Where(w => w.PARAM_NAME == ParamName).Select(s => s.PARAM_STR).FirstOrDefault();
+            
             if (CompanyID > 0)
             {
-                string paramStr1 = db.PARAMETERS.Where(w => w.PARAM_NAME == ParamName && w.COMPANY_ID == CompanyID).Select(s => s.PARAM_STR).FirstOrDefault();
+                string paramStr1 = paramCache.GetCacheParameter().Where(w => w.PARAM_NAME == ParamName && w.COMPANY_ID == CompanyID).Select(s => s.PARAM_STR).FirstOrDefault();
                 if (!string.IsNullOrEmpty(paramStr1))
                     paramStr = paramStr1;
             }
@@ -96,16 +84,16 @@ namespace JOB_MANAGER.Helper
 
         public static int GetParamIntVal(string ParamName, int CompanyID)
         {
-            JOB_MANAGER_DBEntities db = new JOB_MANAGER_DBEntities();
+            GlobalCache paramCache = new GlobalCache();
 
             int intval = -1;
-            var paramint = db.PARAMETERS.Where(w => w.PARAM_NAME == ParamName).Select(s => s.PARAM_INT).FirstOrDefault();
+            var paramint = paramCache.GetCacheParameter().Where(w => w.PARAM_NAME == ParamName).Select(s => s.PARAM_INT).FirstOrDefault();
             if (paramint != null)
                 intval = paramint.Value;
 
             if (CompanyID > 0)
             {
-                paramint = (db.PARAMETERS.Where(w => w.PARAM_NAME == ParamName && w.COMPANY_ID == CompanyID).Select(s => s.PARAM_INT).FirstOrDefault());
+                paramint = (paramCache.GetCacheParameter().Where(w => w.PARAM_NAME == ParamName && w.COMPANY_ID == CompanyID).Select(s => s.PARAM_INT).FirstOrDefault());
                 if (paramint != null)
                     intval = paramint.Value;
             }
@@ -115,9 +103,9 @@ namespace JOB_MANAGER.Helper
 
         public static byte[] GetParamByteVal(string ParamName, int CompanyID)
         {
-            JOB_MANAGER_DBEntities db = new JOB_MANAGER_DBEntities();
+            GlobalCache paramCache = new GlobalCache();
             
-            var param = db.PARAMETERS.ToList();
+            var param = paramCache.GetCacheParameter().ToList();
             byte[] byteArray = null;
             foreach (var item in param)
             {

@@ -9,8 +9,8 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class ParameterDal : EntityRepositoryBase<PARAMETERS, JOB_MANAGER_DBEntities, ParameterExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
-        public ParameterDal(GlobalTools.UserInfo _userInfo)
+        public UserInfo UserInfo;
+        public ParameterDal(UserInfo _userInfo)
         {            
             UserInfo = _userInfo;
         }

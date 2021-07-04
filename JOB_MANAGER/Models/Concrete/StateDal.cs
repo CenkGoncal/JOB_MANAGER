@@ -9,9 +9,9 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class StateDal : EntityRepositoryBase<STATES, JOB_MANAGER_DBEntities, StateExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
+        public UserInfo UserInfo;
 
-        public StateDal(GlobalTools.UserInfo _userInfo)
+        public StateDal(UserInfo _userInfo)
         {            
             UserInfo = _userInfo;
         }

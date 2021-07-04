@@ -1,4 +1,5 @@
-﻿using JOB_MANAGER.Models;
+﻿using JOB_MANAGER.Helper;
+using JOB_MANAGER.Models;
 using JOB_MANAGER.Models.Login;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,9 @@ namespace JOB_MANAGER.Controllers
             if (emp != null)
             {
                 Session["UserInfo"] = emp;
+                
+                this._globalCache.AddUserInfo(emp.Employee.SYSTEM_USERNAME);
+                
 
                 return RedirectToAction("Index", "Home");
             }
@@ -38,13 +42,7 @@ namespace JOB_MANAGER.Controllers
 
         public ActionResult LogOut()
         {
-            //clean user info
-            Session["UserInfo"] = null;
-            Session.Clear();
-            Session.Abandon();
-            //clean user info
-            FormsAuthentication.SignOut();            
-            return RedirectToAction("Login", "Login");
+            return base.LoginPage();
         }
 
         [AllowAnonymous]

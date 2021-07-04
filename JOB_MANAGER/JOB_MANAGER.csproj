@@ -58,6 +58,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -136,6 +137,7 @@
     <Compile Include="Bussiness\Concrete\ContractTypeManager.cs" />
     <Compile Include="Bussiness\Concrete\CompanyTypeManager.cs" />
     <Compile Include="Bussiness\Concrete\CountyManager.cs" />
+    <Compile Include="Bussiness\Concrete\ParameterManager.cs" />
     <Compile Include="Controllers\AdminOperationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
@@ -145,12 +147,15 @@
     <Compile Include="Controllers\QuoteController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="CrossCuttingConsers\Caching\CacheEnum.cs" />
+    <Compile Include="CrossCuttingConsers\Caching\ICacheManager.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\GlobalCache.cs" />
     <Compile Include="Helper\GlobalTools.cs" />
     <Compile Include="Helper\SqlConstants.cs" />
-    <Compile Include="Helper\SqlRepositoryBase.cs" />
+    <Compile Include="CrossCuttingConsers\Caching\MemoryCahce\MemoryCacheManager.cs" />
     <Compile Include="Models\Abstact\Entity.cs" />
     <Compile Include="Models\Abstact\EntityRepository.cs" />
     <Compile Include="Models\CITIES.cs">

@@ -9,8 +9,8 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class VehicleModelDal : EntityRepositoryBase<VEHICLE_MODELS, JOB_MANAGER_DBEntities, VehicleModelExtented>
     {
-        public GlobalTools.UserInfo UserInfo;
-        public VehicleModelDal(GlobalTools.UserInfo _userInfo)
+        public UserInfo UserInfo;
+        public VehicleModelDal(UserInfo _userInfo)
         {
             UserInfo = _userInfo;
         }

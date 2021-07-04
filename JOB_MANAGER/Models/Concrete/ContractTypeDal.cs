@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
+using static JOB_MANAGER.Helper.GlobalCache;
 
 namespace JOB_MANAGER.Models.Concrete
 {
     public class ContractTypeDal:EntityRepositoryBase<CONTRACT_TYPES, JOB_MANAGER_DBEntities, ContractTypesExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
-        public ContractTypeDal(GlobalTools.UserInfo _userInfo)
+        public UserInfo UserInfo;
+        public ContractTypeDal(UserInfo _userInfo)
         {
             UserInfo = _userInfo;
         }

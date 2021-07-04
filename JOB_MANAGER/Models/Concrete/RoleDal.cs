@@ -9,9 +9,9 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class RoleDal: EntityRepositoryBase<ROLES, JOB_MANAGER_DBEntities, RolesExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
+        public UserInfo UserInfo;
 
-        public RoleDal(GlobalTools.UserInfo _userInfo)
+        public RoleDal(UserInfo _userInfo)
         {            
             UserInfo = _userInfo;
         }

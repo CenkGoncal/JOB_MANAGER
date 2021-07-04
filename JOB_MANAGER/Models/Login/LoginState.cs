@@ -36,8 +36,12 @@ namespace JOB_MANAGER.Models.Login
 
                 bool REMEMBER_ME = remember == "true" ? true : false;
 
-                if(DoAuth) 
-                    FormsAuthentication.SetAuthCookie(emp.SYSTEM_USERNAME, REMEMBER_ME);
+                if (DoAuth)
+                {
+                    FormsAuthentication.SetAuthCookie(emp.SYSTEM_USERNAME, REMEMBER_ME);                    
+                }
+
+
 
                 return empoloyeeDto;
             }

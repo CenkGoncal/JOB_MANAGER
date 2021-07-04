@@ -1,3 +1,4 @@
+using JOB_MANAGER.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,14 @@ namespace JOB_MANAGER
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalFilters.Filters.Add(new AuthorizeAttribute());
+
+            MemoryCacheManager.instance = new MemoryCacheManager();
+
+            //First cache data creating operation
+            GlobalCache global = new GlobalCache();
+            global.CacheRemove();
+            global.CreateCache();
+
         }
     }
 }

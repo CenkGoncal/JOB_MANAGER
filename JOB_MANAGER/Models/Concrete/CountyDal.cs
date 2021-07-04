@@ -9,9 +9,9 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class CountyDal : EntityRepositoryBase<COUNTRIES, JOB_MANAGER_DBEntities, CountryExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
+        public UserInfo UserInfo;
 
-        public CountyDal(GlobalTools.UserInfo _userInfo)
+        public CountyDal(UserInfo _userInfo)
         {            
             UserInfo = _userInfo;
         }

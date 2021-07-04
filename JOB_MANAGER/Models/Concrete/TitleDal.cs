@@ -9,9 +9,9 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class TitleDal : EntityRepositoryBase<TITLES, JOB_MANAGER_DBEntities, TitleExtented>
     {        
-        public GlobalTools.UserInfo UserInfo;
+        public UserInfo UserInfo;
 
-        public TitleDal(GlobalTools.UserInfo _userInfo)
+        public TitleDal(UserInfo _userInfo)
         {
             context = new JOB_MANAGER_DBEntities();
             UserInfo = _userInfo;
