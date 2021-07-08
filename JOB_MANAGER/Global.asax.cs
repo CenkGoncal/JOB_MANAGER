@@ -26,6 +26,8 @@ namespace JOB_MANAGER
             global.CacheRemove();
             global.CreateCache();
 
+            
+
         }
     }
 }

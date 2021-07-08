@@ -1,8 +1,12 @@
-﻿using JOB_MANAGER.Models.Abstact;
+﻿using JOB_MANAGER.CrossCuttingConsers.Loging;
+using JOB_MANAGER.CrossCuttingConsers.Loging.Log4net;
+using JOB_MANAGER.CrossCuttingConsers.Loging.Log4net.Loggers;
+using JOB_MANAGER.Models.Abstact;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
@@ -17,15 +21,17 @@ namespace JOB_MANAGER.Models.Concrete
     {       
 
         protected TContext context;
+        protected LoggerService loggerService;
 
         public EntityRepositoryBase()
         {
             context = (TContext)Activator.CreateInstance(typeof(TContext));
+            loggerService = new FileLogger();
         }
 
 
         public ShowState AddorUpdate(TEntity param, Expression<Func<TEntity, bool>> filter)
-        {
+        {            
             using (context)
             {
                 ShowState showState = new ShowState();
@@ -53,7 +59,19 @@ namespace JOB_MANAGER.Models.Concrete
                         }
 
                         context.SaveChanges();
-                    }                    
+                    } 
+                    else
+                    {
+                        List<LogParameter> Parameters = new List<LogParameter>();
+                        Parameters.Add(new LogParameter
+                        {
+                            Name = typeof(TEntity).Name,
+                            Type = "ErrorMessage",
+                            Value = param
+                        });
+                        CreateLog(this.GetType().FullName, "AddorUpdate", Parameters, showState.ErrorMessage, "Error");
+                    }
+                    
                 }, showState);            
 
                 return showState;
@@ -75,7 +93,19 @@ namespace JOB_MANAGER.Models.Concrete
                         var deleted = context.Entry(param);
                         deleted.State = EntityState.Deleted;
                     }
+                    else
+                    {
+                        List<LogParameter>  Parameters = new List<LogParameter>();
+                        Parameters.Add(new LogParameter
+                        {
+                            Name = typeof(TEntity).Name,
+                            Type = "ErrorMessage",
+                            Value = param
+                        }
+                        );
 
+                        CreateLog(this.GetType().FullName, "Delete", Parameters, showState.ErrorMessage, "Error");
+                    }
                     context.SaveChanges();
                 }, showState);
 
@@ -83,10 +113,31 @@ namespace JOB_MANAGER.Models.Concrete
             }
         }
 
-        private ShowState HandleExepciton(Action action, ShowState showState)
+        private void CreateLog(string fullName,string methodName, List<LogParameter> parameters, string message,string logType)
+        {
+            LogDetail logDetail = new LogDetail();
+            logDetail.Fullname = fullName;
+            logDetail.MethodName = methodName;
+            logDetail.Parameters = new List<LogParameter>();
+
+            logDetail.Parameters.AddRange(parameters);
+            logDetail.Message = message;
+
+            if(logType == "Error")
+                loggerService.Error(logDetail);
+            else
+            if(logType == "Fatal")
+                loggerService.Fatal(logDetail);
+
+        }
+
+        protected ShowState HandleExepciton(Action action, ShowState showState)
         {
             try
             {
+                
+                //var parameters = action.GetType().GetMethod(.Name)
+
                 action.Invoke();
             }
             catch (Exception dbEx)
@@ -100,6 +151,19 @@ namespace JOB_MANAGER.Models.Concrete
                 //        strError = strError + " " + tempStr + "<br/>";
                 //    }
                 //}
+                var st = new StackTrace(new StackFrame(1));
+
+              
+                List<LogParameter> Parameters = new List<LogParameter>();                
+                Parameters.Add(new LogParameter
+                {
+                    Name = typeof(TEntity).Name,
+                    Type = "ErrorMessage",
+                    Value = st.GetFrame(0).GetMethod().GetParameters()
+                }
+                );
+
+                CreateLog(this.GetType().FullName, st.GetType().Name, Parameters, dbEx.Message, "Fatal");
 
                 showState.isError = true;
                 showState.ErrorMessage = dbEx.Message;

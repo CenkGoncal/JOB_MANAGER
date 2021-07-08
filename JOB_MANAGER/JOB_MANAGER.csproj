@@ -51,6 +51,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="SecurityProject">
       <HintPath>..\..\..\..\Desktop\MDB\SecurityProject.dll</HintPath>
@@ -149,6 +152,13 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="CrossCuttingConsers\Caching\CacheEnum.cs" />
     <Compile Include="CrossCuttingConsers\Caching\ICacheManager.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\Layout\JsonLayout.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\LoggerService.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\Loggers\DatabaseLogger.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\Loggers\FileLogger.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\SerializableLogEvent.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\LogDetail.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\LogParameter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -789,6 +799,7 @@
     <Content Include="Plugins\moment\moment.min.js.map" />
     <Content Include="Plugins\jqueryui\package.json" />
     <Content Include="Plugins\Fullcalendar\README.md" />
+    <Content Include="log4net.config" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\fontawesome\all.js" />
     <Content Include="Scripts\fontawesome\all.min.js" />
