@@ -59,7 +59,8 @@ namespace JOB_MANAGER.Models.Concrete
             else
             {
                 param.CREATED_BY = dbitem.CREATED_BY;
-                param.CREATION_DATE = dbitem.CREATION_DATE;                
+                param.CREATION_DATE = dbitem.CREATION_DATE;
+                param.VEHICLE_ID = dbitem.VEHICLE_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
                 param.UPDATED_BY = UserInfo.UserId;

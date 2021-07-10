@@ -69,6 +69,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.COMPANY_ID = dbitem.COMPANY_ID;
                 param.CREATION_DATE = dbitem.CREATION_DATE;
                 param.CREATED_BY = dbitem.CREATED_BY;
+                param.DEPARTMENT_ID = dbitem.DEPARTMENT_ID;
                 
                 param.MODIFIED_DATE = DateTime.Now;
                 param.UPDATED_BY = UserInfo.UserId;

@@ -99,6 +99,7 @@ namespace JOB_MANAGER.Models.Concrete
             {
                 param.MODIFIED_DATE = dbitem.MODIFIED_DATE;
                 param.CREATION_DATE = dbitem.CREATION_DATE;
+                param.CITY_ID = dbitem.CITY_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
                 param.UPDATED_BY = UserInfo.UserId;

@@ -59,6 +59,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.FLAG_URL = dbitem.FLAG_URL;
                 param.CREATED_BY = dbitem.CREATED_BY;
                 param.CREATION_DATE = dbitem.CREATION_DATE;
+                param.COUNTRY_ID = dbitem.COUNTRY_ID;
                 
                 param.MODIFIED_DATE = DateTime.Now;
                 param.UPDATED_BY = UserInfo.UserId;

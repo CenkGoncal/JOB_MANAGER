@@ -451,4 +451,21 @@ namespace JOB_MANAGER.Models
         public string CREATION_DATE { get; set; }
         public string MODIFIED_DATE { get; set; }
     }
+
+    public class RoleMenuExtented : ROLE_MENU, IViewDto
+    {
+        public string ROLE_NAME { get; set; }
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class FloorTypeExtented : FLOOR_TYPES, IViewDto
+    {
+        public string ROLE_NAME { get; set; }
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
 }

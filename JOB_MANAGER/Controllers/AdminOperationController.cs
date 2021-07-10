@@ -40,9 +40,9 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetRolesList()
         {
-            RoleDal role = new RoleDal(UserInfo);
+            RoleManager role = new RoleManager(new RoleDal(UserInfo));
 
-            return Json(new { Getlist = role.GetAll2() }, JsonRequestBehavior.AllowGet);
+            return Json(new { Getlist = role.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -65,8 +65,8 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateContractRole(ROLES param)
         {
-            RoleDal role = new RoleDal(UserInfo);
-            var control = role.AddorUpdate(param, (f => f.ROLE_ID == param.ROLE_ID));
+            RoleManager role = new RoleManager(new RoleDal(UserInfo));
+            var control = role.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -74,7 +74,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveRoleType(ROLES param)
         {
-            RoleDal role = new RoleDal(UserInfo);
+            RoleManager role = new RoleManager(new RoleDal(UserInfo));
             var control = role.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -91,15 +91,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetTitleList()
         {
-            TitleDal title = new TitleDal(UserInfo);
-            return Json(new { Getlist = title.GetAll2() }, JsonRequestBehavior.AllowGet);
+            TitleManager title = new TitleManager(new TitleDal(UserInfo));
+            return Json(new { Getlist = title.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateTitle(TITLES param)
         {
-            TitleDal title = new TitleDal(UserInfo);
-            var control = title.AddorUpdate(param, (f => f.TITLE_ID == param.TITLE_ID));
+            TitleManager title = new TitleManager(new TitleDal(UserInfo));
+            var control = title.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage});
         }
@@ -107,7 +107,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveTitle(TITLES param)
         {
-            TitleDal title = new TitleDal(UserInfo);
+            TitleManager title =new TitleManager(new TitleDal(UserInfo));
             var control = title.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -123,15 +123,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetDepartmentList()
         {
-            DepartmentDal department = new DepartmentDal(UserInfo);
-            return Json(new { Getlist = department.GetAll2() }, JsonRequestBehavior.AllowGet);
+            DepartmentManager department = new DepartmentManager(new DepartmentDal(UserInfo));
+            return Json(new { Getlist = department.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateDepartment(DEPARTMENTS param)
         {
-            DepartmentDal department = new DepartmentDal(UserInfo);
-            var control = department.AddorUpdate(param, (f => f.DEPARTMENT_ID == param.DEPARTMENT_ID));
+            DepartmentManager department = new DepartmentManager(new DepartmentDal(UserInfo));
+            var control = department.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -139,7 +139,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveDepartment(DEPARTMENTS param)
         {
-            DepartmentDal department = new DepartmentDal(UserInfo);
+            DepartmentManager department = new DepartmentManager(new DepartmentDal(UserInfo));
             var control = department.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -201,24 +201,24 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetStateList()
         {
-            StateDal state = new StateDal(UserInfo);            
+            StateManager state = new StateManager(new StateDal(UserInfo));
 
-            return Json(new { Getlist = state.GetAll2() }, JsonRequestBehavior.AllowGet);
+            return Json(new { Getlist = state.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateState(STATES param)
         {
-            StateDal state = new StateDal(UserInfo);
-            var control = state.AddorUpdate(param, (f => f.STATE_ID == param.STATE_ID));
+            StateManager state = new StateManager(new StateDal(UserInfo));
+            var control = state.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveState(STATES param)
-        {            
-            StateDal state = new StateDal(UserInfo);
+        {
+            StateManager state = new StateManager( new StateDal(UserInfo));
             var control = state.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -252,15 +252,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetSteetList()
         {
-            StreetDal street = new StreetDal(UserInfo);
-            return Json(new { Getlist = street.GetAll2() }, JsonRequestBehavior.AllowGet);
+            StreetManager street = new StreetManager(new StreetDal(UserInfo));
+            return Json(new { Getlist = street.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateStreet(STREET param)
         {
-            StreetDal street = new StreetDal(UserInfo);
-            var control = street.AddorUpdate(param, (f => f.STREET_ID == param.STREET_ID));
+            StreetManager street = new StreetManager(new StreetDal(UserInfo));
+            var control = street.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
@@ -268,7 +268,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveSteet(STREET param)
         {
-            StreetDal street = new StreetDal(UserInfo);
+            StreetManager street = new StreetManager(new StreetDal(UserInfo));
             var control = street.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -340,22 +340,22 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclebody()
         {
-            VehicleBodyDal vehicle = new VehicleBodyDal(UserInfo);
-            return Json(new { Getlist = vehicle.GetAll2() }, JsonRequestBehavior.AllowGet);
+            VehicleBodyManager vehicle = new VehicleBodyManager(new VehicleBodyDal(UserInfo));
+            return Json(new { Getlist = vehicle.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclebody(VEHICLE_BODY_TYPES param)
         {
-            VehicleBodyDal vehicle = new VehicleBodyDal(UserInfo);
-            var control = vehicle.AddorUpdate(param, (f => f.BODY_TYPE_ID == param.BODY_TYPE_ID));
+            VehicleBodyManager vehicle = new VehicleBodyManager(new VehicleBodyDal(UserInfo));
+            var control = vehicle.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveVehiclebody(VEHICLE_BODY_TYPES param)
         {
-            VehicleBodyDal vehicle = new VehicleBodyDal(UserInfo);
+            VehicleBodyManager vehicle = new VehicleBodyManager(new VehicleBodyDal(UserInfo));
             var control = vehicle.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -363,22 +363,22 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclemakesList()
         {
-            VehicleMakeDal vehicle = new VehicleMakeDal(UserInfo);
-            return Json(new { Getlist = vehicle.GetAll2() }, JsonRequestBehavior.AllowGet);            
+            VehicleMakeManager vehicle = new VehicleMakeManager(new VehicleMakeDal(UserInfo));
+            return Json(new { Getlist = vehicle.GetAll() }, JsonRequestBehavior.AllowGet);            
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclemake(VEHICLE_MAKES param)
         {
-            VehicleMakeDal vehicle = new VehicleMakeDal(UserInfo);
-            var control = vehicle.AddorUpdate(param, (f => f.VEHICLE_MAKE_ID == param.VEHICLE_MAKE_ID));
+            VehicleMakeManager vehicle = new VehicleMakeManager(new VehicleMakeDal(UserInfo));
+            var control = vehicle.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveVehiclemake(VEHICLE_MAKES param)
         {
-            VehicleMakeDal vehicle = new VehicleMakeDal(UserInfo);
+            VehicleMakeManager vehicle = new VehicleMakeManager(new VehicleMakeDal(UserInfo));
             var control = vehicle.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -386,15 +386,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclemodelsList()
         {
-            VehicleModelDal vehicle = new VehicleModelDal(UserInfo);
-            return Json(new { Getlist = vehicle.GetAll2() }, JsonRequestBehavior.AllowGet);
+            VehicleModelManager vehicle = new VehicleModelManager( new VehicleModelDal(UserInfo));
+            return Json(new { Getlist = vehicle.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclemodels(VEHICLE_MODELS param)
         {
-            VehicleModelDal vehicle = new VehicleModelDal(UserInfo);
-            var control = vehicle.AddorUpdate(param, (f => f.VEHICLE_MODEL_ID == param.VEHICLE_MODEL_ID));
+            VehicleModelManager vehicle = new VehicleModelManager(new VehicleModelDal(UserInfo));
+            var control = vehicle.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
 
         }
@@ -402,7 +402,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveVehiclemodels(VEHICLE_MODELS param)
         {
-            VehicleModelDal vehicle = new VehicleModelDal(UserInfo);
+            VehicleModelManager vehicle = new VehicleModelManager(new VehicleModelDal(UserInfo));
             var control = vehicle.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -410,22 +410,22 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetStatusList(int StatusType)
         {
-            StatusDal status = new StatusDal(UserInfo);
-            return Json(new { Getlist = status.GetAll2().Where(w=>w.STATUS_ID == StatusType).ToList() }, JsonRequestBehavior.AllowGet);
+            StatusManager status =new StatusManager( new StatusDal(UserInfo));
+            return Json(new { Getlist = status.GetAll().Where(w=>w.STATUS_ID == StatusType).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateStatus(STATUS param)
         {
-            StatusDal status = new StatusDal(UserInfo);
-            var control = status.AddorUpdate(param, (f => f.STATUS_ID == param.STATUS_ID));
+            StatusManager status = new StatusManager(new StatusDal(UserInfo));
+            var control = status.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveStatus(STATUS param)
         {
-            StatusDal status = new StatusDal(UserInfo);
+            StatusManager status = new StatusManager(new StatusDal(UserInfo));
             var control = status.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -456,95 +456,27 @@ namespace JOB_MANAGER.Controllers
 
         public JsonResult GetRolesMenuList()
         {
-            var data = (from r in db.ROLES
+            RoleMenuManager roleMenu = new RoleMenuManager(new RoleMenuDal(UserInfo));
 
-                        join rm in db.ROLE_MENU
-                        on r.ROLE_ID equals rm.ROLE_ID into rm_join
-                        from rm_left in rm_join.DefaultIfEmpty()
-
-                        join e in db.EMPLOYEES
-                        on r.CREATED_BY equals e.EMP_ID into e_join
-                        from e_left in e_join.DefaultIfEmpty()
-                        
-                        select new
-                        {
-                            ROLE_ID = r.ROLE_ID,
-                            ROLE_NAME = r.ROLE_NAME,
-                            MENU_ID = rm_left != null ? rm_left.MENU_ID : 0,
-                            MENUS_STR = rm_left != null ? rm_left.MENUS_STR : null        
-                        }
-            ).OrderBy(o => o.ROLE_NAME).Distinct().ToList();//otdo distinct
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { Getlist = roleMenu.GetAll().Distinct().ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult SaveMenuRoles(int RoleID,List<MenuRolesDto> Menus)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            ROLE_MENU chekmenus = new ROLE_MENU();
+            chekmenus.ROLE_ID = RoleID;
+            chekmenus.MENUS_STR = JsonConvert.SerializeObject(Menus);
 
-            try
-            {
-                ROLE_MENU chekmenus = db.ROLE_MENU.Find(RoleID);
-                if (chekmenus != null)
-                {
-                    chekmenus.MENUS_STR = JsonConvert.SerializeObject(Menus);
-                    chekmenus.UPDATED_BY = GetUserID();
+            RoleMenuManager roleMenu = new RoleMenuManager(new RoleMenuDal(UserInfo));
+            var control = roleMenu.AddorUpdate(chekmenus);
 
-                    db.ROLE_MENU.Attach(chekmenus);
-                    db.Entry(chekmenus).Property(x => x.MENUS_STR).IsModified = true;
-                    db.Entry(chekmenus).Property(x => x.UPDATED_BY).IsModified = true;
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    ROLE_MENU insert = new ROLE_MENU();
-                    insert.ROLE_ID = RoleID;
-                    insert.MENUS_STR = JsonConvert.SerializeObject(Menus);
-                    insert.MODIFIED_DATE = insert.CREATION_DATE = DateTime.Now;
-                    insert.CREATED_BY = insert.UPDATED_BY = GetUserID();
-
-                    db.ROLE_MENU.Add(insert);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });            
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         public JsonResult GetLoginEmpRolesMenus()
         {
-            int EmpID = GetUserID(); 
-            var data = (from r in db.ROLES
-
-                        join rm in db.ROLE_MENU
-                        on r.ROLE_ID equals rm.ROLE_ID                         
-
-                        join e in db.EMPLOYEES
-                        on r.ROLE_ID equals e.ROLE_ID
-
-                        where e.EMP_ID == EmpID
-                        select new
-                        {
-                            ROLE_ID = r.ROLE_ID,
-                            ROLE_NAME = r.ROLE_NAME,
-                            MENU_ID = rm != null ? rm.MENU_ID : 0,
-                            MENUS_STR = rm != null ? rm.MENUS_STR : null
-                        }
-            ).OrderBy(o => o.ROLE_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            RoleMenuManager roleMenu = new RoleMenuManager(new RoleMenuDal(UserInfo));            
+            return Json(new { Getlist = roleMenu.GetAllByEmployee() }, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -559,31 +491,9 @@ namespace JOB_MANAGER.Controllers
         public JsonResult GetQuoteAndJobList(int Type)
         {
             if (Type == 1)
-            { 
-                var data =  (from vb in db.FLOOR_TYPES
-
-                                   join e in db.EMPLOYEES
-                                   on vb.CREATED_BY equals e.EMP_ID into e_join
-                                   from e_left in e_join.DefaultIfEmpty()
-
-                                   select new
-                                   {
-                                       FLOOR_TYPE_ID = vb.FLOOR_TYPE_ID,
-                                       FLOOR_TYPE_NAME = vb.FLOOR_TYPE_NAME,
-                                       IS_CANCELED = vb.IS_CANCELED,
-                                       CREATION_DATE = vb.CREATION_DATE != null ?
-                                                               vb.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                               (vb.CREATION_DATE.Month > 9 ? vb.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + vb.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                               vb.CREATION_DATE.Day : null,
-                                       MODIFIED_DATE = vb.MODIFIED_DATE != null ?
-                                                               vb.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                               (vb.MODIFIED_DATE.Month > 9 ? vb.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + vb.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                               vb.MODIFIED_DATE.Day : null,
-                                       CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                                   }
-                            ).OrderBy(o => o.FLOOR_TYPE_NAME).ToList();
-
-                return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            {
+                FloorTypeManager floorType = new FloorTypeManager(new FloorTypeDal(UserInfo));
+                return Json(new { Getlist = floorType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 2)
@@ -725,67 +635,10 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateFloorType(FLOOR_TYPES param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            FloorTypeManager floorType = new FloorTypeManager(new FloorTypeDal(UserInfo));
+            var control = floorType.AddorUpdate(param);
 
-            try
-            {
-                FLOOR_TYPES control = db.FLOOR_TYPES.Where(w => w.FLOOR_TYPE_ID == param.FLOOR_TYPE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-                    if (db.FLOOR_TYPES.Any(x => x.FLOOR_TYPE_NAME.Equals(param.FLOOR_TYPE_NAME) && x.IS_CANCELED == false))
-                    {
-                        _message = "Floor Type already exists.";
-                        _success = false;
-                    }
-                }
-                else
-                {
-                    if (db.FLOOR_TYPES.Any(x => x.FLOOR_TYPE_NAME.Equals(param.FLOOR_TYPE_NAME) && x.FLOOR_TYPE_ID != param.FLOOR_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Floor Type already exists.";
-                        _success = false;
-                    }
-                }
-
-                if(_success == false)
-                    return Json(new { success = _success, Message = _message });
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.FLOOR_TYPES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.FLOOR_TYPE_NAME = param.FLOOR_TYPE_NAME;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.FLOOR_TYPES.Attach(control);
-                    db.Entry(control).Property(x => x.FLOOR_TYPE_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]

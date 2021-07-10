@@ -59,6 +59,7 @@ namespace JOB_MANAGER.Models.Concrete
             {
                 param.MODIFIED_DATE = DateTime.Now;
                 param.UPDATED_BY = UserInfo.UserId;
+                param.TITLE_ID = dbitem.TITLE_ID;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }
