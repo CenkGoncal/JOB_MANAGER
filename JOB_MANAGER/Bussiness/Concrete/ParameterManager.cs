@@ -33,7 +33,7 @@ namespace JOB_MANAGER.Bussiness.Concrete
 
         public PARAMETERS Get(PARAMETERS param)
         {
-            throw new NotImplementedException();
+            return _dal.GetAll(f => f.PARAM_NAME == param.PARAM_NAME).FirstOrDefault();
         }
 
         public List<ParameterExtented> GetAll()

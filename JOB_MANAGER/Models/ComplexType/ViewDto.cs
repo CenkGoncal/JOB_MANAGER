@@ -265,7 +265,7 @@ namespace JOB_MANAGER.Models
     {
         public int PROJECT_TYPE_ID { get; set; }
         public string PROJECT_TYPE_NAME { get; set; }
-        public List<DefPhasesDto> PHASE { get; set; }
+        public List<DefProjectPhaseExtented> PHASE { get; set; }
     }
     public class DefPhasesDto
     {
@@ -468,4 +468,60 @@ namespace JOB_MANAGER.Models
         public string MODIFIED_DATE { get; set; }
     }
 
+    public class MaterialExtented : MATERIALS, IViewDto
+    {        
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class ProjectTypeExtented : PROJECT_TYPES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class NoteTypeExtented : NOTE_TYPES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class DocumentTypeExtented : DOCUMENT_TYPES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class DefProjectPhaseExtented : DEF_PROJECT_PHASES, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+        public List<DefTaskExtented> TASK { get; set; }
+    }
+
+    public class DefTaskExtented : DEF_TASKS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class EmployeeExtended : EMPLOYEES,IViewDto
+    {
+        public string EMP_NAME { get; set; }
+        public string EMP_TITLE { get; set; }
+        public string EMP_CONTRACT { get; set; }
+        public string EMP_DEPARTMENT { get; set; }
+        public string HIRED_DATE_STR { get; set; }
+        public string EMP_STATUS { get; set; }
+        public string DISPLAY_CLASS { get; set; }
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
 }

@@ -498,60 +498,14 @@ namespace JOB_MANAGER.Controllers
             else
             if (Type == 2)
             {
-               var data = (from vb in db.MATERIALS
-
-                            join e in db.EMPLOYEES
-                            on vb.CREATED_BY equals e.EMP_ID into e_join
-                            from e_left in e_join.DefaultIfEmpty()
-
-                            select new
-                            {
-                                MATERIAL_ID = vb.MATERIAL_ID,
-                                MATERIAL_NAME = vb.MATERIAL_NAME,
-                                IS_CANCELED = vb.IS_CANCELED,
-                                CREATION_DATE = vb.CREATION_DATE != null ?
-                                                        vb.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                        (vb.CREATION_DATE.Month > 9 ? vb.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + vb.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                        vb.CREATION_DATE.Day : null,
-                                MODIFIED_DATE = vb.MODIFIED_DATE != null ?
-                                                        vb.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                        (vb.MODIFIED_DATE.Month > 9 ? vb.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + vb.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                        vb.MODIFIED_DATE.Day : null,
-                                CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                            }
-                        ).OrderBy(o => o.MATERIAL_NAME).ToList();
-
-                return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+                MateryalManager materyal = new MateryalManager(new MateryalDal(UserInfo));
+                return Json(new { Getlist = materyal.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 3)
             {
-                    var data = (from vb in db.PROJECT_TYPES
-
-                                join e in db.EMPLOYEES
-                                on vb.CREATED_BY equals e.EMP_ID into e_join
-                                from e_left in e_join.DefaultIfEmpty()
-
-                                select new
-                                {
-                                    PROJECT_TYPE_ID = vb.PROJECT_TYPE_ID,
-                                    PROJECT_TYPE_NAME = vb.PROJECT_TYPE_NAME,
-                                    PROJECT_TYPE_DESC = vb.PROJECT_TYPE_DESC,
-                                    DEFAULT_SUPERVISOR = vb.DEFAULT_SUPERVISOR,                                    
-                                    IS_CANCELED = vb.IS_CANCELED,
-                                    CREATION_DATE = vb.CREATION_DATE != null ?
-                                                            vb.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                            (vb.CREATION_DATE.Month > 9 ? vb.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + vb.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                            vb.CREATION_DATE.Day : null,
-                                    MODIFIED_DATE = vb.MODIFIED_DATE != null ?
-                                                            vb.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                            (vb.MODIFIED_DATE.Month > 9 ? vb.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + vb.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                            vb.MODIFIED_DATE.Day : null,
-                                    CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-                                }
-                ).OrderBy(o => o.PROJECT_TYPE_NAME).ToList();
-
-                return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+                ProjectTypeManager projectType = new ProjectTypeManager(new ProjectTypeDal(UserInfo));
+                return Json(new { Getlist = projectType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 4)
@@ -570,63 +524,14 @@ namespace JOB_MANAGER.Controllers
             else
             if (Type == 5)
             {
-                var data = (from N in db.NOTE_TYPES
-
-                            join e in db.EMPLOYEES
-                            on N.CREATED_BY equals e.EMP_ID into e_join
-                            from e_left in e_join.DefaultIfEmpty()
-
-                            select new
-                            {
-                                NOTE_TYPE_ID = N.NOTE_TYPE_ID,
-                                NOTE_TYPE_NAME = N.NOTE_TYPE_NAME,
-                                IS_CANCELED = N.IS_CANCELED,
-                                CREATION_DATE = N.CREATION_DATE != null ?
-                                                            N.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                            (N.CREATION_DATE.Month > 9 ? N.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + N.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                            N.CREATION_DATE.Day : null,
-                                MODIFIED_DATE = N.MODIFIED_DATE != null ?
-                                                            N.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                            (N.MODIFIED_DATE.Month > 9 ? N.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + N.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                            N.MODIFIED_DATE.Day : null,
-                                CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-
-                            }
-                ).OrderBy(o => o.NOTE_TYPE_NAME).ToList();
-
-                return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+                NoteTypeManager noteType = new NoteTypeManager(new NoteTypeDal(UserInfo));
+                return Json(new { Getlist = noteType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 6)
             {
-                var data = (from D in db.DOCUMENT_TYPES
-
-                            join e in db.EMPLOYEES
-                            on D.CREATED_BY equals e.EMP_ID into e_join
-                            from e_left in e_join.DefaultIfEmpty()
-
-                            where D.IS_CANCELED == false
-                            select new
-                            {
-                                DOCUMENT_TYPE_ID = D.DOCUMENT_TYPE_ID,
-                                DOCUMENT_TYPE_NAME = D.DOCUMENT_TYPE_NAME,
-                                DOCUMENT_EXTENSION = D.DOCUMENT_EXTENSION,
-                                FONT_AWESOME_ICON = D.FONT_AWESOME_ICON,
-                                IS_CANCELED = D.IS_CANCELED,
-                                CREATION_DATE = D.CREATION_DATE != null ?
-                                                            D.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                            (D.CREATION_DATE.Month > 9 ? D.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + D.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                            D.CREATION_DATE.Day : null,
-                                MODIFIED_DATE = D.MODIFIED_DATE != null ?
-                                                            D.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                            (D.MODIFIED_DATE.Month > 9 ? D.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + D.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                            D.MODIFIED_DATE.Day : null,
-                                CREATE_BY = e_left.FIRST_NAME + SqlConstants.stringWhiteSpace + e_left.LAST_NAME
-
-                            }
-                ).OrderBy(o => o.DOCUMENT_TYPE_NAME).ToList();
-
-                return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+                DocumentTypeManager documentType = new DocumentTypeManager(new DocumentTypeDal(UserInfo));
+                return Json(new { Getlist = documentType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
 
             return Json(new { Getlist = false }, JsonRequestBehavior.AllowGet);
@@ -644,509 +549,84 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveFloorType(FLOOR_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            FloorTypeManager floorType = new FloorTypeManager(new FloorTypeDal(UserInfo));
+            var control = floorType.Delete(param);
 
-            try
-            {
-                FLOOR_TYPES control = db.FLOOR_TYPES.Where(w => w.FLOOR_TYPE_ID == param.FLOOR_TYPE_ID).FirstOrDefault();
-                var checkModel = db.QUOTES.Where(w => w.FLOOR_TYPE == param.FLOOR_TYPE_ID).FirstOrDefault();
-                if (checkModel != null)
-                {
-                    _message = "Quante is available to use floor Type!! Please try to check cancelled";
-                    _success = false;
-                }
-                if (control != null)
-                {
-                    db.FLOOR_TYPES.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateMaterial(MATERIALS param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            MateryalManager materyal = new MateryalManager(new MateryalDal(UserInfo));
+            var control = materyal.AddorUpdate(param);
 
-            try
-            {
-                MATERIALS control = db.MATERIALS.Where(w => w.MATERIAL_ID == param.MATERIAL_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-                    if (db.MATERIALS.Any(x => x.MATERIAL_NAME.Equals(param.MATERIAL_NAME) && x.IS_CANCELED == false))
-                    {
-                        _message = "Material already exists.";
-                        _success = false;
-                    }
-
-                }
-                else
-                {
-                    if (db.MATERIALS.Any(x => x.MATERIAL_NAME.Equals(param.MATERIAL_NAME) && x.MATERIAL_ID != param.MATERIAL_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Material already exists.";
-                        _success = false;
-                    }
-                }
-
-                if (_success == false)
-                    return Json(new { success = _success, Message = _message });
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.MATERIALS.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.MATERIAL_NAME = param.MATERIAL_NAME;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.MATERIALS.Attach(control);
-                    db.Entry(control).Property(x => x.MATERIAL_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveMaterial(MATERIALS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            MateryalManager materyal = new MateryalManager(new MateryalDal(UserInfo));
+            var control = materyal.Delete(param);
 
-            try
-            {
-
-                MATERIALS control = db.MATERIALS.Where(w => w.MATERIAL_ID == param.MATERIAL_ID).FirstOrDefault();
-                var checkModel = db.QUOTES.Where(w => w.MATERIAL_ID == param.MATERIAL_ID).FirstOrDefault();
-                if (checkModel != null)
-                {
-                    _message = "Quante is available to use material!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (control != null)
-                {
-                    db.MATERIALS.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateProjectType(PROJECT_TYPES param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            ProjectTypeManager projectType = new ProjectTypeManager(new ProjectTypeDal(UserInfo));
+            var control = projectType.AddorUpdate(param);
 
-            try
-            {
-                PROJECT_TYPES control = db.PROJECT_TYPES.Where(w => w.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-
-                    if (db.PROJECT_TYPES.Any(x => x.PROJECT_TYPE_NAME.Equals(param.PROJECT_TYPE_NAME) && x.IS_CANCELED == false))
-                    {
-                        _message = "Type already exists.";
-                        _success = false;
-                    }
-
-                    if (param.IS_DEFAULT)
-                    {
-                        if (db.PROJECT_TYPES.Any(x => x.IS_DEFAULT == true))
-                        {
-                            _message = "Only one type can be set as default";
-                            _success = false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (db.PROJECT_TYPES.Any(x => x.PROJECT_TYPE_NAME.Equals(param.PROJECT_TYPE_NAME) && x.PROJECT_TYPE_ID != param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Type already exists.";
-                        _success = false;
-                    }
-
-                    if (param.IS_DEFAULT)
-                    {
-                        if (db.PROJECT_TYPES.Any(x => x.IS_DEFAULT == true && x.PROJECT_TYPE_ID != param.PROJECT_TYPE_ID))
-                        {
-                            _message = "Only one type can be set as default";
-                            _success = false;
-                        }
-                    }
-                }
-
-                if(_success == false)
-                        return Json(new { success = _success, Message = _message });
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.PROJECT_TYPES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.PROJECT_TYPE_NAME = param.PROJECT_TYPE_NAME;
-                    control.PROJECT_TYPE_DESC = param.PROJECT_TYPE_DESC;
-                    control.IS_DEFAULT = param.IS_DEFAULT;
-                    control.DEFAULT_SUPERVISOR = param.DEFAULT_SUPERVISOR;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.PROJECT_TYPES.Attach(control);
-                    db.Entry(control).Property(x => x.PROJECT_TYPE_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.PROJECT_TYPE_DESC).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_DEFAULT).IsModified = true;
-                    db.Entry(control).Property(x => x.DEFAULT_SUPERVISOR).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveProjectType(PROJECT_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            ProjectTypeManager projectType = new ProjectTypeManager(new ProjectTypeDal(UserInfo));
+            var control = projectType.Delete(param);
 
-            try
-            {
-
-                PROJECT_TYPES control = db.PROJECT_TYPES.Where(w => w.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID).FirstOrDefault();
-                var checkModel = db.QUOTES.Where(w => w.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID).FirstOrDefault();
-                if (checkModel != null)
-                {
-                    _message = "Quonte is available to use Project Type!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (control != null)
-                {
-                    db.PROJECT_TYPES.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
 
         [HttpPost]
         public JsonResult AddOrUpdateNoteType(NOTE_TYPES param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            NoteTypeManager noteType = new NoteTypeManager(new NoteTypeDal(UserInfo));
+            var control = noteType.AddorUpdate(param);
 
-            try
-            {
-                NOTE_TYPES control = db.NOTE_TYPES.Where(w => w.NOTE_TYPE_ID == param.NOTE_TYPE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-
-                    if (db.NOTE_TYPES.Any(x => x.NOTE_TYPE_NAME.Equals(param.NOTE_TYPE_NAME) && x.IS_CANCELED == false))
-                    {
-                        _message = "Type already exists.";
-                        _success = false;
-                    }
-
-                }
-                else
-                {
-                    if (db.NOTE_TYPES.Any(x => x.NOTE_TYPE_NAME.Equals(param.NOTE_TYPE_NAME) && x.NOTE_TYPE_ID != param.NOTE_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Type already exists.";
-                        _success = false;
-                    }
-                }
-
-                if(_success == false)
-                    return Json(new { success = _success, Message = _message });
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.NOTE_TYPES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.NOTE_TYPE_NAME = param.NOTE_TYPE_NAME;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.NOTE_TYPES.Attach(control);
-                    db.Entry(control).Property(x => x.NOTE_TYPE_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveNoteType(NOTE_TYPES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            NoteTypeManager noteType = new NoteTypeManager(new NoteTypeDal(UserInfo));
+            var control = noteType.Delete(param);
 
-            try
-            {
-
-                NOTE_TYPES control = db.NOTE_TYPES.Where(w => w.NOTE_TYPE_ID == param.NOTE_TYPE_ID).FirstOrDefault();
-                var checkModel = db.NOTES.Where(w => w.NOTE_TYPE_ID == param.NOTE_TYPE_ID).FirstOrDefault();
-                if (checkModel != null)
-                {
-                    _message = "Quonte is available to use Note Type!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (control != null)
-                {
-                    db.NOTE_TYPES.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateDocumentType(DOCUMENT_TYPES param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            DocumentTypeManager documentType = new DocumentTypeManager(new DocumentTypeDal(UserInfo));
+            var control = documentType.AddorUpdate(param);
 
-            try
-            {
-                DOCUMENT_TYPES control = db.DOCUMENT_TYPES.Where(w => w.DOCUMENT_TYPE_ID == param.DOCUMENT_TYPE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-                    if (db.DOCUMENT_TYPES.Any(x => x.DOCUMENT_TYPE_NAME.Equals(param.DOCUMENT_TYPE_NAME) && x.IS_CANCELED == false))
-                    {
-                        _message = "Type already exists.";
-                        _success = false;
-                    }
-
-                    if (db.DOCUMENT_TYPES.Any(x => x.DOCUMENT_EXTENSION.Equals(param.DOCUMENT_EXTENSION) && x.IS_CANCELED == false))
-                    {
-                        _message = "Doc ext. already exists.";
-                        _success = false;
-                    }
-                }
-                else
-                {
-                    if (db.DOCUMENT_TYPES.Any(x => x.DOCUMENT_TYPE_NAME.Equals(param.DOCUMENT_TYPE_NAME) && x.DOCUMENT_TYPE_ID != param.DOCUMENT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Type already exists.";
-                        _success = false;
-                    }
-
-                    if (db.DOCUMENT_TYPES.Any(x => x.DOCUMENT_EXTENSION.Equals(param.DOCUMENT_EXTENSION) && x.DOCUMENT_TYPE_ID != param.DOCUMENT_TYPE_ID  && x.IS_CANCELED == false))
-                    {
-                        _message = "Doc ext. already exists.";
-                        _success = false;
-                    }
-                }
-
-                if(_success == false)
-                {
-                    return Json(new { success = _success, Message = _message });
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.DOCUMENT_TYPES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.DOCUMENT_TYPE_NAME = param.DOCUMENT_TYPE_NAME;
-                    control.DOCUMENT_EXTENSION = param.DOCUMENT_EXTENSION;
-                    control.FONT_AWESOME_ICON = param.FONT_AWESOME_ICON;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.DOCUMENT_TYPES.Attach(control);
-                    db.Entry(control).Property(x => x.DOCUMENT_TYPE_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.DOCUMENT_EXTENSION).IsModified = true;
-                    db.Entry(control).Property(x => x.FONT_AWESOME_ICON).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
 
         [HttpPost]
         public JsonResult RemoveDocumentType(DOCUMENT_TYPES param)
-        {
-            bool _success = false;
-            string _message = string.Empty;
+        {            
+            DocumentTypeManager documentType = new DocumentTypeManager(new DocumentTypeDal(UserInfo));
+            var control = documentType.Delete(param);
 
-            try
-            {                
-                var checkModel = db.DOCUMENTS.Where(w => w.DOCUMENT_TYPE_ID == param.DOCUMENT_TYPE_ID).FirstOrDefault();
-                var control = db.DOCUMENT_TYPES.Where(w => w.DOCUMENT_TYPE_ID == param.DOCUMENT_TYPE_ID).FirstOrDefault();
-                if (checkModel != null)
-                {
-                    _message = "Quonte or Project are available to use Document Type!! Please try to check cancelled";
-                    _success = false;
-                }
-                else
-                if (control != null)
-                {
-                    db.DOCUMENT_TYPES.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Document Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
@@ -1159,354 +639,52 @@ namespace JOB_MANAGER.Controllers
              
         [HttpGet]
         public JsonResult DefPhasesTask()
-        {
-            var ProjectTypes = db.PROJECT_TYPES.ToList();
-            var ProjectStatus = (from S in db.STATUS
-                                 where S.IS_CANCELED == false && S.STATUS_TYPE == (int)StatusType.Project
-                                 select new
-                                 {
-                                     STATUS_ID = S.STATUS_ID,
-                                     STATUS_NAME = S.STATUS_NAME
-                                 }).ToList();
-            int CompanyID = GetCompanyID();
-            var Employee = (from E in db.EMPLOYEES
-                                 where E.IS_CANCELED == false && E.COMPANY_ID == CompanyID
-                            select new
-                                 {
-                                     EMP_ID = E.EMP_ID,
-                                     EMP_NAME = E.FIRST_NAME+ SqlConstants.stringWhiteSpace+E.LAST_NAME
-                                 }).ToList();
-
-            List<ProjectTypeWithPhaseTask> PhaseList = new List<ProjectTypeWithPhaseTask>();
-
-            foreach (var item in ProjectTypes)
-            {
-                ProjectTypeWithPhaseTask Phase = new ProjectTypeWithPhaseTask();
-
-                Phase.PROJECT_TYPE_ID = item.PROJECT_TYPE_ID;
-                Phase.PROJECT_TYPE_NAME = item.PROJECT_TYPE_NAME;
-                Phase.PHASE = (from PH in db.DEF_PROJECT_PHASES
-                               from E in db.EMPLOYEES.Where(w =>w.EMP_ID == PH.CREATED_BY).DefaultIfEmpty()                            
-                               where PH.PROJECT_TYPE_ID == item.PROJECT_TYPE_ID
-                               select new DefPhasesDto
-                               {
-                                   PHASE_ID = PH.PHASE_ID,
-                                   PHASE_NAME = PH.PHASE_NAME,
-                                   PROJECT_TYPE_ID = PH.PROJECT_TYPE_ID,
-                                   PHASE_ORDER = PH.PHASE_ORDER,
-                                   PHASE_DESC = PH.PHASE_DESC,
-                                   PHASE_COLOR = PH.PHASE_COLOR,
-                                   WIDGET_COLOR = PH.WIDGET_COLOR,
-                                   CORRESPONDANT_STATUS = PH.CORRESPONDANT_STATUS,
-                                   IS_CANCELED = PH.IS_CANCELED,
-                                   CREATION_DATE = PH.CREATION_DATE != null ?
-                                                               PH.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                               (PH.CREATION_DATE.Month > 9 ? PH.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + PH.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                               PH.CREATION_DATE.Day : null,
-                                   MODIFIED_DATE = PH.MODIFIED_DATE != null ?
-                                                               PH.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                               (PH.MODIFIED_DATE.Month > 9 ? PH.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + PH.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                               PH.MODIFIED_DATE.Day : null,
-                                   CREATE_BY = E.FIRST_NAME + SqlConstants.stringWhiteSpace + E.LAST_NAME
-                               }
-                              ).OrderBy(o => o.PHASE_ORDER).ToList();
-
-                foreach(var phase in Phase.PHASE)
-                {
-                    phase.TASK = (from T in db.DEF_TASKS
-                                  from E in db.EMPLOYEES.Where(w => w.EMP_ID == T.CREATED_BY).DefaultIfEmpty()
-                                  where T.PROJECT_TYPE_ID == item.PROJECT_TYPE_ID && T.PHASE_ID == phase.PHASE_ID
-                               select new DefTaskDto
-                               {
-                                   TASK_ID = T.TASK_ID,
-                                   TASK_NAME = T.TASK_NAME,
-                                   TASK_DESC = T.TASK_DESC,
-                                   PROJECT_TYPE_ID = T.PROJECT_TYPE_ID,
-                                   PHASE_ID = T.PHASE_ID,
-                                   TASK_ORDER = T.TASK_ORDER,
-                                   ALLOCATE_SUPERVISOR = T.ALLOCATE_SUPERVISOR,
-                                   COMPLETE_ON_UPLOAD = T.COMPLETE_ON_UPLOAD,
-                                   IS_CANCELED = T.IS_CANCELED,
-                                   CREATION_DATE = T.CREATION_DATE != null ?
-                                                               T.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                                               (T.CREATION_DATE.Month > 9 ? T.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + T.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                                               T.CREATION_DATE.Day : null,
-                                   MODIFIED_DATE = T.MODIFIED_DATE != null ?
-                                                               T.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                                               (T.MODIFIED_DATE.Month > 9 ? T.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + T.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                                               T.MODIFIED_DATE.Day : null,
-                                   CREATE_BY = E.FIRST_NAME + SqlConstants.stringWhiteSpace + E.LAST_NAME
-                               }
-                          ).OrderBy(o => o.TASK_NAME).ToList();
-                }
-
-                PhaseList.Add(Phase);
-            }
-
-            return Json(new { Getlist = PhaseList, ProjectStatus = ProjectStatus, Employee = Employee }, JsonRequestBehavior.AllowGet);
+        {                  
+            PhaseManager phase = new PhaseManager(new PhaseDal(UserInfo));
+            StatusManager status = new StatusManager(new StatusDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            
+            return Json(new { Getlist = phase.GetProjectTypeWithPhaseTasks(), 
+                              ProjectStatus = status.GetAllByType((int)StatusType.Project), 
+                              Employee = employee.GetAllByCompany(UserInfo.CompanyId) }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpPost]
         public JsonResult AddOrUpdatePhases(DEF_PROJECT_PHASES param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            PhaseManager phase = new PhaseManager(new PhaseDal(UserInfo));
+            var control = phase.AddorUpdate(param);
 
-            try
-            {
-                DEF_PROJECT_PHASES control = db.DEF_PROJECT_PHASES.Where(w => w.PHASE_ID == param.PHASE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-
-                    if (db.DEF_PROJECT_PHASES.Any(x => x.PHASE_NAME.Equals(param.PHASE_NAME) && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false ))
-                    {
-                        _message ="Phase already exists.";
-                        _success = false;
-                    }
-                    if (db.DEF_PROJECT_PHASES.Any(x => x.PHASE_ORDER == param.PHASE_ORDER && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false ))
-                    {
-                        _message = "Order already exists.";
-                        _success = false;
-                    }
-                }
-                else
-                {
-                    if (db.DEF_PROJECT_PHASES.Any(x => x.PHASE_NAME.Equals(param.PHASE_NAME) && x.PHASE_ID != param.PHASE_ID && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Phase already exists.";
-                        _success = false;
-                    }
-                    if (db.DEF_PROJECT_PHASES.Any(x => x.PHASE_ORDER == param.PHASE_ORDER && x.PHASE_ID != param.PHASE_ID  && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Order already exists.";
-                        _success = false;
-                    }
-                }
-
-                if(_success == false)
-                {
-                    return Json(new { success = _success, Message = _message });
-                }
-
-                param.CORRESPONDANT_STATUS = param.CORRESPONDANT_STATUS == 0 ? null : param.CORRESPONDANT_STATUS;
-
-                if (isNew)
-                {
-                    int ORDER = db.DEF_PROJECT_PHASES.Where(w => w.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID).Select(s => s.PHASE_ID).ToList().Count() + 1;
-                    param.PHASE_ORDER = (short)ORDER;
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.DEF_PROJECT_PHASES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.PHASE_NAME = param.PHASE_NAME;
-                    control.PHASE_ORDER = param.PHASE_ORDER;
-                    control.PHASE_COLOR = param.PHASE_COLOR;
-                    control.PROJECT_TYPE_ID = param.PROJECT_TYPE_ID;
-                    control.WIDGET_COLOR = param.WIDGET_COLOR;
-                    control.CORRESPONDANT_STATUS = param.CORRESPONDANT_STATUS;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.DEF_PROJECT_PHASES.Attach(control);
-                    db.Entry(control).Property(x => x.PHASE_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.PHASE_ORDER).IsModified = true;
-                    db.Entry(control).Property(x => x.PHASE_COLOR).IsModified = true;
-                    db.Entry(control).Property(x => x.PROJECT_TYPE_ID).IsModified = true;
-                    db.Entry(control).Property(x => x.WIDGET_COLOR).IsModified = true;
-                    db.Entry(control).Property(x => x.CORRESPONDANT_STATUS).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
 
         [HttpPost]
         public JsonResult RemovePhases(DEF_PROJECT_PHASES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            PhaseManager phase = new PhaseManager(new PhaseDal(UserInfo));
+            var control = phase.Delete(param);
 
-            try
-            {
-                DEF_PROJECT_PHASES control = db.DEF_PROJECT_PHASES.Where(w => w.PHASE_ID == param.PHASE_ID).FirstOrDefault();
-                //var checkModel = db.P.Where(w => w.FLOOR_TYPE == param.FLOOR_TYPE_ID).FirstOrDefault();
-                //if (checkModel != null)
-                //{
-                //    _message = "Quante is available to use floor Type!! Please try to check cancelled";
-                //    _success = false;
-                //}
-                if (control != null)
-                {
-                    db.DEF_PROJECT_PHASES.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateTask(DEF_TASKS param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            TaskManager task = new TaskManager(new TaskDal(UserInfo));
+            var control = task.AddorUpdate(param);
 
-            try
-            {
-                DEF_TASKS control = db.DEF_TASKS.Where(w => w.TASK_ID == param.TASK_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-                    if (db.DEF_TASKS.Any(x => x.TASK_NAME.Equals(param.TASK_NAME)  && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Task already exists.";
-                        _success = false;
-                    }
-                    if (db.DEF_TASKS.Any(x => x.TASK_ORDER == param.TASK_ORDER && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Order already exists.";
-                        _success = false;
-                    }
-                }
-                else
-                {
-                    if (db.DEF_TASKS.Any(x => x.TASK_NAME.Equals(param.TASK_NAME) && x.TASK_ID != param.TASK_ID && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Task already exists.";
-                        _success = false;
-                    }
-                    if (db.DEF_TASKS.Any(x => x.TASK_ORDER == param.TASK_ORDER && x.TASK_ID != param.TASK_ID && x.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && x.IS_CANCELED == false))
-                    {
-                        _message = "Order already exists.";
-                        _success = false;
-                    }
-                }
-
-                if (_success == false)
-                {
-                    return Json(new { success = _success, Message = _message });
-                }
-
-                if (isNew)
-                {
-                    int ORDER = db.DEF_TASKS.Where(w => w.PROJECT_TYPE_ID == param.PROJECT_TYPE_ID && w.PHASE_ID == param.PHASE_ID).Select(s => s.PHASE_ID).ToList().Count() + 1;
-                    param.TASK_ORDER = (short)ORDER;
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-
-                    db.DEF_TASKS.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.TASK_NAME = param.TASK_NAME;
-                    control.TASK_DESC = param.TASK_DESC;
-                    control.TASK_ORDER = param.TASK_ORDER;
-                    control.PROJECT_TYPE_ID = param.PROJECT_TYPE_ID;
-                    control.PHASE_ID = param.PHASE_ID;
-                    control.ALLOCATE_SUPERVISOR = param.ALLOCATE_SUPERVISOR;
-                    control.COMPLETE_ON_UPLOAD = param.COMPLETE_ON_UPLOAD;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-                    db.DEF_TASKS.Attach(control);
-                    db.Entry(control).Property(x => x.TASK_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.TASK_DESC).IsModified = true;
-                    db.Entry(control).Property(x => x.TASK_ORDER).IsModified = true;
-                    db.Entry(control).Property(x => x.PROJECT_TYPE_ID).IsModified = true;
-                    db.Entry(control).Property(x => x.PHASE_ID).IsModified = true;
-                    db.Entry(control).Property(x => x.ALLOCATE_SUPERVISOR).IsModified = true;
-                    db.Entry(control).Property(x => x.COMPLETE_ON_UPLOAD).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult RemoveTask(DEF_TASKS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            TaskManager task = new TaskManager(new TaskDal(UserInfo));
+            var control = task.Delete(param);
 
-            try
-            {
-                DEF_TASKS control = db.DEF_TASKS.Where(w => w.TASK_ID == param.TASK_ID).FirstOrDefault();
-                //var checkModel = db.P.Where(w => w.FLOOR_TYPE == param.FLOOR_TYPE_ID).FirstOrDefault();
-                //if (checkModel != null)
-                //{
-                //    _message = "Quante is available to use floor Type!! Please try to check cancelled";
-                //    _success = false;
-                //}
-                if (control != null)
-                {
-                    db.DEF_TASKS.Remove(control);
-                    db.SaveChanges();
-
-                    _message = "Operation Successful";
-                    _success = true;
-                }
-                else
-                {
-                    _message = "Vehicle Body Type not found!!";
-                    _success = false;
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
     }

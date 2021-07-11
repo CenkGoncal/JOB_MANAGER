@@ -35,6 +35,11 @@ namespace JOB_MANAGER.Bussiness.Concrete
         {
             return _dal.GetAll2();
         }
+
+        public List<ContractTypesExtented> GetContractTypesCompany(int CompanyId)
+        {
+            return _dal.GetAll2(w => w.IS_CANCELED == false && (w.COMPANY_ID == -1 || w.COMPANY_ID == CompanyId));
+        }
     
     }
 }

@@ -34,5 +34,10 @@ namespace JOB_MANAGER.Bussiness.Concrete
         {
             return _dal.GetAll2();
         }
+
+        public List<StatusExtented> GetAllByType(int StatusType)
+        {
+            return _dal.GetAll2(f=>f.STATUS_TYPE == StatusType);
+        }
     }
 }
