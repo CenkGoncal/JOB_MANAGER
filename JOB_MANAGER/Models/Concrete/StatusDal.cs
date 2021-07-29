@@ -9,11 +9,6 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class StatusDal : EntityRepositoryBase<STATUS, JOB_MANAGER_DBEntities, StatusExtented>
     {
-        public UserInfo UserInfo;
-        public StatusDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
 
         public override List<StatusExtented> GetAll2(Expression<Func<STATUS, bool>> filter = null)
         {
@@ -51,7 +46,7 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -61,7 +56,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.STATUS_ID = dbitem.STATUS_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

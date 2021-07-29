@@ -9,13 +9,7 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class PhaseDal : EntityRepositoryBase<DEF_PROJECT_PHASES, JOB_MANAGER_DBEntities, DefProjectPhaseExtented>
     {
-        public UserInfo UserInfo;
-
-        public PhaseDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
-
+    
         public override void SaveControls(DEF_PROJECT_PHASES entity, ShowState showState)
         {
             DEF_PROJECT_PHASES control = context.DEF_PROJECT_PHASES.Where(w => w.PHASE_ID == entity.PHASE_ID).FirstOrDefault();
@@ -58,7 +52,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.PHASE_ORDER = (short)ORDER;
 
                 param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             else
             {
@@ -67,7 +61,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.CREATION_DATE = dbitem.CREATION_DATE;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
         }
 
@@ -113,8 +107,8 @@ namespace JOB_MANAGER.Models.Concrete
 
         public List<ProjectTypeWithPhaseTask> GetProjectTypeWithPhaseTasks()
         {
-            ProjectTypeDal projectType = new ProjectTypeDal(UserInfo);
-            TaskDal taskDal = new TaskDal(UserInfo);
+            ProjectTypeDal projectType = new ProjectTypeDal();
+            TaskDal taskDal = new TaskDal();
          
             var ProjectTypes = projectType.GetAll();
 

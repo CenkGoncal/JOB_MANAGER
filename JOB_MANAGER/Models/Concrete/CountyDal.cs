@@ -9,13 +9,6 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class CountyDal : EntityRepositoryBase<COUNTRIES, JOB_MANAGER_DBEntities, CountryExtented>
     {        
-        public UserInfo UserInfo;
-
-        public CountyDal(UserInfo _userInfo)
-        {            
-            UserInfo = _userInfo;
-        }
-
         public override List<CountryExtented> GetAll2(Expression<Func<COUNTRIES, bool>> filter = null)
         {
             var data = (from ct in context.COUNTRIES
@@ -51,7 +44,7 @@ namespace JOB_MANAGER.Models.Concrete
             if (dbitem == null)
             {
                 param.FLAG_URL = param.FLAG_URL == "" ? "http://placehold.it/50x30" : param.FLAG_URL;
-                param.CREATED_BY = UserInfo.UserId;
+                param.CREATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = DateTime.Now;
             }
             else
@@ -62,7 +55,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.COUNTRY_ID = dbitem.COUNTRY_ID;
                 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

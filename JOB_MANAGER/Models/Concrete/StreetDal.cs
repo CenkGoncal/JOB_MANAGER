@@ -10,12 +10,7 @@ namespace JOB_MANAGER.Models.Concrete
     public class StreetDal : EntityRepositoryBase<STREET, JOB_MANAGER_DBEntities, StreetExtented>
     {
         
-        public UserInfo UserInfo;
-
-        public StreetDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
+     
         public override List<StreetExtented> GetAll2(Expression<Func<STREET, bool>> filter = null)
         {
             var data = (from ct in context.COUNTRIES
@@ -50,7 +45,7 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {                
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -60,7 +55,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.CREATION_DATE = dbitem.CREATION_DATE;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

@@ -48,7 +48,7 @@ namespace JOB_MANAGER.Helper
 
         public void CreateCacheParameter(bool isRemoveCache)
         {
-            ParameterManager parameter = new ParameterManager(new ParameterDal(GetUserInfo()));
+            ParameterManager parameter = new ParameterManager(new ParameterDal());
             parameter.GetAll();
 
             if (isRemoveCache)

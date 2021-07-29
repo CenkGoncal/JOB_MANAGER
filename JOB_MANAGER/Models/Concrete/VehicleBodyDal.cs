@@ -9,12 +9,7 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class VehicleBodyDal : EntityRepositoryBase<VEHICLE_BODY_TYPES, JOB_MANAGER_DBEntities, VehicleBodysExtented>
     {
-        public UserInfo UserInfo;
-        public VehicleBodyDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
-
+      
         public override List<VehicleBodysExtented> GetAll2(Expression<Func<VEHICLE_BODY_TYPES, bool>> filter = null)
         {
             var _vehiclelist = filter != null ? context.Set<VEHICLE_BODY_TYPES>().Where(filter).ToList()
@@ -49,7 +44,7 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -59,7 +54,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.BODY_TYPE_ID = dbitem.BODY_TYPE_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

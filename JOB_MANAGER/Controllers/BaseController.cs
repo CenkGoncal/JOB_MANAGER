@@ -92,9 +92,9 @@ namespace JOB_MANAGER.Controllers
         }
 
         public ActionResult LoginPage()
-        {  
-            //clean user info
-            //Session["UserInfo"] = null;
+        {
+            //clean user info            
+            ThreadGlobals.UserAuthInfo.Value = null;
             Session.Clear();
             Session.Abandon();
             //clean user info

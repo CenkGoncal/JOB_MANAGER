@@ -1,6 +1,8 @@
 ﻿using JOB_MANAGER.Bussiness.Concrete;
+using JOB_MANAGER.CrossCuttingConsers.Transaction;
 using JOB_MANAGER.Helper;
 using JOB_MANAGER.Models;
+using JOB_MANAGER.Models.ComplexType;
 using JOB_MANAGER.Models.Concrete;
 using JOB_MANAGER.Models.Login;
 using Newtonsoft.Json;
@@ -16,39 +18,33 @@ namespace JOB_MANAGER.Controllers
     public class EmployeeController : BaseController
     {
 
-        protected UserInfo UserInfo;
-        public EmployeeController()
-        {
-            UserInfo = this.GetUserInfo();
-        }
-
         [AuthorityControl("Employees")]
         public ActionResult Index()
         {
-            DepartmentManager department = new DepartmentManager(new DepartmentDal(UserInfo));
-            ViewBag.DEPARTMENT_LIST = new SelectList(department.GetDepartmentCompany(UserInfo.CompanyId), "DEPARTMENT_ID", "DEPARTMENT_NAME");
+            DepartmentManager department = new DepartmentManager(new DepartmentDal());
+            ViewBag.DEPARTMENT_LIST = new SelectList(department.GetDepartmentCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "DEPARTMENT_ID", "DEPARTMENT_NAME");
 
-            StatusManager status = new StatusManager(new StatusDal(UserInfo));
+            StatusManager status = new StatusManager(new StatusDal());
             ViewBag.EMPLOYEE_STATUS_LIST = new SelectList(status.GetAllByType((int)StatusType.Employee), "STATUS_ID", "STATUS_NAME");
 
-            RoleManager role = new RoleManager(new RoleDal(UserInfo));
-            ViewBag.ROLE_LIST = new SelectList(role.GetRoleCompany(UserInfo.CompanyId), "ROLE_ID", "ROLE_NAME");
+            RoleManager role = new RoleManager(new RoleDal());
+            ViewBag.ROLE_LIST = new SelectList(role.GetRoleCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "ROLE_ID", "ROLE_NAME");
 
-            TitleManager title = new TitleManager(new TitleDal(UserInfo));
-            ViewBag.TITLE_LIST = new SelectList(title.GetTitleCompany(UserInfo.CompanyId), "TITLE_ID", "TITLE_NAME");
+            TitleManager title = new TitleManager(new TitleDal());
+            ViewBag.TITLE_LIST = new SelectList(title.GetTitleCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "TITLE_ID", "TITLE_NAME");
 
-            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal(UserInfo));
-            ViewBag.CONTRACT_TYPE_LIST = new SelectList(contractType.GetContractTypesCompany(UserInfo.CompanyId), "CONTRACT_TYPE_ID", "CONTRACT_TYPE_NAME");
+            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal());
+            ViewBag.CONTRACT_TYPE_LIST = new SelectList(contractType.GetContractTypesCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "CONTRACT_TYPE_ID", "CONTRACT_TYPE_NAME");
 
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
-            ViewBag.SUPERVISOR_LIST = new SelectList(employee.GetEmployeesByTypes(true,false,false, UserInfo.CompanyId), "EMP_ID", "EMP_NAME");
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            ViewBag.SUPERVISOR_LIST = new SelectList(employee.GetEmployeesByTypes(true,false,false, ThreadGlobals.UserAuthInfo.Value.CompanyId), "EMP_ID", "EMP_NAME");
 
-            ViewBag.DefaultProfileImg = Convert.ToBase64String(GlobalTools.GetParamByteVal("NO_PICTURE_IMG", UserInfo.CompanyId));
+            ViewBag.DefaultProfileImg = Convert.ToBase64String(GlobalTools.GetParamByteVal("NO_PICTURE_IMG", ThreadGlobals.UserAuthInfo.Value.CompanyId));
 
-            string DefaultPhoneMask = GlobalTools.GetParamStrVal("PHONE_MASK", UserInfo.CompanyId);
+            string DefaultPhoneMask = GlobalTools.GetParamStrVal("PHONE_MASK", ThreadGlobals.UserAuthInfo.Value.CompanyId);
             ViewBag.DefaultPhoneMask = string.IsNullOrEmpty(DefaultPhoneMask) ? "(999) 999-9999" : DefaultPhoneMask;
 
-            string DefaultMobileMask = GlobalTools.GetParamStrVal("MOBILE_MASK", UserInfo.CompanyId);
+            string DefaultMobileMask = GlobalTools.GetParamStrVal("MOBILE_MASK", ThreadGlobals.UserAuthInfo.Value.CompanyId);
             ViewBag.DefaultMobileMask = string.IsNullOrEmpty(DefaultMobileMask) ? "(999) 999-9999" : DefaultMobileMask;
 
             return View();
@@ -57,35 +53,35 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public ActionResult GetEmployeeList()
         {            
-            if (UserInfo.UserId < 0)
+            if (ThreadGlobals.UserAuthInfo.Value.UserId < 0)
             {
                 return RedirectToAction("LockedUser", "Login");
             }
 
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
             return Json(new { Getlist = employee.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public ActionResult UserProfile()
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
 
-            if (UserInfo.UserId < 0)
+            if (ThreadGlobals.UserAuthInfo.Value.UserId < 0)
             {
                 return RedirectToAction("LockedUser", "Login");
             }
 
             EMPLOYEES emp = new EMPLOYEES();
-            emp.EMP_ID = UserInfo.UserId;
+            emp.EMP_ID = ThreadGlobals.UserAuthInfo.Value.UserId;
 
             ViewBag.Employee = employee.Get(emp);
-            ViewBag.DefaultProfileImg = GlobalTools.GetParamByteVal("NO_PICTURE_IMG", UserInfo.CompanyId);
+            ViewBag.DefaultProfileImg = GlobalTools.GetParamByteVal("NO_PICTURE_IMG", ThreadGlobals.UserAuthInfo.Value.CompanyId);
 
-            string DefaultPhoneMask = GlobalTools.GetParamStrVal("PHONE_MASK", UserInfo.CompanyId);
+            string DefaultPhoneMask = GlobalTools.GetParamStrVal("PHONE_MASK", ThreadGlobals.UserAuthInfo.Value.CompanyId);
             ViewBag.DefaultPhoneMask = string.IsNullOrEmpty(DefaultPhoneMask) ? "(999) 999-9999" : DefaultPhoneMask;
 
-            string DefaultMobileMask = GlobalTools.GetParamStrVal("MOBILE_MASK", UserInfo.CompanyId);
+            string DefaultMobileMask = GlobalTools.GetParamStrVal("MOBILE_MASK", ThreadGlobals.UserAuthInfo.Value.CompanyId);
             ViewBag.DefaultMobileMask = string.IsNullOrEmpty(DefaultMobileMask) ? "(999) 999-9999" : DefaultMobileMask;
 
             return View();
@@ -94,7 +90,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult UpdateEmployeeImg(int EmpID, HttpPostedFileBase Image, int Remove)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
 
             EMPLOYEES emp = new EMPLOYEES();
             emp.EMP_ID = EmpID;
@@ -109,7 +105,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult UpdateProfileDetails(int id, string phone, string extension, string mobile)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
 
             EMPLOYEES emp = new EMPLOYEES();
             emp.EMP_ID = id;
@@ -127,7 +123,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult ChangePassword(int id, string oldPwd, string newPwd, string confirmPwd)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
             var control = employee.ChangePassword(id, oldPwd, newPwd, confirmPwd);
 
             return Json(new { success = !control.isError, message = control.isError ? control.ErrorMessage : "success" });
@@ -145,7 +141,7 @@ namespace JOB_MANAGER.Controllers
             employees.SHOW_SIGNATURE = showSignature;
 
 
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
             var control = employee.UpdateEmailSettings(employees);
 
             return Json(new { success = !control.isError, message = control.isError ? control.ErrorMessage : "success" });
@@ -154,7 +150,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateEmployee(EMPLOYEES param)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
             var control = employee.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -162,7 +158,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult DeleteEmployee(int EmpID)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
 
             EMPLOYEES emp = new EMPLOYEES();
             emp.EMP_ID = EmpID;
@@ -175,16 +171,16 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult UpdateNavbarClass(int Type, string navbarClass)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
-            var control = employee.UpdateNavbarClass(UserInfo.UserId,Type,navbarClass);
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            var control = employee.UpdateNavbarClass(ThreadGlobals.UserAuthInfo.Value.UserId,Type,navbarClass);
             return Json(new { success = !control.isError, message = control.isError ? control.ErrorMessage : "success" });
         }
 
-        [HttpGet]
+        [HttpGet]        
         public bool CopyNavbarAll()
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
-            var control = employee.CopyNavbarAll(UserInfo.UserId);
+            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            var control = employee.CopyNavbarAll(ThreadGlobals.UserAuthInfo.Value.UserId);
             return control.isError;
         }
 
@@ -207,7 +203,7 @@ namespace JOB_MANAGER.Controllers
         {
             if(TypeID == 1)
             {
-                EmployeeManager employee = new EmployeeManager(new EmployeeDal(UserInfo));
+                EmployeeManager employee = new EmployeeManager(new EmployeeDal());
                 var emplist = employee.GetAllActive().Select(s => new { EMAIL = s.EMAIL_USERNAME, NAME = s.EMP_NAME });
 
                 return Json(new { Getlist = emplist, success = true }, JsonRequestBehavior.AllowGet);

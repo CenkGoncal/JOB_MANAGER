@@ -14,7 +14,7 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            int CompanyID = GetCompanyID();
+            int CompanyID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
 
             DasboradDto dasborad = new DasboradDto();
             dasborad.JobSummary = db.JOBSSUMMARY_VIEW.Where(w => w.COMPANY_ID == CompanyID || w.COUNT == SqlConstants.int0).ToList();
@@ -28,7 +28,7 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult MyTask(bool IsCompleted)
         {
-            int EmpID = GetUserID();
+            int EmpID = ThreadGlobals.UserAuthInfo.Value.UserId;
             var ProjectTasks = (from pm in db.PROJECT_MEMBER_VIEW
                                 join pt in db.PROJECT_TASK on pm.TASK_ID equals pt.PROJECT_TASK_ID
                                 join ps in db.PROJECT_PHASES on pt.PROJECT_PHASE_ID equals ps.PROJECT_PHASE_ID

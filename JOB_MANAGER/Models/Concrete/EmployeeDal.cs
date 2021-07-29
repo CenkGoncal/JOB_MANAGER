@@ -9,12 +9,12 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class EmployeeDal : EntityRepositoryBase<EMPLOYEES, JOB_MANAGER_DBEntities, EmployeeExtended>
     {
-        public UserInfo UserInfo;
+        //public UserInfo UserInfo;
 
-        public EmployeeDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
+        //public EmployeeDal(UserInfo _userInfo)
+        //{
+        //    UserInfo = _userInfo;
+        //}
 
         public override List<EmployeeExtended> GetAll2(Expression<Func<EMPLOYEES, bool>> filter = null)
         {
@@ -25,7 +25,7 @@ namespace JOB_MANAGER.Models.Concrete
                         join c in context.CONTRACT_TYPES on e.CONTRACT_TYPE_ID equals c.CONTRACT_TYPE_ID
                         join d in context.DEPARTMENTS on e.DEPARTMENT_ID equals d.DEPARTMENT_ID
                         join s in context.STATUS on e.EMP_STATUS_ID equals s.STATUS_ID
-                        where e.IS_CANCELED == false && e.COMPANY_ID == UserInfo.CompanyId
+                        where e.IS_CANCELED == false && e.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId
                         select new EmployeeExtended
                         {
                             EMP_ID = e.EMP_ID,
@@ -84,8 +84,8 @@ namespace JOB_MANAGER.Models.Concrete
             if(dbitem == null)
             {
                 param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
-                param.COMPANY_ID = UserInfo.CompanyId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
+                param.COMPANY_ID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
                 param.SYSTEM_PASSWORD = GlobalTools.EncryptSystemString(param.SYSTEM_PASSWORD);
             }
             else
@@ -95,7 +95,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.COMPANY_ID = dbitem.COMPANY_ID;
 
                 param.TEAM_LEADER_ID = param.TEAM_LEADER_ID == 0 ? null : param.TEAM_LEADER_ID;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.MODIFIED_DATE = DateTime.Now;
 
                 if (!string.IsNullOrEmpty(param.SYSTEM_PASSWORD))

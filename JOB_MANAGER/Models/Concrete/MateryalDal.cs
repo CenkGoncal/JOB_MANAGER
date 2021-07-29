@@ -8,13 +8,7 @@ using JOB_MANAGER.Helper;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class MateryalDal : EntityRepositoryBase<MATERIALS, JOB_MANAGER_DBEntities, MaterialExtented>
-    {
-        public UserInfo UserInfo;
-
-        public MateryalDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }     
+    {     
 
         public override List<MaterialExtented> GetAll2(Expression<Func<MATERIALS, bool>> filter = null)
         {
@@ -75,7 +69,7 @@ namespace JOB_MANAGER.Models.Concrete
             if(dbitem == null)
             {
                 param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             else
             {
@@ -84,7 +78,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.CREATION_DATE = dbitem.CREATION_DATE;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
         }
 

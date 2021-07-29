@@ -8,13 +8,7 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class CompanyTypeDal : EntityRepositoryBase<COMPANY_TYPES, JOB_MANAGER_DBEntities, CompanyTypesExtented>
-    {        
-        public UserInfo UserInfo;
-        public CompanyTypeDal(UserInfo _userInfo)
-        {          
-            UserInfo = _userInfo;
-        }
-
+    {                     
         public override List<CompanyTypesExtented> GetAll2(Expression<Func<COMPANY_TYPES, bool>> filter = null)
         {
             var _contactTypes = filter != null ? context.Set<COMPANY_TYPES>().Where(filter).ToList()
@@ -51,7 +45,7 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {                
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -61,7 +55,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.COMPANY_TYPE_ID = dbitem.COMPANY_TYPE_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

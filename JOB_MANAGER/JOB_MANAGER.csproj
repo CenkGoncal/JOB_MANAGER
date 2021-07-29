@@ -45,6 +45,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -64,6 +67,7 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -148,6 +152,16 @@
     <Compile Include="Bussiness\Concrete\NoteTypeManager.cs" />
     <Compile Include="Bussiness\Concrete\PhaseManager.cs" />
     <Compile Include="Bussiness\Concrete\TaskManager.cs" />
+    <Compile Include="CrossCuttingConsers\Mapping\MapperWrapper.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Identitiy.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Web\AuthenticationHelper.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Web\SecurityUtilities.cs" />
+    <Compile Include="CrossCuttingConsers\Transaction\TransactionControl.cs" />
+    <Compile Include="Helper\StringExtensions.cs" />
+    <Compile Include="Helper\ThreadGlobals.cs" />
+    <Compile Include="Models\ComplexType\MenuRolesDto.cs" />
+    <Compile Include="Models\ComplexType\TransactionType.cs" />
+    <Compile Include="Models\ComplexType\UserInfoDto.cs" />
     <Compile Include="Models\Concrete\DocumentTypeDal.cs" />
     <Compile Include="Models\Concrete\EmployeeDal.cs" />
     <Compile Include="Models\Concrete\NoteTypeDal.cs" />
@@ -285,8 +299,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Login\AuthorityControl.cs" />
-    <Compile Include="Models\Login\LoginState.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Web\AuthorityControl.cs" />
     <Compile Include="Models\MATERIALS.cs">
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
     </Compile>

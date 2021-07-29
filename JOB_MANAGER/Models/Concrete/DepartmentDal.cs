@@ -10,14 +10,7 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class DepartmentDal : EntityRepositoryBase<DEPARTMENTS, JOB_MANAGER_DBEntities, DepartmentExtented>
     {        
-        public UserInfo UserInfo;
-
-        public DepartmentDal(UserInfo _userInfo)
-        {            
-            UserInfo = _userInfo;
-        }
-
-
+      
         public override List<DepartmentExtented> GetAll2(Expression<Func<DEPARTMENTS, bool>> filter = null)
         {
             List<DepartmentExtented> data = new List<DepartmentExtented>();
@@ -60,8 +53,8 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {
-                param.COMPANY_ID = UserInfo.CompanyId;
-                param.CREATED_BY = param.UPDATED_BY =  UserInfo.UserId;
+                param.COMPANY_ID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -72,7 +65,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.DEPARTMENT_ID = dbitem.DEPARTMENT_ID;
                 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

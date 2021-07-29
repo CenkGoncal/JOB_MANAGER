@@ -9,18 +9,12 @@ using static JOB_MANAGER.Helper.GlobalCache;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class ContractTypeDal:EntityRepositoryBase<CONTRACT_TYPES, JOB_MANAGER_DBEntities, ContractTypesExtented>
-    {        
-        public UserInfo UserInfo;
-        public ContractTypeDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
-    
+    {                    
         public override void SaveControls(CONTRACT_TYPES entity,ShowState showState)
         {            
             if (!context.CONTRACT_TYPES.Any(w => w.CONTRACT_TYPE_ID == entity.CONTRACT_TYPE_ID))
             {
-                if (context.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == UserInfo.CompanyId)))
+                if (context.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId)))
                 {
                     showState.ErrorMessage = "Type already exists";
                     showState.isError = true;
@@ -28,7 +22,7 @@ namespace JOB_MANAGER.Models.Concrete
             }
             else
             {
-                if (context.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.CONTRACT_TYPE_ID != entity.CONTRACT_TYPE_ID && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == UserInfo.CompanyId)))
+                if (context.CONTRACT_TYPES.Any(x => x.CONTRACT_TYPE_NAME.Equals(entity.CONTRACT_TYPE_NAME) && x.CONTRACT_TYPE_ID != entity.CONTRACT_TYPE_ID && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId)))
                 {
                     showState.ErrorMessage = "Type already exists.";
                     showState.isError = false;
@@ -42,19 +36,19 @@ namespace JOB_MANAGER.Models.Concrete
         {            
             if (dbitem == null)
             {
-                param.COMPANY_ID = UserInfo.CompanyId;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.COMPANY_ID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE =  DateTime.Now;
             }
             else
             {
-                param.COMPANY_ID = UserInfo.CompanyId;
+                param.COMPANY_ID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
                 param.CREATED_BY = dbitem.CREATED_BY;
                 param.CREATION_DATE = dbitem.CREATION_DATE;
                 param.CONTRACT_TYPE_ID = dbitem.CONTRACT_TYPE_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

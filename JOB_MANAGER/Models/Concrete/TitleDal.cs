@@ -9,14 +9,7 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class TitleDal : EntityRepositoryBase<TITLES, JOB_MANAGER_DBEntities, TitleExtented>
     {        
-        public UserInfo UserInfo;
-
-        public TitleDal(UserInfo _userInfo)
-        {
-            context = new JOB_MANAGER_DBEntities();
-            UserInfo = _userInfo;
-        }
-
+      
         public override List<TitleExtented> GetAll2(Expression<Func<TITLES, bool>> filter = null)
         {
             var _titles = filter != null ? context.Set<TITLES>().Where(filter).ToList()
@@ -51,14 +44,14 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {
-                param.COMPANY_ID = UserInfo.CompanyId;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.COMPANY_ID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
             {
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.TITLE_ID = dbitem.TITLE_ID;
             }
             //base.SaveHelper_ModifyBeforeSave(param);

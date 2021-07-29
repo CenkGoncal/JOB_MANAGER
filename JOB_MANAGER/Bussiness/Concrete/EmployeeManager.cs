@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using System.Web;
+using JOB_MANAGER.CrossCuttingConsers.Mapping;
+using JOB_MANAGER.CrossCuttingConsers.Security.Web;
+using JOB_MANAGER.CrossCuttingConsers.Transaction;
 using JOB_MANAGER.Helper;
 using JOB_MANAGER.Models;
+using JOB_MANAGER.Models.ComplexType;
 using JOB_MANAGER.Models.Concrete;
 using JOB_MANAGER_BUSSINESS.Abstract;
 using Newtonsoft.Json;
@@ -31,6 +36,45 @@ namespace JOB_MANAGER.Bussiness.Concrete
         public EMPLOYEES Get(EMPLOYEES param)
         {
             return _dal.GetAll(f => f.EMP_ID == param.EMP_ID).FirstOrDefault();
+        }
+
+
+        public EmployeeExtended Get(string Username)
+        {
+            return _dal.GetAll2(f => f.SYSTEM_USERNAME == Username).FirstOrDefault();
+        }
+
+
+        public bool CheckLogin(string userName, string password,bool remember, bool doAuth)
+        {
+            string encrptPassword = GlobalTools.EncryptSystemString(password);
+            var emp = _dal.GetAll(f => f.SYSTEM_USERNAME == userName && f.SYSTEM_PASSWORD == encrptPassword).FirstOrDefault();
+            if (emp == null)
+                return false;
+            
+            if(doAuth)
+            {
+                RoleMenuManager menuManager = new RoleMenuManager(new RoleMenuDal());
+
+                RoleManager roleManager = new RoleManager(new RoleDal());
+
+                var role = roleManager.GetAll().FirstOrDefault(w => w.ROLE_ID == emp.ROLE_ID);
+
+                UserInfoDto userInfo = new UserInfoDto();
+                userInfo.UserId = emp.EMP_ID;
+                userInfo.UserName = emp.SYSTEM_USERNAME;
+                userInfo.EmpName = emp.FIRST_NAME + SqlConstants.stringEmpty + emp.LAST_NAME;
+                userInfo.CompanyId = emp.COMPANY_ID;
+                userInfo.Email = emp.EMAIL_USERNAME;
+                userInfo.EmailPassword = emp.EMAIL_PASSWORD;
+                userInfo.RoleName = role.ROLE_NAME;
+                userInfo.MenuRoles = menuManager.GetMenuByRole(emp.ROLE_ID).Where(w=>w.state == true).Select(s=>s.name).ToList();
+
+                AuthenticationHelper.CreateAuthCookie(emp.EMP_ID, emp.SYSTEM_USERNAME, userInfo, DateTime.Now.AddDays(15), remember);
+
+            }
+
+            return true;
         }
 
         public List<EmployeeExtended> GetAll()
@@ -65,6 +109,7 @@ namespace JOB_MANAGER.Bussiness.Concrete
             return emplist;
         }
 
+        [TransactionControl(TransactionType.Write)]
         public ShowState UpdateEmployeeImage(EMPLOYEES param)
         {
             var emp = _dal.GetAll(f => f.EMP_ID == param.EMP_ID).FirstOrDefault();
@@ -77,6 +122,7 @@ namespace JOB_MANAGER.Bussiness.Concrete
             return AddorUpdate(emp);
         }
 
+        [TransactionControl(TransactionType.Write)]
         public ShowState UpdateProfileDetails(EMPLOYEES param)
         {
             ShowState showState = new ShowState();
@@ -152,6 +198,7 @@ namespace JOB_MANAGER.Bussiness.Concrete
             return showState;
         }
 
+        [TransactionControl(TransactionType.Write)]
         public ShowState UpdateEmailSettings(EMPLOYEES param)
         {
             ShowState showState = new ShowState();
@@ -162,6 +209,11 @@ namespace JOB_MANAGER.Bussiness.Concrete
             }
             else
             {
+                if(param.EMAIL_USERNAME.IsEmail() == false)
+                {
+                    return new ShowState() { isError = true, ErrorMessage = "Email format not valid" };
+                }
+                
                 var emp = _dal.GetAll(f => f.EMP_ID == param.EMP_ID).FirstOrDefault();
                 if (emp == null)
                 {
@@ -220,9 +272,10 @@ namespace JOB_MANAGER.Bussiness.Concrete
             emp.NAVBAR_CLASS = JsonConvert.SerializeObject(objNavbarClass);
             return AddorUpdate(emp);
         }
+        
+        [TransactionControl(TransactionType.Write)]
+        public ShowState CopyNavbarAll(int EmpID)        {
 
-        public ShowState CopyNavbarAll(int EmpID)
-        {
             var emp = _dal.GetAll(f => f.EMP_ID == EmpID).FirstOrDefault();
             if (emp == null)
             {
@@ -230,7 +283,7 @@ namespace JOB_MANAGER.Bussiness.Concrete
             }
 
             ShowState showState = new ShowState();
-            foreach(var employee in _dal.GetAll(w=>w.IS_CANCELED == false))
+            foreach (var employee in _dal.GetAll(w => w.IS_CANCELED == false))
             {
                 employee.NAVBAR_CLASS = emp.NAVBAR_CLASS;
 
@@ -239,9 +292,7 @@ namespace JOB_MANAGER.Bussiness.Concrete
                     break;
             }
 
-            return showState;
+            return showState;            
         }
-
-
     }
 }

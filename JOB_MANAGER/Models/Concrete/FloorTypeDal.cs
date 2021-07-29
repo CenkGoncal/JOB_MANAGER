@@ -9,13 +9,7 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class FloorTypeDal : EntityRepositoryBase<FLOOR_TYPES, JOB_MANAGER_DBEntities, FloorTypeExtented>
     {
-        public UserInfo UserInfo;
-
-        public FloorTypeDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
-
+    
         public override List<FloorTypeExtented> GetAll2(Expression<Func<FLOOR_TYPES, bool>> filter = null)
         {
             var _floortypelist = filter != null ? context.Set<FLOOR_TYPES>().Where(filter).ToList()
@@ -74,7 +68,7 @@ namespace JOB_MANAGER.Models.Concrete
             if(dbitem == null)
             {
                 param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             else
             {
@@ -83,7 +77,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.FLOOR_TYPE_ID = dbitem.FLOOR_TYPE_ID;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
         }
 

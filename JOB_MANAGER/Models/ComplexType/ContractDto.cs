@@ -68,13 +68,13 @@ namespace JOB_MANAGER.Models
 
     }
 
-    public class MenuRolesDto
-    {
-        public string name { get; set; }
+    //public class MenuRolesDto
+    //{
+    //    public string name { get; set; }
 
-        public bool state { get; set; }
+    //    public bool state { get; set; }
 
-    }
+    //}
     enum StatusType { Employee = 1, Vehicle = 2, Supplier = 3, Client = 4, Quonte = 5, Project = 6, PhaseTask = 7 };
     enum NoteType { Quote = 1, Project = 2};
     enum DocumentType { Quote = 1, Project = 2 };

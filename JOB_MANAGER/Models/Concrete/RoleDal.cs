@@ -9,19 +9,13 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class RoleDal: EntityRepositoryBase<ROLES, JOB_MANAGER_DBEntities, RolesExtented>
     {        
-        public UserInfo UserInfo;
-
-        public RoleDal(UserInfo _userInfo)
-        {            
-            UserInfo = _userInfo;
-        }
-
+       
         public override void SaveHelper_ModifyBeforeSave(ROLES param, ROLES dbitem)
         {
             if (dbitem == null)
             {
-                param.COMPANY_ID = UserInfo.CompanyId;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.COMPANY_ID = ThreadGlobals.UserAuthInfo.Value.CompanyId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -32,7 +26,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.ROLE_ID = dbitem.ROLE_ID;
                 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

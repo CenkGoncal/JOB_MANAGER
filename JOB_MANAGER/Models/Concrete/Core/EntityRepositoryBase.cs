@@ -181,6 +181,9 @@ namespace JOB_MANAGER.Models.Concrete
         {
             using (TContext context = new TContext())
             {
+
+                var a = context.Set<TEntity>().Where(filter).ToList();
+
                 return  filter != null ? context.Set<TEntity>().Where(filter).ToList()
                                 : context.Set<TEntity>().ToList();
             }

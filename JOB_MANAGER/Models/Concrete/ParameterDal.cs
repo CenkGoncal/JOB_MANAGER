@@ -8,12 +8,7 @@ using System.Web;
 namespace JOB_MANAGER.Models.Concrete
 {
     public class ParameterDal : EntityRepositoryBase<PARAMETERS, JOB_MANAGER_DBEntities, ParameterExtented>
-    {        
-        public UserInfo UserInfo;
-        public ParameterDal(UserInfo _userInfo)
-        {            
-            UserInfo = _userInfo;
-        }
+    { 
         public override List<ParameterExtented> GetAll2(Expression<Func<PARAMETERS, bool>> filter = null)
         {
             var _parametersTypes = filter != null ? context.Set<PARAMETERS>().Where(filter).ToList()
@@ -52,7 +47,7 @@ namespace JOB_MANAGER.Models.Concrete
             if (dbitem == null)
             {
                 param.COMPANY_ID = -1;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -63,7 +58,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.IDENTID = dbitem.IDENTID;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }

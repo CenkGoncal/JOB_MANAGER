@@ -9,13 +9,6 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class TaskDal : EntityRepositoryBase<DEF_TASKS, JOB_MANAGER_DBEntities, DefTaskExtented>
     {
-        public UserInfo UserInfo;
-
-        public TaskDal(UserInfo _userInfo)
-        {
-            UserInfo = _userInfo;
-        }
-
         public override void SaveControls(DEF_TASKS entity, ShowState showState)
         {
             DEF_TASKS control = context.DEF_TASKS.Where(w => w.TASK_ID == entity.TASK_ID).FirstOrDefault();
@@ -57,7 +50,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.TASK_ORDER = (short)ORDER;
 
                 param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             else
             {
@@ -66,7 +59,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.CREATION_DATE = dbitem.CREATION_DATE;
 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
         }
 

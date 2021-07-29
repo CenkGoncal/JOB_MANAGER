@@ -9,13 +9,6 @@ namespace JOB_MANAGER.Models.Concrete
 {
     public class StateDal : EntityRepositoryBase<STATES, JOB_MANAGER_DBEntities, StateExtented>
     {        
-        public UserInfo UserInfo;
-
-        public StateDal(UserInfo _userInfo)
-        {            
-            UserInfo = _userInfo;
-        }
-
         public override List<StateExtented> GetAll2(Expression<Func<STATES, bool>> filter = null)
         {
             var query = (from st in context.STATES
@@ -52,7 +45,7 @@ namespace JOB_MANAGER.Models.Concrete
         {
             if (dbitem == null)
             {                
-                param.CREATED_BY = param.UPDATED_BY = UserInfo.UserId;
+                param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
                 param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
             }
             else
@@ -62,7 +55,7 @@ namespace JOB_MANAGER.Models.Concrete
                 param.CREATION_DATE = dbitem.CREATION_DATE;
                 
                 param.MODIFIED_DATE = DateTime.Now;
-                param.UPDATED_BY = UserInfo.UserId;
+                param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             //base.SaveHelper_ModifyBeforeSave(param);
         }
