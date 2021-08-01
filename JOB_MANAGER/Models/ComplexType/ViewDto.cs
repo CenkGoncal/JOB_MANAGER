@@ -418,7 +418,13 @@ namespace JOB_MANAGER.Models
     }
     public class VehiclesExtented : VEHICLES, IViewDto
     {
+        public string VEHICLE_STATUS_NAME { get; set; }
+        public string DISPLAY_CLASS { get; set; }
+        public string DRIVER_NAME { get; set; }
+        public string REGISTRATION_EXPIRY { get; set; }
+        public string VEHICLE_MAKE_NAME { get; set; }
         public string BODY_TYPE_NAME { get; set; }
+        public string VEHICLE_MODEL_NAME { get; set; }
         public string CREATE_BY { get; set; }
         public string CREATION_DATE { get; set; }
         public string MODIFIED_DATE { get; set; }       
@@ -520,6 +526,40 @@ namespace JOB_MANAGER.Models
         public string HIRED_DATE_STR { get; set; }
         public string EMP_STATUS { get; set; }
         public string DISPLAY_CLASS { get; set; }
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+    }
+
+    public class ClientExtented : CLIENTS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+        public string COMPANY_TYPE_NAME { get; set; }
+        public string STATUS_NAME { get; set; }
+        public string DISPLAY_CLASS { get; set; }
+        public string COUNTRY_NAME { get; set; }
+        public string STATE_NAME { get; set; }
+        public string CITY_NAME { get; set; }        
+        public string CLIENT_SINCE { get; set; }
+    }
+
+    public class ContactsExtented : CONTACTS,IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+        public string CONTACT_NAME { get; set; }
+        public string CLIENT_NAME { get; set; }
+        public string STATUS_NAME { get; set; }
+        public string DISPLAY_CLASS { get; set; }
+        public string ROLE_NAME { get; set; }
+        public string CONTACT_PHONE_ALL { get; set; }
+    }
+
+    public class CompanyExtented : COMPANY, IViewDto
+    {
         public string CREATE_BY { get; set; }
         public string CREATION_DATE { get; set; }
         public string MODIFIED_DATE { get; set; }

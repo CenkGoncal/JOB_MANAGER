@@ -97,8 +97,11 @@ namespace JOB_MANAGER.Controllers
             ThreadGlobals.UserAuthInfo.Value = null;
             Session.Clear();
             Session.Abandon();
-            //clean user info
+            Request.Cookies.Clear();
+            Response.Cookies.Clear();
             FormsAuthentication.SignOut();
+            //clean user info
+
             return RedirectToAction("Login", "Login");            
         }
 

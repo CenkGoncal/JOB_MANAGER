@@ -1,6 +1,8 @@
-﻿using JOB_MANAGER.Helper;
+﻿using JOB_MANAGER.Bussiness.Concrete;
+using JOB_MANAGER.Helper;
 using JOB_MANAGER.Models;
 using JOB_MANAGER.Models.Login;
+using JOB_MANAGER_BUSSINESS.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.SqlServer;
@@ -16,198 +18,62 @@ namespace JOB_MANAGER.Controllers
         [AuthorityControl("Profile")]
         public ActionResult CompanyProfile()
         {
-            var CompanyID = GetCompanyID();
-            ViewBag.COUNTRIES_LIST = new SelectList(db.COUNTRIES.Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
-            ViewBag.STATES_LIST = new SelectList(db.STATES.Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
-            ViewBag.CITIES_LIST = new SelectList(db.CITIES.Where(w => w.IS_CANCELED == false ), "CITY_ID", "CITY_NAME");
-            ViewBag.COMPANY_TYPE_LIST = new SelectList(db.COMPANY_TYPES.Where(w => w.IS_CANCELED == false), "COMPANY_TYPE_ID", "COMPANY_TYPE_NAME");                        
+            CountyManager countyManager = new CountyManager(new Models.Concrete.CountyDal());
+            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
+            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
+            CompanyTypeManager companyTypeManager = new CompanyTypeManager(new Models.Concrete.CompanyTypeDal());
+
+
+            ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll(), "COUNTRY_ID", "COUNTRY_NAME");
+            ViewBag.STATES_LIST = new SelectList(stateManager.GetAll().Where(w=>w.IS_CANCELED == false).ToList(), "STATE_ID", "STATE_NAME");
+            ViewBag.CITIES_LIST = new SelectList(cityManager.GetAll().Where(w => w.IS_CANCELED == false ), "CITY_ID", "CITY_NAME");
+            ViewBag.COMPANY_TYPE_LIST = new SelectList(companyTypeManager.GetAll().Where(w => w.IS_CANCELED == false), "COMPANY_TYPE_ID", "COMPANY_TYPE_NAME");                        
 
             return View();
         }
 
         public JsonResult GetCompany()
         {
-            int CompanyID = GetCompanyID();
+            CompanyManager companyManager = new CompanyManager(new Models.Concrete.CompanyDal());   
 
-            var data = (from c in db.COMPANY
-                        where c.IS_CANCELED == false && c.COMPANY_ID == CompanyID
-                        select new
-                        {
-                            COMPANY_ID = c.COMPANY_ID,
-                            COMPANY_CODE = c.COMPANY_CODE,
-                            COMPANY_NAME = c.COMPANY_NAME,
-                            COMPANY_TYPE_ID = c.COMPANY_TYPE_ID,
-                            COMPANY_COUNTRY = c.COMPANY_COUNTRY,
-                            COMPANY_STATE = c.COMPANY_STATE,
-                            COMPANY_CITY = c.COMPANY_CITY,
-                            COMPANY_ADDRESS = c.COMPANY_ADDRESS,
-                            POSTAL_CODE = c.POSTAL_CODE,
-                            WEB_URL = c.WEB_URL,
-                            COMPANY_ABN = c.COMPANY_ABN,
-                            COMPANY_PHONE = c.COMPANY_PHONE,
-                            COMPANY_OWNER = c.COMPANY_OWNER,
-                            COMPANY_LINKED_IN = c.COMPANY_LINKED_IN,
-                            COMPANY_LOGO = c.COMPANY_LOGO,
-                            COMPANY_DESC = c.COMPANY_DESC
-                        }
-                       ).OrderBy(o => o.COMPANY_NAME).FirstOrDefault();       
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { Getlist = companyManager.GetAll().Where(w=>w.IS_CANCELED == false && 
+                                        w.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCompany(COMPANY param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            CompanyManager companyManager = new CompanyManager(new Models.Concrete.CompanyDal());
+            var control = companyManager.AddorUpdate(param);
 
-            try
-            {
-                COMPANY cmpny = db.COMPANY.Where(w => w.COMPANY_ID == param.COMPANY_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (cmpny == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-                    param.COMPANY_ID = GetCompanyID();                    
-
-                    db.COMPANY.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    cmpny.MODIFIED_DATE = DateTime.Now;
-                    cmpny.COMPANY_CODE = param.COMPANY_CODE;
-                    cmpny.COMPANY_NAME = param.COMPANY_NAME;
-                    cmpny.COMPANY_TYPE_ID = param.COMPANY_TYPE_ID;
-                    cmpny.COMPANY_COUNTRY = param.COMPANY_COUNTRY;
-                    cmpny.COMPANY_STATE = param.COMPANY_STATE;
-                    cmpny.COMPANY_CITY = param.COMPANY_CITY;
-                    cmpny.COMPANY_ADDRESS = param.COMPANY_ADDRESS;
-                    cmpny.POSTAL_CODE = param.POSTAL_CODE;
-                    cmpny.WEB_URL = param.WEB_URL;
-                    cmpny.COMPANY_ABN = param.COMPANY_ABN;
-                    cmpny.COMPANY_PHONE = param.COMPANY_PHONE;
-                    cmpny.COMPANY_OWNER = param.COMPANY_OWNER;
-                    cmpny.COMPANY_LINKED_IN = param.COMPANY_LINKED_IN;
-                    cmpny.COMPANY_DESC = param.COMPANY_DESC;
-                    cmpny.UPDATED_BY = GetUserID();
-                    cmpny.IS_CANCELED = param.IS_CANCELED;
-             
-                    db.COMPANY.Attach(cmpny);
-                    db.Entry(cmpny).Property(x => x.COMPANY_CODE).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_NAME).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_TYPE_ID).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_COUNTRY).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_STATE).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_CITY).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_ADDRESS).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.POSTAL_CODE).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.WEB_URL).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_ABN).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_PHONE).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_OWNER).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.UPDATED_BY).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_LINKED_IN).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.COMPANY_DESC).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(cmpny).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
         public JsonResult GetStateByCompanyID(int CountryID)
         {
-            var data = (from s in db.STATES
-                        where s.COUNTRY_ID == CountryID
-                        select new
-                        {
-                            STATE_ID = s.STATE_ID,
-                            STATE_NAME = s.STATE_NAME
-                        }).ToList();
-                
-                //db.STATES.Where(w => w.COUNTRY_ID == CountryID).Select(s => s.STATE_ID,).ToList();
+            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
 
-            return Json(new { StateList = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { StateList = stateManager.GetAll().Where(w=>w.COUNTRY_ID == CountryID).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult GetCityCompanyID(int StateID)
         {
-            //var data = db.CITIES.Where(w => w.STATE_ID == StateID).ToList();
 
-            var data = (from c in db.CITIES
-                        where c.STATE_ID == StateID
-                        select new
-                        {
-                            CITY_ID = c.CITY_ID,
-                            CITY_NAME = c.CITY_NAME,
-                            POSTAL_CODE = c.POSTAL_CODE
-                        }).ToList();
+            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
 
-            return Json(new { CityList = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { CityList = cityManager.GetAll().Where(w=>w.STATE_ID == StateID).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult UpdateCompanyImg(int CompanyID, HttpPostedFileBase Image, int Remove)
         {
-            COMPANY company = db.COMPANY.Find(CompanyID);
-            if (company != null)
-            {
-                try
-                {
-                    string Message = string.Empty;
-                    bool State = false;
 
-                    if (Image != null)
-                    {
-                        company.COMPANY_LOGO = new byte[Image.ContentLength];
-                        Image.InputStream.Read(company.COMPANY_LOGO, 0, Image.ContentLength);
-                        //employee.EMPLOYEE_IMG = GlobalTools.ResizeEmployeeImage(employee.EMPLOYEE_IMG);
+            CompanyManager companyManager = new CompanyManager(new Models.Concrete.CompanyDal());
+            var control = companyManager.UpdateCompanyImg(CompanyID,Image,Remove);
 
-                        State = true;
-                        Message = "Image Chamged";
-                    }
-                    else
-                    {
-                        company.COMPANY_LOGO = null;
-
-                        State = Remove == 1;
-                        Message = State ? "Image Chamged" : "No Image found";
-                    }
-
-                    db.COMPANY.Attach(company);
-                    db.Entry(company).Property(x => x.COMPANY_LOGO).IsModified = true;
-                    db.SaveChanges();
-
-                    return Json(new { success = State, message = Message });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = ex.Message });
-                }
-            }
-            return Json(new { success = false, message = "No Employee found" });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         #endregion
@@ -216,76 +82,38 @@ namespace JOB_MANAGER.Controllers
         [AuthorityControl("Vehicles")]
         public ActionResult Vehicles()
         {
-            var CompanyID = GetCompanyID();
-            var empList = (from e in db.EMPLOYEES
-                       where e.IS_CANCELED == false && e.IS_DRIVER == true
-                       select new
-                       {
-                           EMP_ID = e.EMP_ID,
-                           EMP_NAME = e.FIRST_NAME + SqlConstants.stringWhiteSpace + e.LAST_NAME
-                       }
-                      ).ToList();
 
-            ViewBag.DRIVER_LIST = new SelectList(empList, "EMP_ID", "EMP_NAME");
-            ViewBag.VEHICLE_MODELS = new SelectList(db.VEHICLE_MODELS.Where(w => w.IS_CANCELED == false), "VEHICLE_MODEL_ID", "VEHICLE_MODEL_NAME");
-            ViewBag.STATUS_LIST = new SelectList(db.STATUS.Where(w => w.IS_CANCELED == false && w.STATUS_TYPE == (int)StatusType.Vehicle), "STATUS_ID", "STATUS_NAME");
-            ViewBag.VEHICLE_MAKES = new SelectList(db.VEHICLE_MAKES.Where(w => w.IS_CANCELED == false), "VEHICLE_MAKE_ID", "VEHICLE_MAKE_NAME");
-            ViewBag.VEHICLE_BODYS = new SelectList(db.VEHICLE_BODY_TYPES.Where(w => w.IS_CANCELED == false), "BODY_TYPE_ID", "BODY_TYPE_NAME");                       
-            ViewBag.VEHICLE_YEARS = new SelectList(GlobalTools.GetYOMLookUp(CompanyID), "YOM_ID", "YOM_VALUE");
+            EmployeeManager employeeManager = new EmployeeManager(new Models.Concrete.EmployeeDal());
+            VehicleModelManager vehicleModelManager = new VehicleModelManager(new Models.Concrete.VehicleModelDal());
+            VehicleMakeManager vehicleMakeManager = new VehicleMakeManager(new Models.Concrete.VehicleMakeDal());
+            VehicleBodyManager vehicleBodyManager = new VehicleBodyManager(new Models.Concrete.VehicleBodyDal());
+            StatusManager statusManager = new StatusManager(new Models.Concrete.StatusDal());
+
+
+            ViewBag.DRIVER_LIST = new SelectList(employeeManager.GetEmployeesByTypes(false,false,true,ThreadGlobals.UserAuthInfo.Value.CompanyId), "EMP_ID", "EMP_NAME");
+            ViewBag.VEHICLE_MODELS = new SelectList(vehicleModelManager.GetAll().Where(w => w.IS_CANCELED == false).ToList(), "VEHICLE_MODEL_ID", "VEHICLE_MODEL_NAME");
+            ViewBag.STATUS_LIST = new SelectList(statusManager.GetAllByType((int)StatusType.Vehicle), "STATUS_ID", "STATUS_NAME");
+            ViewBag.VEHICLE_MAKES = new SelectList(vehicleMakeManager.GetAll().Where(w => w.IS_CANCELED == false), "VEHICLE_MAKE_ID", "VEHICLE_MAKE_NAME");
+            ViewBag.VEHICLE_BODYS = new SelectList(vehicleBodyManager.GetAll().Where(w => w.IS_CANCELED == false), "BODY_TYPE_ID", "BODY_TYPE_NAME");                       
+            ViewBag.VEHICLE_YEARS = new SelectList(GlobalTools.GetYOMLookUp(ThreadGlobals.UserAuthInfo.Value.CompanyId), "YOM_ID", "YOM_VALUE");
 
             return View();
         }
 
         public ActionResult GetVeciclesList()
         {
-            var empID = GetUserID();
+            VehicleManager vehicleManager = new VehicleManager(new Models.Concrete.VehicleDal());
 
-            if (empID < 0)
-            {
-                return RedirectToAction("LockedUser", "Login");
-            }
-
-            var CompanyID = GetCompanyID();
-
-            var data = (from v in db.VEHICLES      
-                        
-                        where v.IS_CANCELED == false && v.COMPANY_ID == CompanyID
-                        select new
-                        {
-                            VEHICLE_ID = v.VEHICLE_ID,
-                            VEHICLE_NBR = v.VEHICLE_NBR,
-                            VEHICLE_STATUS = v.VEHICLE_STATUS,
-                            VEHICLE_STATUS_NAME = v.STATUS.STATUS_NAME,
-                            DISPLAY_CLASS = v.STATUS.DISPLAY_CLASS,
-                            CURRENT_DRIVER = v.EMPLOYEES.EMP_ID,
-                            DRIVER_NAME = v.EMPLOYEES.FIRST_NAME+ SqlConstants.stringWhiteSpace+v.EMPLOYEES.LAST_NAME,
-                            REGISTRATION_NUMBER = v.REGISTRATION_NUMBER,
-                            REGISTRATION_EXPIRY = v.REGISTRATION_EXPIRY != null ?
-                                                    v.REGISTRATION_EXPIRY.Value.Year + SqlConstants.stringMinus +
-                                                    (v.REGISTRATION_EXPIRY.Value.Month > 9 ? v.REGISTRATION_EXPIRY.Value.Month + SqlConstants.stringMinus : "0"+ v.REGISTRATION_EXPIRY.Value.Month + SqlConstants.stringMinus) +
-                                                    v.REGISTRATION_EXPIRY.Value.Day : null,
-                            ASSIGNED_TAG = v.ASSIGNED_TAG,
-                            VEHICLE_MAKE_ID = v.VEHICLE_MAKE_ID,
-                            VEHICLE_MAKE_NAME = v.VEHICLE_MAKES.VEHICLE_MAKE_NAME,
-                            BODY_TYPE_ID = v.BODY_TYPE_ID,
-                            BODY_TYPE_NAME = v.VEHICLE_BODY_TYPES.BODY_TYPE_NAME,
-                            VEHICLE_MODEL_ID = v.VEHICLE_MODEL_ID,
-                            VEHICLE_MODEL_NAME = v.VEHICLE_MODELS.VEHICLE_MODEL_NAME,
-                            VEHICLE_YEAR = v.VEHICLE_YEAR,
-                            VEHICLE_COLOR = v.VEHICLE_COLOR,
-                            VEHICLE_DESC = v.VEHICLE_DESC
-                        }
-                       ).OrderBy(o => o.VEHICLE_NBR).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { Getlist = vehicleManager.GetAll().Where(w=>w.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId) }, JsonRequestBehavior.AllowGet);
         }
 
 
         [HttpPost]
         public JsonResult GetVecModelList(int VecMakesID,int VecBodysID)
         {
-            //var data = db.CITIES.Where(w => w.STATE_ID == StateID).ToList();
-            var data = db.VEHICLE_MODELS.Where(w => w.IS_CANCELED == false);
+            VehicleModelManager vehicleModelManager = new VehicleModelManager(new Models.Concrete.VehicleModelDal());
+
+            var data = vehicleModelManager.GetAll().Where(w => w.IS_CANCELED == false);
 
             if(VecBodysID > 0)
             {
@@ -317,73 +145,10 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateVehicle(VEHICLES param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            VehicleManager vehicleManager = new VehicleManager(new Models.Concrete.VehicleDal());
+            var control = vehicleManager.AddorUpdate(param);
 
-            try
-            {
-                VEHICLES vechile = db.VEHICLES.Where(w => w.VEHICLE_ID == param.VEHICLE_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (vechile == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-                    param.COMPANY_ID = GetCompanyID();
-
-                    db.VEHICLES.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    vechile.MODIFIED_DATE = DateTime.Now;
-                    vechile.VEHICLE_NBR = param.VEHICLE_NBR;
-                    vechile.VEHICLE_STATUS = param.VEHICLE_STATUS;
-                    vechile.VEHICLE_MODEL_ID = param.VEHICLE_MODEL_ID;
-                    vechile.VEHICLE_MAKE_ID = param.VEHICLE_MAKE_ID;
-                    vechile.BODY_TYPE_ID = param.BODY_TYPE_ID;
-                    vechile.CURRENT_DRIVER = param.CURRENT_DRIVER;
-                    vechile.REGISTRATION_NUMBER = param.REGISTRATION_NUMBER;
-                    vechile.REGISTRATION_EXPIRY = param.REGISTRATION_EXPIRY;
-                    vechile.ASSIGNED_TAG = param.ASSIGNED_TAG;
-                    vechile.VEHICLE_DESC = param.VEHICLE_DESC;
-                    vechile.VEHICLE_YEAR = param.VEHICLE_YEAR;
-                    vechile.VEHICLE_COLOR = param.VEHICLE_COLOR;
-                    vechile.UPDATED_BY = GetUserID();                    
-
-                    db.VEHICLES.Attach(vechile);
-                    db.Entry(vechile).Property(x => x.VEHICLE_NBR).IsModified = true;
-                    db.Entry(vechile).Property(x => x.VEHICLE_STATUS).IsModified = true;
-                    db.Entry(vechile).Property(x => x.VEHICLE_MODEL_ID).IsModified = true;
-                    db.Entry(vechile).Property(x => x.VEHICLE_MAKE_ID).IsModified = true;
-                    db.Entry(vechile).Property(x => x.BODY_TYPE_ID).IsModified = true;
-                    db.Entry(vechile).Property(x => x.CURRENT_DRIVER).IsModified = true;
-                    db.Entry(vechile).Property(x => x.REGISTRATION_NUMBER).IsModified = true;
-                    db.Entry(vechile).Property(x => x.REGISTRATION_EXPIRY).IsModified = true;
-                    db.Entry(vechile).Property(x => x.ASSIGNED_TAG).IsModified = true;
-                    db.Entry(vechile).Property(x => x.VEHICLE_DESC).IsModified = true;
-                    db.Entry(vechile).Property(x => x.VEHICLE_YEAR).IsModified = true;
-                    db.Entry(vechile).Property(x => x.VEHICLE_COLOR).IsModified = true;
-                    db.Entry(vechile).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage});
         }
 
         [HttpPost]

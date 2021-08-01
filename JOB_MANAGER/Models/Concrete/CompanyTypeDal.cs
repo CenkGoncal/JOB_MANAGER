@@ -14,7 +14,7 @@ namespace JOB_MANAGER.Models.Concrete
             var _contactTypes = filter != null ? context.Set<COMPANY_TYPES>().Where(filter).ToList()
                             : context.Set<COMPANY_TYPES>().ToList();
 
-            var data = (from ct in context.COMPANY_TYPES
+            var data = (from ct in _contactTypes
 
                         join e in context.EMPLOYEES
                         on ct.CREATED_BY equals e.EMP_ID into e_join
@@ -46,7 +46,7 @@ namespace JOB_MANAGER.Models.Concrete
             if (dbitem == null)
             {                
                 param.CREATED_BY = param.UPDATED_BY = ThreadGlobals.UserAuthInfo.Value.UserId;
-                param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;
+                param.CREATION_DATE = param.MODIFIED_DATE = DateTime.Now;                
             }
             else
             {                

@@ -141,6 +141,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Bussiness\Abstract\IService.cs" />
     <Compile Include="Bussiness\Concrete\CityManager.cs" />
+    <Compile Include="Bussiness\Concrete\ClientManager.cs" />
+    <Compile Include="Bussiness\Concrete\CompanyManager.cs" />
+    <Compile Include="Bussiness\Concrete\ContactManager.cs" />
     <Compile Include="Bussiness\Concrete\ContractTypeManager.cs" />
     <Compile Include="Bussiness\Concrete\CompanyTypeManager.cs" />
     <Compile Include="Bussiness\Concrete\CountyManager.cs" />
@@ -162,6 +165,9 @@
     <Compile Include="Models\ComplexType\MenuRolesDto.cs" />
     <Compile Include="Models\ComplexType\TransactionType.cs" />
     <Compile Include="Models\ComplexType\UserInfoDto.cs" />
+    <Compile Include="Models\Concrete\ClientDal.cs" />
+    <Compile Include="Models\Concrete\CompanyDal.cs" />
+    <Compile Include="Models\Concrete\ContactDal.cs" />
     <Compile Include="Models\Concrete\DocumentTypeDal.cs" />
     <Compile Include="Models\Concrete\EmployeeDal.cs" />
     <Compile Include="Models\Concrete\NoteTypeDal.cs" />
