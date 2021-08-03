@@ -13,7 +13,11 @@ namespace JOB_MANAGER.Models.Concrete
 
         public override List<CitiesExtented> GetAll2(Expression<Func<CITIES, bool>> filter = null)
         {
-            var query = (from c in context.CITIES
+
+            var _citylist = filter != null ? context.Set<CITIES>().Where(filter).ToList()
+                : context.Set<CITIES>().ToList();
+
+            var query = (from c in _citylist
                          join st in context.STATES on c.STATE_ID equals st.STATE_ID
                          join ct in context.COUNTRIES on c.COUNTRY_ID equals ct.COUNTRY_ID
 

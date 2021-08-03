@@ -1,4 +1,5 @@
-﻿using JOB_MANAGER.CrossCuttingConsers.Security.Web;
+﻿using JOB_MANAGER.Core.Helper;
+using JOB_MANAGER.CrossCuttingConsers.Security.Web;
 using JOB_MANAGER.Helper;
 using System;
 using System.Collections.Generic;

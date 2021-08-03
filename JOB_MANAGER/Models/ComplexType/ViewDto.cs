@@ -564,4 +564,13 @@ namespace JOB_MANAGER.Models
         public string CREATION_DATE { get; set; }
         public string MODIFIED_DATE { get; set; }
     }
+
+    public class SuplierExtended : SUPPLIERS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+        public string SUPPLIER_STATUS_NAME { get; set; }
+        public string DISPLAY_CLASS { get; set; }
+    }
 }

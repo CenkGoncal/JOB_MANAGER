@@ -182,10 +182,16 @@ namespace JOB_MANAGER.Controllers
         [AuthorityControl("Supplier")]
         public ActionResult Supplier()
         {
-            ViewBag.COUNTRIES_LIST = new SelectList(db.COUNTRIES.Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
-            ViewBag.STATES_LIST = new SelectList(db.STATES.Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
-            ViewBag.CITIES_LIST = new SelectList(db.CITIES.Where(w => w.IS_CANCELED == false), "CITY_ID", "CITY_NAME");
-            ViewBag.STATUS_LIST = new SelectList(db.STATUS.Where(w => w.IS_CANCELED == false && w.STATUS_TYPE == (int)StatusType.Supplier), "STATUS_ID", "STATUS_NAME");
+
+            CountyManager countyManager = new CountyManager(new Models.Concrete.CountyDal());
+            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
+            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
+            StatusManager statusManager = new StatusManager(new Models.Concrete.StatusDal());
+
+            ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll().Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
+            ViewBag.STATES_LIST = new SelectList(stateManager.GetAll().Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
+            ViewBag.CITIES_LIST = new SelectList(cityManager.GetAll().Where(w => w.IS_CANCELED == false), "CITY_ID", "CITY_NAME");
+            ViewBag.STATUS_LIST = new SelectList(statusManager.GetAllByType((int)StatusType.Supplier), "STATUS_ID", "STATUS_NAME");
 
             return View();
         }
@@ -193,133 +199,27 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public ActionResult GetSupplierList()
         {
-            var empID = GetUserID();
-            if (empID < 0)
-            {
-                return RedirectToAction("LockedUser", "Login");
-            }
-
-            var CompanyID = GetCompanyID();
-
-            var data = (from v in db.SUPPLIERS
-
-                        where v.IS_CANCELED == false && v.COMPANY_ID == CompanyID
-                        select new
-                        {
-                            SUPPLIER_ID = v.SUPPLIER_ID,
-                            SUPPLIER_NAME = v.SUPPLIER_NAME,
-                            SUPPLIER_NUMBER = v.SUPPLIER_NUMBER,
-                            SUPPLIER_STATUS_ID = v.SUPPLIER_STATUS_ID,
-                            SUPPLIER_STATUS_NAME = v.STATUS.STATUS_NAME,
-                            DISPLAY_CLASS = v.STATUS.DISPLAY_CLASS,
-                            SUPPLIER_URL = v.SUPPLIER_URL,
-                            SUPPLIER_PHONE = v.SUPPLIER_PHONE,
-                            SUPPLIER_EMAIL = v.SUPPLIER_EMAIL,
-                            SUPPLIER_ADDRESS = v.SUPPLIER_ADDRESS,                            
-                            SUPPLIER_COUNTRY = v.SUPPLIER_COUNTRY,
-                            SUPPLIER_STATE = v.SUPPLIER_STATE,
-                            SUPPLIER_CITY = v.SUPPLIER_CITY,
-                            POSTAL_CODE = v.POSTAL_CODE,
-                        }
-                       ).OrderBy(o => o.SUPPLIER_NAME).ToList();
-
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            SuplierManager suplierManager = new SuplierManager(new Models.Concrete.SuplierDal());
+            
+            return Json(new { Getlist = suplierManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateSupplier(SUPPLIERS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            SuplierManager suplierManager = new SuplierManager(new Models.Concrete.SuplierDal());
+            var control = suplierManager.AddorUpdate(param);
 
-            try
-            {
-                SUPPLIERS suppliers = db.SUPPLIERS.Where(w => w.SUPPLIER_ID == param.SUPPLIER_ID).FirstOrDefault();
-
-                bool isNew = false;
-                if (suppliers == null)
-                {
-                    isNew = true;
-                }
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-                    param.COMPANY_ID = GetCompanyID();
-
-                    db.SUPPLIERS.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    suppliers.MODIFIED_DATE = DateTime.Now;
-                    suppliers.SUPPLIER_NAME = param.SUPPLIER_NAME;
-                    suppliers.SUPPLIER_STATUS_ID = param.SUPPLIER_STATUS_ID;
-                    suppliers.SUPPLIER_URL = param.SUPPLIER_URL;
-                    suppliers.SUPPLIER_PHONE = param.SUPPLIER_PHONE;
-                    suppliers.SUPPLIER_EMAIL = param.SUPPLIER_EMAIL;
-                    suppliers.SUPPLIER_ADDRESS = param.SUPPLIER_ADDRESS;
-                    suppliers.SUPPLIER_CITY = param.SUPPLIER_CITY;
-                    suppliers.POSTAL_CODE = param.POSTAL_CODE;
-                    suppliers.SUPPLIER_COUNTRY = param.SUPPLIER_COUNTRY;
-                    suppliers.SUPPLIER_STATE = param.SUPPLIER_STATE;
-                    suppliers.UPDATED_BY = GetUserID();
-
-                    db.SUPPLIERS.Attach(suppliers);
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_NAME).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_STATUS_ID).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_URL).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_PHONE).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_EMAIL).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_ADDRESS).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_CITY).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.POSTAL_CODE).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.POSTAL_CODE).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_COUNTRY).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.SUPPLIER_STATE).IsModified = true;
-                    db.Entry(suppliers).Property(x => x.UPDATED_BY).IsModified = true;
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage});
         }
 
         [HttpPost]
         public ActionResult DeleteSupplier(int SupplierID)
         {
-            SUPPLIERS anSupplier = db.SUPPLIERS.Find(SupplierID);
-            if (anSupplier != null)
-            {
-                try
-                {
-                    anSupplier.IS_CANCELED = true;
-                    anSupplier.UPDATED_BY = GetUserID();
-                    db.SUPPLIERS.Attach(anSupplier);
+            SuplierManager suplierManager = new SuplierManager(new Models.Concrete.SuplierDal());
+            var control = suplierManager.Delete(new SUPPLIERS() { SUPPLIER_ID = SupplierID });
 
-                    db.Entry(anSupplier).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(anSupplier).Property(x => x.UPDATED_BY).IsModified = true;
-
-                    db.SaveChanges();
-                    return Json(new { success = true });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = ex.Message });
-                }
-            }
-            return Json(new { success = false, message = "Supplier not found" });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
@@ -328,25 +228,32 @@ namespace JOB_MANAGER.Controllers
         public ActionResult SupervisorAreas()
         {
 
+            CountyManager countyManager = new CountyManager(new Models.Concrete.CountyDal());
+            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
+            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
+            StatusManager statusManager = new StatusManager(new Models.Concrete.StatusDal());
+
+            EmployeeManager employeeManager = new EmployeeManager(new Models.Concrete.EmployeeDal());
+
             int CompanyID = GetCompanyID();
-            ViewBag.SUPERVISOR_LIST = new SelectList(db.EMPLOYEES.Where(c => c.IS_SUPERVISOR == true && c.IS_CANCELED == false && c.COMPANY_ID == CompanyID).Select(e => new
+            ViewBag.SUPERVISOR_LIST = new SelectList(employeeManager.GetEmployeesByTypes(true,false,false,ThreadGlobals.UserAuthInfo.Value.CompanyId).Select(e => new
             {
                 e.EMP_ID,
-                NAME = e.FIRST_NAME +SqlConstants.stringWhiteSpace+e.LAST_NAME
+                NAME = e.EMP_NAME
             }).OrderBy(e => e.EMP_ID), "EMP_ID", "NAME");
 
-            int defaultCountry = db.COUNTRIES.Where(w => w.IS_DEFAULT == true).Select(s => s.COUNTRY_ID).FirstOrDefault();
+            int defaultCountry = countyManager.GetAll().Where(w => w.IS_DEFAULT == true).Select(s => s.COUNTRY_ID).FirstOrDefault();
             if (defaultCountry > 0)
             {
-                ViewBag.COUNTRIES_LIST = new SelectList(db.COUNTRIES.Where(w => w.IS_CANCELED == false && w.COUNTRY_ID == defaultCountry), "COUNTRY_ID", "COUNTRY_NAME");
-                ViewBag.STATES_LIST = new SelectList(db.STATES.Where(w => w.IS_CANCELED == false && w.COUNTRY_ID == defaultCountry), "STATE_ID", "STATE_NAME");
-                ViewBag.CITIES_LIST = new SelectList(db.CITIES.Where(w => w.IS_CANCELED == false && w.COUNTRY_ID == defaultCountry), "CITY_ID", "CITY_NAME");
+                ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll().Where(w => w.IS_CANCELED == false && w.COUNTRY_ID == defaultCountry), "COUNTRY_ID", "COUNTRY_NAME");
+                ViewBag.STATES_LIST = new SelectList(stateManager.GetAll().Where(w => w.IS_CANCELED == false && w.COUNTRY_ID == defaultCountry), "STATE_ID", "STATE_NAME");
+                ViewBag.CITIES_LIST = new SelectList(cityManager.GetAll().Where(w => w.IS_CANCELED == false && w.COUNTRY_ID == defaultCountry), "CITY_ID", "CITY_NAME");
             }
             else
             {
-                ViewBag.COUNTRIES_LIST = new SelectList(db.COUNTRIES.Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
-                ViewBag.STATES_LIST = new SelectList(db.STATES.Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
-                ViewBag.CITIES_LIST = new SelectList(db.CITIES.Where(w => w.IS_CANCELED == false), "CITY_ID", "CITY_NAME");
+                ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll().Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
+                ViewBag.STATES_LIST = new SelectList(stateManager.GetAll().Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
+                ViewBag.CITIES_LIST = new SelectList(cityManager.GetAll().Where(w => w.IS_CANCELED == false), "CITY_ID", "CITY_NAME");
             }
 
             return View();

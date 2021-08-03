@@ -1,4 +1,6 @@
 ﻿using JOB_MANAGER.Bussiness.Concrete;
+using JOB_MANAGER.Core.CrossCuttingConsers;
+using JOB_MANAGER.Core.Helper;
 using JOB_MANAGER.CrossCuttingConsers;
 using JOB_MANAGER.Models;
 using JOB_MANAGER.Models.Concrete;

@@ -58,11 +58,7 @@ namespace JOB_MANAGER.Controllers
         {
             try
             {
-                var userinfo =  GetUserInfo();
-                if (userinfo == null)
-                    return -1;
-
-                return userinfo.UserId;
+                return  ThreadGlobals.UserAuthInfo.Value.UserId;
             }
             catch (Exception)
             {
@@ -73,12 +69,8 @@ namespace JOB_MANAGER.Controllers
         public int GetCompanyID()
         {
             try
-            {
-                var userinfo = GetUserInfo();
-                if (userinfo == null)
-                    return -1;
-          
-                return userinfo.CompanyId;
+            {               
+                return ThreadGlobals.UserAuthInfo.Value.CompanyId;
             }
             catch (Exception)
             {
