@@ -1,6 +1,7 @@
 ﻿using JOB_MANAGER.Bussiness.Concrete;
 using JOB_MANAGER.Helper;
 using JOB_MANAGER.Models;
+using JOB_MANAGER.Models.Concrete;
 using JOB_MANAGER.Models.Login;
 using JOB_MANAGER_BUSSINESS.Concrete;
 using System;
@@ -262,25 +263,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetListFilterSupervisors()
         {
-            var dataCity = (from s in db.SUPERVISOR_AREAS
 
-                        where s.IS_CANCELED == false
-                        select new
-                        {
-                            CITY_ID = s.CITY_ID,
-                            CITY_NAME = s.CITIES.CITY_NAME
-                        }
-                  ).OrderBy(o => o.CITY_NAME).Distinct().ToList();
+            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());
 
-            var dataSup = (from s in db.SUPERVISOR_AREAS
-
-                        where s.IS_CANCELED == false
-                        select new
-                        {
-                            EMPLOYEE_ID = s.EMPLOYEE_ID,
-                            EMPLOYEE_NAME = s.EMPLOYEES.FIRST_NAME + SqlConstants.stringWhiteSpace + s.EMPLOYEES.LAST_NAME,
-                        }
-                ).OrderBy(o => o.EMPLOYEE_NAME).Distinct().ToList();
+            var dataCity = supervisorAreasManager.GetAll().Select(s => new { CITY_ID = s.CITY_ID, CITY_NAME = s.CITY_NAME }).Distinct().ToList();
+            var dataSup = supervisorAreasManager.GetAll().Select(s => new
+            {
+                EMPLOYEE_ID = s.EMPLOYEE_ID,
+                EMPLOYEE_NAME = s.EMPLOYEES.FIRST_NAME + SqlConstants.stringWhiteSpace + s.EMPLOYEES.LAST_NAME
+            }).Distinct().ToList();
 
 
             return Json(new { City = dataCity, Suplier= dataSup }, JsonRequestBehavior.AllowGet);
@@ -289,124 +280,28 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetSuperVisorList()
         {
-            var data = (from s in db.SUPERVISOR_AREAS
 
-                        where s.IS_CANCELED == false
-                        select new
-                        {
-                            EMPLOYEE_ID = s.EMPLOYEE_ID,
-                            SUPERVISOR = s.EMPLOYEES.FIRST_NAME+ SqlConstants.stringWhiteSpace+s.EMPLOYEES.LAST_NAME,
-                            CITY_ID = s.CITY_ID,
-                            CITY_NAME = s.CITIES.CITY_NAME,
-                            POSTAL_CODE = s.CITIES.POSTAL_CODE
-                        }
-                    ).OrderBy(o => o.SUPERVISOR).ToList();
+            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());         
 
-            return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
+            return Json(new { Getlist = supervisorAreasManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddSuppervisorArea(int SuperVizorID, List<int> CityIDs)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());
+            var control = supervisorAreasManager.AddSuppervisorArea(SuperVizorID, CityIDs);
 
-            try
-            {
-
-                var supervisorarea = db.SUPERVISOR_AREAS.Where(w => w.EMPLOYEE_ID == SuperVizorID && w.IS_CANCELED == false && !CityIDs.Contains(w.CITY_ID)).ToList();
-                if(supervisorarea != null)
-                {
-                    foreach(var item in supervisorarea)
-                    {
-                        item.IS_CANCELED = true;
-                        item.UPDATED_BY = GetUserID();
-                        db.SUPERVISOR_AREAS.Attach(item);
-
-                        db.Entry(item).Property(x => x.IS_CANCELED).IsModified = true;
-                        db.Entry(item).Property(x => x.UPDATED_BY).IsModified = true;
-
-                        db.SaveChanges();
-                    }
-                }
-
-                supervisorarea = db.SUPERVISOR_AREAS.Where(w => w.EMPLOYEE_ID == SuperVizorID && w.IS_CANCELED == false && CityIDs.Contains(w.CITY_ID)).ToList();
-                if (supervisorarea != null)
-                {
-                    foreach (var item in supervisorarea)
-                    {
-                        item.IS_CANCELED = false;
-                        item.UPDATED_BY = GetUserID();
-                        db.SUPERVISOR_AREAS.Attach(item);
-
-                        db.Entry(item).Property(x => x.IS_CANCELED).IsModified = true;
-                        db.Entry(item).Property(x => x.UPDATED_BY).IsModified = true;
-
-                        db.SaveChanges();
-                    }
-                }
-
-                var insert = (from C in db.CITIES
-                              where !db.SUPERVISOR_AREAS.Any(w => w.CITY_ID == C.CITY_ID && w.EMPLOYEE_ID == SuperVizorID && w.IS_CANCELED == false) &&
-                                   CityIDs.Contains(C.CITY_ID)
-                              select new
-                              {
-                                  CITY_ID = C.CITY_ID
-                              }).ToList();
-
-
-                foreach (var item in insert)
-                {
-                    SUPERVISOR_AREAS param = new SUPERVISOR_AREAS();
-
-                    param.IS_CANCELED = false;
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-                    param.CITY_ID = item.CITY_ID;
-                    param.EMPLOYEE_ID = SuperVizorID;                    
-
-                    db.SUPERVISOR_AREAS.Add(param);
-                    db.SaveChanges();
-                }
-
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         [HttpPost]
-        public ActionResult DeleteSuppervisorArea(int SuperVizorID,int CityID)
+        public ActionResult DeleteSuppervisorArea(int SuperVizorID, int CityID)
         {
-            SUPERVISOR_AREAS anSupplier = db.SUPERVISOR_AREAS.Where(w=>  w.EMPLOYEE_ID == SuperVizorID && w.CITY_ID == CityID).FirstOrDefault();
-            if (anSupplier != null)
-            {
-                try
-                {
-                    anSupplier.IS_CANCELED = true;
-                    anSupplier.UPDATED_BY = GetUserID();
-                    db.SUPERVISOR_AREAS.Attach(anSupplier);
+            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());
+            var control = supervisorAreasManager.Delete(new SUPERVISOR_AREAS() { EMPLOYEE_ID = SuperVizorID});
 
-                    db.Entry(anSupplier).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(anSupplier).Property(x => x.UPDATED_BY).IsModified = true;
-
-                    db.SaveChanges();
-                    return Json(new { success = true, message="Operation Succesfull" });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = ex.Message });
-                }
-            }
-            return Json(new { success = false, message = "Suppervisor Area not found" });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
@@ -421,142 +316,25 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetHolidays()
         {
-            var list = (from H in db.HOLIDAYS
-                        from E_LEFT in db.EMPLOYEES.Where(w=>w.EMP_ID == H.CREATED_BY).DefaultIfEmpty()
-                        
-                        select new
-                        {
-                            HOLIDAY_ID = H.HOLIDAY_ID,
-                            HOLIDAY_NAME = H.HOLIDAY_NAME,
-                            HOLIDAY_DESC = H.HOLIDAY_DESC,
-                            START_DATE =  H.START_DATE != null ?
-                                        H.START_DATE.Year + SqlConstants.stringMinus +
-                                        (H.START_DATE.Month > 9 ? H.START_DATE.Month + SqlConstants.stringMinus : "0" + H.START_DATE.Month + SqlConstants.stringMinus) +
-                                        H.START_DATE.Day : null,
-                            END_DATE = H.END_DATE != null ?
-                                        H.END_DATE.Year + SqlConstants.stringMinus +
-                                        (H.END_DATE.Month > 9 ? H.END_DATE.Month + SqlConstants.stringMinus : "0" + H.END_DATE.Month + SqlConstants.stringMinus) +
-                                        H.END_DATE.Day : null,
-                            IS_CANCELED = H.IS_CANCELED,
-                            CREATION_DATE = H.CREATION_DATE != null ?
-                                        H.CREATION_DATE.Year + SqlConstants.stringMinus +
-                                        (H.CREATION_DATE.Month > 9 ? H.CREATION_DATE.Month + SqlConstants.stringMinus : "0" + H.CREATION_DATE.Month + SqlConstants.stringMinus) +
-                                        H.CREATION_DATE.Day : null,
-                            MODIFIED_DATE = H.MODIFIED_DATE != null ?
-                                        H.MODIFIED_DATE.Year + SqlConstants.stringMinus +
-                                        (H.MODIFIED_DATE.Month > 9 ? H.MODIFIED_DATE.Month + SqlConstants.stringMinus : "0" + H.MODIFIED_DATE.Month + SqlConstants.stringMinus) +
-                                        H.MODIFIED_DATE.Day : null,
-                            CREATE_BY = E_LEFT.FIRST_NAME + SqlConstants.stringWhiteSpace + E_LEFT.LAST_NAME
-                        }).ToList();
-
-            return Json(new { Getlist = list }, JsonRequestBehavior.AllowGet);
+            HolidayManager holidayManager = new HolidayManager(new HolidayDal());
+            
+            return Json(new { Getlist = holidayManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult AddOrUpdateHoliday(HOLIDAYS param)
         {
-            bool _success = true;
-            string _message = string.Empty;
+            HolidayManager holidayManager = new HolidayManager(new HolidayDal());
+            var control = holidayManager.AddorUpdate(param);
 
-            try
-            {
-                HOLIDAYS control = db.HOLIDAYS.Where(w => w.HOLIDAY_ID == param.HOLIDAY_ID).FirstOrDefault();
-                int CompanyID = GetCompanyID();
-                bool isNew = false;
-                if (control == null)
-                {
-                    isNew = true;
-
-                    if (db.HOLIDAYS.Any(x => x.HOLIDAY_NAME.Equals(param.HOLIDAY_NAME) && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == CompanyID)))
-                    {
-                        _message = "Holiday already exists.";
-                        _success = false;
-                    }
-
-                }
-                else
-                {
-                    if (db.HOLIDAYS.Any(x => x.HOLIDAY_NAME.Equals(param.HOLIDAY_NAME) && x.HOLIDAY_ID != param.HOLIDAY_ID && x.IS_CANCELED == false && (x.COMPANY_ID == -1 || x.COMPANY_ID == CompanyID)))
-                    {
-                        _message = "Holiday already exists.";
-                        _success = false;
-                    }
-                }
-
-                if (_success == false)
-                    return Json(new { success = _success, Message = _message });
-
-                if (isNew)
-                {
-                    param.MODIFIED_DATE = param.CREATION_DATE = DateTime.Now;
-                    param.CREATED_BY = param.UPDATED_BY = GetUserID();
-                    param.COMPANY_ID = CompanyID;
-
-                    db.HOLIDAYS.Add(param);
-                    db.SaveChanges();
-                }
-                else
-                {
-                    control.MODIFIED_DATE = DateTime.Now;
-                    control.HOLIDAY_NAME = param.HOLIDAY_NAME;
-                    control.HOLIDAY_DESC = param.HOLIDAY_DESC;
-                    control.START_DATE = param.START_DATE;
-                    control.END_DATE = param.END_DATE;
-                    control.IS_CANCELED = param.IS_CANCELED;
-                    control.UPDATED_BY = GetUserID();
-                    //ContractType.MODIFIED_DATE = param.MODIFIED_DATE;
-
-                    db.HOLIDAYS.Attach(control);
-                    db.Entry(control).Property(x => x.HOLIDAY_NAME).IsModified = true;
-                    db.Entry(control).Property(x => x.HOLIDAY_DESC).IsModified = true;
-                    db.Entry(control).Property(x => x.START_DATE).IsModified = true;
-                    db.Entry(control).Property(x => x.END_DATE).IsModified = true;
-                    db.Entry(control).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(control).Property(x => x.UPDATED_BY).IsModified = true;                    
-                    //db.Entry(ContractType).Property(x => x.MODIFIED_DATE).IsModified = true;
-                    db.SaveChanges();
-                }
-
-                _success = true;
-                _message = "Operation Successful";
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         public JsonResult RemoveHoliday(HOLIDAYS param)
         {
-            bool _success = false;
-            string _message = string.Empty;
+            HolidayManager holidayManager = new HolidayManager(new HolidayDal());
+            var control = holidayManager.Delete(param);
 
-            try
-            {
-                HOLIDAYS control = db.HOLIDAYS.Where(w => w.HOLIDAY_ID == param.HOLIDAY_ID).FirstOrDefault();
-                if (control != null)
-                {
-                    db.HOLIDAYS.Remove(control);
-                    db.SaveChanges();
-
-                    _success = true;
-                    _message = "Operation Successful";
-                }
-                else
-                {
-                    _message = "Holiday Not Found not found";
-                }
-            }
-            catch (Exception e)
-            {
-                _message = e.Message;
-                _success = false;
-            }
-
-            return Json(new { success = _success, Message = _message });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
 
         #endregion

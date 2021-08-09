@@ -154,6 +154,7 @@
     <Compile Include="Bussiness\Concrete\MateryalManager.cs" />
     <Compile Include="Bussiness\Concrete\NoteTypeManager.cs" />
     <Compile Include="Bussiness\Concrete\PhaseManager.cs" />
+    <Compile Include="Bussiness\Concrete\SupervisorAreasManager.cs" />
     <Compile Include="Bussiness\Concrete\SuplierManager.cs" />
     <Compile Include="Bussiness\Concrete\TaskManager.cs" />
     <Compile Include="CrossCuttingConsers\Caching\CacheEnum.cs" />
@@ -185,6 +186,8 @@
     <Compile Include="Models\Concrete\ContactDal.cs" />
     <Compile Include="Models\Concrete\DocumentTypeDal.cs" />
     <Compile Include="Models\Concrete\EmployeeDal.cs" />
+    <Compile Include="Models\Concrete\HolidayDal.cs" />
+    <Compile Include="Models\Concrete\HolidayManager.cs" />
     <Compile Include="Models\Concrete\NoteTypeDal.cs" />
     <Compile Include="Bussiness\Concrete\ParameterManager.cs" />
     <Compile Include="Bussiness\Concrete\ProjectTypeManager.cs" />
@@ -233,6 +236,7 @@
     <Compile Include="Models\Concrete\FloorTypeDal.cs" />
     <Compile Include="Models\Concrete\MateryalDal.cs" />
     <Compile Include="Models\Concrete\ParameterDal.cs" />
+    <Compile Include="Models\Concrete\SupervisorAreasDal.cs" />
     <Compile Include="Models\Concrete\SuplierDal.cs" />
     <Compile Include="Models\Concrete\TaskDal.cs" />
     <Compile Include="Models\Concrete\PhaseDal.cs" />

@@ -573,4 +573,23 @@ namespace JOB_MANAGER.Models
         public string SUPPLIER_STATUS_NAME { get; set; }
         public string DISPLAY_CLASS { get; set; }
     }
+
+    public class SupervisorAreasExtented : SUPERVISOR_AREAS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+        public string SUPERVISOR { get; set; }
+        public string CITY_NAME { get; set; }
+        public string POSTAL_CODE { get; set; }
+    }
+
+    public class HolidayExtented : HOLIDAYS, IViewDto
+    {
+        public string CREATE_BY { get; set; }
+        public string CREATION_DATE { get; set; }
+        public string MODIFIED_DATE { get; set; }
+        public string START_DATE { get; set; }
+        public string END_DATE { get; set; }
+    }
 }
