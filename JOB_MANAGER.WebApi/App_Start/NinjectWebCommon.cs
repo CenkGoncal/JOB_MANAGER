@@ -6,8 +6,7 @@ namespace JOB_MANAGER.WebApi.App_Start
     using System;
     using System.Web;
     using System.Web.Http;
-    using JOB_MANAGER.Bussiness.Concrete;
-    using JOB_MANAGER_BUSSINESS.Abstract;
+    using JOB_MANAGER.Business.Concrete;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
     using Ninject;

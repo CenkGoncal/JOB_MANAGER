@@ -1,14 +1,12 @@
-﻿using JOB_MANAGER.Helper;
-//using JOB_MANAGER.Models.Login;
+﻿//using JOB_MANAGER.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.DATAACESS.Helper;
+using JOB_MANAGER.DATAACESS.Models;
 using JOB_MANAGER.Models;
-using JOB_MANAGER.Bussiness.Concrete;
-using JOB_MANAGER.Models.Concrete;
-using JOB_MANAGER_BUSSINESS.Concrete;
 
 namespace JOB_MANAGER.Controllers
 {

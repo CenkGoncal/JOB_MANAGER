@@ -1,0 +1,150 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace JOB_MANAGER.DATAACESS.Helper
+{
+    public class SqlConstants
+    {
+        public const bool True = true;
+        public const bool False = false;
+
+        public const int int0 = 0;
+        public const int int1 = 1;
+        public const int int2 = 2;
+        public const int int3 = 3;
+        public const int int4 = 4;
+        public const int int5 = 5;
+        public const int int6 = 6;
+        public const int int7 = 7;
+        public const int int8 = 8;
+        public const int int9 = 9;
+        public const int int10 = 10;
+        public const int int11 = 11;
+        public const int int12 = 12;
+        public const int int14 = 14;
+        public const int int15 = 15;
+        public const int int16 = 16;
+        public const int int32 = 32;
+        public const int intMinus1 = -1;
+        public const int int40 = 40;
+        public const int int48 = 48;
+        public const int int60 = 60;
+        public const int int75 = 75;
+        public const int int90 = 90;
+        public const int int99 = 99;
+        public const int int205 = 205;
+        public const int int1970 = 1970;
+        public const int int999 = 999;
+        public const int int2075 = 2075;
+        public const int int100 = 100;
+        public const int int101 = 101;
+        public const int int102 = 102;
+        public const int int103 = 103;
+        public const int int150 = 150;
+        public const int int300 = 300;
+        public const int int1000 = 1000;
+        public const int int1001 = 1001;
+        public const int int1002 = 1002;
+        public const int int1003 = 1003;
+        public const int int1004 = 1004;
+        public const int int1005 = 1005;
+        public const int int9999 = 9999;
+
+        public const int intMinus99 = -99;
+        public const int intMinus999 = -999;
+        public const int intMinus6 = -6;
+
+        public const string stringIkiNokta = ":";
+        public const string stringH = "H";
+        public const string stringE = "E";
+        public const string stringR = "R";
+        public const string stringEmpty = "";
+        public const string stringNull = null;
+        public const string stringWhiteSpace = " ";
+        public const string stringComma = ",";
+        public const string stringSharp = "#";
+        public const string stringAci = "aci";
+        public const string stringErkek = "Erkek";
+        public const string stringKadin = "Kadın";
+        public const string stringI = "I";
+        public const string stringU = "U";
+        public const string stringC = "C";
+        public const string stringK = "K";
+        public const string stringD = "D";
+        public const string stringT = "T";
+        public const string stringL = "L";
+        public const string stringG = "G";
+        public const string stringM = "M";
+        public const string stringO = "O";
+        public const string stringP = "P";
+        public const string stringp = "p";
+        public const string stringN = "N";
+        public const string stringY = "Y";
+        public const string stringF = "F";
+        public const string stringLABORATUAR = "LABORATUAR";
+        public const string stringDOKTOR = "DOKTOR";
+        public const string stringYB = "YB";
+        public const string stringUcretli = "Ücretli";
+        public const string string0 = "0";
+        public const string string1 = "1";
+        public const string string2 = "2";
+        public const string string6 = "6";
+        public const string string8 = "8";
+        public const string stringen = "en";
+        public const string stringtr = "tr";
+        public const string stringYuzde = "%";
+        public const string stringA = "A";
+        public const string stringB = "B";
+        public const string stringS = "S";
+        public const string stringParantezAc = "(";
+        public const string stringParantezKapat = ")";
+        public const string stringNokta = ".";
+        public const string stringKLITYATMY = "#KLIYATMY#";
+        public const string stringh = "h";
+        public const string stringDiyez = "#";
+        public const string stringBelirsiz = "<Belirsiz>";
+        public const string stringSlash = "/";
+        public const string stringRADYOLOJI = "RADYOLOJI";
+        public const string stringKARAR = "#KARAR#";
+        public const string stringGebelikHaft = "Gebelik haft";
+        public const string stringMinus = "-";
+        public const string stringSpaceMinusSpace = " - ";
+        public const string stringMinus1 = "-1";
+        public const string stringWebCalismaTakvimiModule = "WebCalismaTakvimiModule";
+        public const string stringMY = "MY";
+        public const string stringX = "X";
+        public const string stringZ = "Z";
+        public const string stringam = "am";
+        public const string stringop = "op";
+        public const string stringCIM = "P920000";
+        public const string stringUTSKapsaminda = "#UTS_KAPSAMINDA#";
+        public const string stringTAN = "TAN";
+        public const string stringVFI = "VFI";
+        public const string stringAML = "AML";
+        public const string stringPKT = "PKT";
+
+        public const short short0 = 0;
+        public const short short1 = 1;
+        public const short short2 = 2;
+        public const short short3 = 3;
+        public const short short9 = 9;
+        public const short short16 = 16;
+
+        public const double double0_0 = 0.0;
+        public const double double1_0 = 1.0;
+        public const double double2_0 = 2.0;
+        public const double double3_0 = 3.0;
+
+        public const decimal decimal0_0 = 0.0m;
+        public const decimal decimal1_0 = 1.0m;
+
+        public static readonly DateTime MinDate = DateTime.MinValue;
+        public static readonly DateTime Date1900 = new DateTime(1900, 1, 1);
+        public static readonly DateTime Date1970 = new DateTime(1970, 1, 1);
+        public const int int23 = 23;
+        public const int int59 = 59;
+        public const int int50 = 50;       
+    }
+}

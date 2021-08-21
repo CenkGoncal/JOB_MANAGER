@@ -139,68 +139,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Bussiness\Abstract\IService.cs" />
-    <Compile Include="Bussiness\Concrete\CityManager.cs" />
-    <Compile Include="Bussiness\Concrete\ClientManager.cs" />
-    <Compile Include="Bussiness\Concrete\CompanyManager.cs" />
-    <Compile Include="Bussiness\Concrete\ContactManager.cs" />
-    <Compile Include="Bussiness\Concrete\ContractTypeManager.cs" />
-    <Compile Include="Bussiness\Concrete\CompanyTypeManager.cs" />
-    <Compile Include="Bussiness\Concrete\CountyManager.cs" />
-    <Compile Include="Bussiness\Concrete\DepartmentManager.cs" />
-    <Compile Include="Bussiness\Concrete\DocumentTypeManager.cs" />
-    <Compile Include="Bussiness\Concrete\EmployeeManager.cs" />
-    <Compile Include="Bussiness\Concrete\FloorTypeManager.cs" />
-    <Compile Include="Bussiness\Concrete\MateryalManager.cs" />
-    <Compile Include="Bussiness\Concrete\NoteTypeManager.cs" />
-    <Compile Include="Bussiness\Concrete\PhaseManager.cs" />
-    <Compile Include="Bussiness\Concrete\SupervisorAreasManager.cs" />
-    <Compile Include="Bussiness\Concrete\SuplierManager.cs" />
-    <Compile Include="Bussiness\Concrete\TaskManager.cs" />
-    <Compile Include="CrossCuttingConsers\Caching\CacheEnum.cs" />
-    <Compile Include="CrossCuttingConsers\Caching\ICacheManager.cs" />
-    <Compile Include="CrossCuttingConsers\Caching\MemoryCahce\MemoryCacheManager.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\Log4net\Layout\JsonLayout.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\Log4net\LoggerService.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\Log4net\Loggers\DatabaseLogger.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\Log4net\Loggers\FileLogger.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\Log4net\SerializableLogEvent.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\LogDetail.cs" />
-    <Compile Include="CrossCuttingConsers\Loging\LogParameter.cs" />
-    <Compile Include="CrossCuttingConsers\Mapping\MapperWrapper.cs" />
-    <Compile Include="CrossCuttingConsers\Security\Identitiy.cs" />
-    <Compile Include="CrossCuttingConsers\Security\Web\AuthenticationHelper.cs" />
-    <Compile Include="CrossCuttingConsers\Security\Web\AuthorityControl.cs" />
-    <Compile Include="CrossCuttingConsers\Security\Web\SecurityUtilities.cs" />
-    <Compile Include="CrossCuttingConsers\Transaction\TransactionControl.cs" />
-    <Compile Include="Helper\GlobalCache.cs" />
-    <Compile Include="Helper\GlobalTools.cs" />
-    <Compile Include="Helper\SqlConstants.cs" />
-    <Compile Include="Helper\StringExtensions.cs" />
-    <Compile Include="Helper\ThreadGlobals.cs" />
-    <Compile Include="Models\ComplexType\MenuRolesDto.cs" />
-    <Compile Include="Models\ComplexType\TransactionType.cs" />
-    <Compile Include="Models\ComplexType\UserInfoDto.cs" />
-    <Compile Include="Models\Concrete\ClientDal.cs" />
-    <Compile Include="Models\Concrete\CompanyDal.cs" />
-    <Compile Include="Models\Concrete\ContactDal.cs" />
-    <Compile Include="Models\Concrete\DocumentTypeDal.cs" />
-    <Compile Include="Models\Concrete\EmployeeDal.cs" />
-    <Compile Include="Models\Concrete\HolidayDal.cs" />
-    <Compile Include="Models\Concrete\HolidayManager.cs" />
-    <Compile Include="Models\Concrete\NoteTypeDal.cs" />
-    <Compile Include="Bussiness\Concrete\ParameterManager.cs" />
-    <Compile Include="Bussiness\Concrete\ProjectTypeManager.cs" />
-    <Compile Include="Bussiness\Concrete\RoleManager.cs" />
-    <Compile Include="Bussiness\Concrete\RoleMenuManager.cs" />
-    <Compile Include="Bussiness\Concrete\StateManager.cs" />
-    <Compile Include="Bussiness\Concrete\StatusManager.cs" />
-    <Compile Include="Bussiness\Concrete\StreetManager.cs" />
-    <Compile Include="Bussiness\Concrete\TitleManager.cs" />
-    <Compile Include="Bussiness\Concrete\VehicleBodyManager.cs" />
-    <Compile Include="Bussiness\Concrete\VehicleMakeManager.cs" />
-    <Compile Include="Bussiness\Concrete\VehicleManager.cs" />
-    <Compile Include="Bussiness\Concrete\VehicleModelManager.cs" />
     <Compile Include="Controllers\AdminOperationController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
@@ -213,178 +151,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Abstact\Entity.cs" />
-    <Compile Include="Models\Abstact\EntityRepository.cs" />
-    <Compile Include="Models\CITIES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CLIENTS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COMPANY.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COMPANY_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Concrete\CitiesDal.cs" />
-    <Compile Include="Models\Concrete\CompanyTypeDal.cs" />
-    <Compile Include="Models\Concrete\ContractTypeDal.cs" />
-    <Compile Include="Models\Concrete\CountyDal.cs" />
-    <Compile Include="Models\Concrete\DepartmentDal.cs" />
-    <Compile Include="Models\Concrete\Core\EntityRepositoryBase.cs" />
-    <Compile Include="Models\Concrete\FloorTypeDal.cs" />
-    <Compile Include="Models\Concrete\MateryalDal.cs" />
-    <Compile Include="Models\Concrete\ParameterDal.cs" />
-    <Compile Include="Models\Concrete\SupervisorAreasDal.cs" />
-    <Compile Include="Models\Concrete\SuplierDal.cs" />
-    <Compile Include="Models\Concrete\TaskDal.cs" />
-    <Compile Include="Models\Concrete\PhaseDal.cs" />
-    <Compile Include="Models\Concrete\ProjectTypeDal.cs" />
-    <Compile Include="Models\Concrete\RoleDal.cs" />
-    <Compile Include="Models\Concrete\RoleMenuDal.cs" />
-    <Compile Include="Models\Concrete\StateDal.cs" />
-    <Compile Include="Models\Concrete\StatusDal.cs" />
-    <Compile Include="Models\Concrete\StreetDal.cs" />
-    <Compile Include="Models\Concrete\TitleDal.cs" />
-    <Compile Include="Models\Concrete\VehicleBodyDal.cs" />
-    <Compile Include="Models\Concrete\VehicleDal.cs" />
-    <Compile Include="Models\Concrete\VehicleMakeDal.cs" />
-    <Compile Include="Models\Concrete\VehicleModelDal.cs" />
-    <Compile Include="Models\CONTACTS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ComplexType\ContractDto.cs" />
-    <Compile Include="Models\CONTRACT_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\COUNTRIES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DEF_PROJECT_PHASES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DEF_TASKS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DEPARTMENTS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DOCUMENTS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DOCUMENT_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DOC_VIEW.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\EMPLOYEES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\FLOOR_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\HOLIDAYS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JOBSPHASESSUMMARY_VIEW.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JOBSSUMMARY_VIEW.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JOB_CALENDAR_VIEW.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JOB_MANAGER_DB_CONTEXT.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JOB_MANAGER_DB_CONTEXT.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\JOB_MANAGER_DB_CONTEXT.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MATERIALS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NOTES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NOTE_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NOTE_VIEW.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PARAMETERS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROJECTS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROJECT_MEMBERS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROJECT_MEMBER_VIEW.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROJECT_PHASES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROJECT_TASK.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PROJECT_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\QUOTES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ROLES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ROLE_MENU.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\STATES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\STATUS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\STREET.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SUPERVISOR_AREAS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\SUPPLIERS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TITLES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\VEHICLES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\VEHICLE_BODY_TYPES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\VEHICLE_MAKES.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\VEHICLE_MODELS.cs">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ComplexType\ViewDto.cs" />
+    <Compile Include="Model\ContractDto.cs" />
+    <Compile Include="Model\UserInfoDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -428,16 +196,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\JOB_MANAGER_DB_CONTEXT.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>JOB_MANAGER_DB_CONTEXT.Context.cs</LastGenOutput>
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\JOB_MANAGER_DB_CONTEXT.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
-      <LastGenOutput>JOB_MANAGER_DB_CONTEXT.cs</LastGenOutput>
-    </Content>
     <Content Include="Plugins\bs-stepper\css\bs-stepper.css" />
     <Content Include="Plugins\bs-stepper\css\bs-stepper.min.css" />
     <Content Include="Plugins\bs-stepper\js\bs-stepper.js" />
@@ -789,13 +547,6 @@
     <Content Include="Content\adminlte\alt\adminlte.pages.min.css.map" />
     <Content Include="Content\adminlte\alt\adminlte.plugins.css.map" />
     <Content Include="Content\adminlte\alt\adminlte.plugins.min.css.map" />
-    <EntityDeploy Include="Models\JOB_MANAGER_DB_CONTEXT.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>JOB_MANAGER_DB_CONTEXT.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\JOB_MANAGER_DB_CONTEXT.edmx.diagram">
-      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
-    </Content>
     <Content Include="Content\adminlte\plugins\selectpicker\bootstrap-select.css.map" />
     <Content Include="Scripts\adminlte\selectpicker\bootstrap-select.js.map" />
     <Content Include="Scripts\adminlte\selectpicker\bootstrap-select.min.js.map" />
@@ -983,6 +734,16 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JOB_MANAGER.Business\JOB_MANAGER.Business.csproj">
+      <Project>{7f83fa2e-0cb9-4d8e-bdc7-e936bf784722}</Project>
+      <Name>JOB_MANAGER.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JOB_MANAGER.DATAACESS\JOB_MANAGER.DataAcess.csproj">
+      <Project>{54273e37-c0f5-4147-9407-fd3a533602fe}</Project>
+      <Name>JOB_MANAGER.DataAcess</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

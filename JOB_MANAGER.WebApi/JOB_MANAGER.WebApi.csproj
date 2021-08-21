@@ -271,6 +271,14 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JOB_MANAGER.Business\JOB_MANAGER.Business.csproj">
+      <Project>{7F83FA2E-0CB9-4D8E-BDC7-E936BF784722}</Project>
+      <Name>JOB_MANAGER.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JOB_MANAGER.DATAACESS\JOB_MANAGER.DataAcess.csproj">
+      <Project>{54273E37-C0F5-4147-9407-FD3A533602FE}</Project>
+      <Name>JOB_MANAGER.DataAcess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\JOB_MANAGER\JOB_MANAGER.csproj">
       <Project>{FD2AAD52-1C25-41D4-9A95-99ACDD18BC38}</Project>
       <Name>JOB_MANAGER</Name>

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Web.Http;
-using JOB_MANAGER.Bussiness.Concrete;
-using JOB_MANAGER.Models;
+using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.DATAACESS.Models;
 
 
 namespace JOB_MANAGER.WebApi.Controllers

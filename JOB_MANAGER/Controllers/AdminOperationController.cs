@@ -1,21 +1,17 @@
-﻿using JOB_MANAGER.Bussiness.Concrete;
-using JOB_MANAGER.Helper;
+﻿using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.DataAcess.Helper;
+using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
+using JOB_MANAGER.DATAACESS.Helper;
+using JOB_MANAGER.DATAACESS.Models;
 using JOB_MANAGER.Models;
 using JOB_MANAGER.Models.ComplexType;
-using JOB_MANAGER.Models.Concrete;
-using JOB_MANAGER.Models.Login;
-using JOB_MANAGER_BUSSINESS.Concrete;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace JOB_MANAGER.Controllers
-{    
+{
     public class AdminOperationController : BaseController
     {              
 
@@ -511,7 +507,7 @@ namespace JOB_MANAGER.Controllers
                             select new
                             {
                                 EMP_ID = vb.EMP_ID,
-                                EMP_NAME = vb.FIRST_NAME+SqlConstants.stringWhiteSpace+vb.LAST_NAME,
+                                EMP_NAME = vb.FIRST_NAME+ SqlConstants.stringWhiteSpace+vb.LAST_NAME,
                             }
                 ).OrderBy(o => o.EMP_NAME).ToList();   
 

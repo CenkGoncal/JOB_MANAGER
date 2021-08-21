@@ -1,8 +1,4 @@
-﻿using JOB_MANAGER.Core.Helper;
-using JOB_MANAGER.CrossCuttingConsers.Security.Web;
-using JOB_MANAGER.Helper;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
@@ -11,6 +7,9 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
+using JOB_MANAGER.DataAcess.Helper;
+using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
+using JOB_MANAGER.DATAACESS.Helper;
 
 namespace JOB_MANAGER
 {

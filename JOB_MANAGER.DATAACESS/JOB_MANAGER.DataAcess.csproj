@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{54273E37-C0F5-4147-9407-FD3A533602FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JOB_MANAGER.DATAACESS</RootNamespace>
+    <AssemblyName>JOB_MANAGER.DATAACESS</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.12.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.12\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SecurityProject">
+      <HintPath>..\JOB_MANAGER\bin\SecurityProject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CrossCuttingConsers\Caching\CacheEnum.cs" />
+    <Compile Include="CrossCuttingConsers\Caching\ICacheManager.cs" />
+    <Compile Include="CrossCuttingConsers\Caching\MemoryCahce\MemoryCacheManager.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\Layout\JsonLayout.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\LoggerService.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\Loggers\DatabaseLogger.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\Loggers\FileLogger.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\Log4net\SerializableLogEvent.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\LogDetail.cs" />
+    <Compile Include="CrossCuttingConsers\Loging\LogParameter.cs" />
+    <Compile Include="CrossCuttingConsers\Mapping\MapperWrapper.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Identitiy.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Web\AuthenticationHelper.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Web\AuthorityControl.cs" />
+    <Compile Include="CrossCuttingConsers\Security\Web\SecurityUtilities.cs" />
+    <Compile Include="CrossCuttingConsers\Transaction\TransactionControl.cs" />
+    <Compile Include="Helper\GlobalCache.cs" />
+    <Compile Include="Helper\GlobalTools.cs" />
+    <Compile Include="Helper\SqlConstants.cs" />
+    <Compile Include="Helper\StringExtensions.cs" />
+    <Compile Include="Helper\ThreadGlobals.cs" />
+    <Compile Include="JOB_MANAGER\Helper.cs" />
+    <Compile Include="Models\Abstact\Entity.cs" />
+    <Compile Include="Models\Abstact\EntityRepository.cs" />
+    <Compile Include="Models\CITIES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CLIENTS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\COMPANY.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\COMPANY_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ComplexType\MembersDto.cs" />
+    <Compile Include="Models\ComplexType\MenuRolesDto.cs" />
+    <Compile Include="Models\ComplexType\NoteDto.cs" />
+    <Compile Include="Models\ComplexType\PhasesDto.cs" />
+    <Compile Include="Models\ComplexType\ProjectViewDto.cs" />
+    <Compile Include="Models\ComplexType\TasksDto.cs" />
+    <Compile Include="Models\ComplexType\TransactionType.cs" />
+    <Compile Include="Models\ComplexType\UserInfoDto.cs" />
+    <Compile Include="Models\ComplexType\ViewDto.cs" />
+    <Compile Include="Models\Concrete\CitiesDal.cs" />
+    <Compile Include="Models\Concrete\ClientDal.cs" />
+    <Compile Include="Models\Concrete\CompanyDal.cs" />
+    <Compile Include="Models\Concrete\CompanyTypeDal.cs" />
+    <Compile Include="Models\Concrete\ContactDal.cs" />
+    <Compile Include="Models\Concrete\ContractTypeDal.cs" />
+    <Compile Include="Models\Concrete\Core\EntityRepositoryBase.cs" />
+    <Compile Include="Models\Concrete\CountyDal.cs" />
+    <Compile Include="Models\Concrete\DepartmentDal.cs" />
+    <Compile Include="Models\Concrete\DocumentTypeDal.cs" />
+    <Compile Include="Models\Concrete\EmployeeDal.cs" />
+    <Compile Include="Models\Concrete\FloorTypeDal.cs" />
+    <Compile Include="Models\Concrete\HolidayDal.cs" />
+    <Compile Include="Models\Concrete\MateryalDal.cs" />
+    <Compile Include="Models\Concrete\NoteTypeDal.cs" />
+    <Compile Include="Models\Concrete\ParameterDal.cs" />
+    <Compile Include="Models\Concrete\PhaseDal.cs" />
+    <Compile Include="Models\Concrete\ProjectDal.cs" />
+    <Compile Include="Models\Concrete\ProjectMemberDal.cs" />
+    <Compile Include="Models\Concrete\ProjectTaskDal.cs" />
+    <Compile Include="Models\Concrete\ProjectTypeDal.cs" />
+    <Compile Include="Models\Concrete\RoleDal.cs" />
+    <Compile Include="Models\Concrete\RoleMenuDal.cs" />
+    <Compile Include="Models\Concrete\StateDal.cs" />
+    <Compile Include="Models\Concrete\StatusDal.cs" />
+    <Compile Include="Models\Concrete\StreetDal.cs" />
+    <Compile Include="Models\Concrete\SupervisorAreasDal.cs" />
+    <Compile Include="Models\Concrete\SuplierDal.cs" />
+    <Compile Include="Models\Concrete\TaskDal.cs" />
+    <Compile Include="Models\Concrete\TitleDal.cs" />
+    <Compile Include="Models\Concrete\VehicleBodyDal.cs" />
+    <Compile Include="Models\Concrete\VehicleDal.cs" />
+    <Compile Include="Models\Concrete\VehicleMakeDal.cs" />
+    <Compile Include="Models\Concrete\VehicleModelDal.cs" />
+    <Compile Include="Models\CONTACTS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CONTRACT_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\COUNTRIES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DEF_PROJECT_PHASES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DEF_TASKS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DEPARTMENTS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DOCUMENTS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DOCUMENT_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DOC_VIEW.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EMPLOYEES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FLOOR_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HOLIDAYS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JOBSPHASESSUMMARY_VIEW.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JOBSSUMMARY_VIEW.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JOB_CALENDAR_VIEW.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\JOB_MANAGER_DB_CONTEXT.Context.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.Context.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Models\JOB_MANAGER_DB_CONTEXT.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Models\JOB_MANAGER_DB_CONTEXT.Designer.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Models\MATERIALS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NOTES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NOTE_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NOTE_VIEW.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PARAMETERS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROJECTS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROJECT_MEMBERS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROJECT_MEMBER_VIEW.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROJECT_PHASES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROJECT_TASK.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PROJECT_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\QUOTES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ROLES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ROLE_MENU.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STATES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STATUS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STREET.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SUPERVISOR_AREAS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SUPPLIERS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TITLES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VEHICLES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VEHICLE_BODY_TYPES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VEHICLE_MAKES.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\VEHICLE_MODELS.cs">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Models\JOB_MANAGER_DB_CONTEXT.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>JOB_MANAGER_DB_CONTEXT.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\JOB_MANAGER_DB_CONTEXT.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
+      <LastGenOutput>JOB_MANAGER_DB_CONTEXT.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\JOB_MANAGER_DB_CONTEXT.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
+      <LastGenOutput>JOB_MANAGER_DB_CONTEXT.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\JOB_MANAGER_DB_CONTEXT.edmx.diagram">
+      <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,12 +1,10 @@
-﻿using JOB_MANAGER.Bussiness.Concrete;
-using JOB_MANAGER.Helper;
+﻿using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
+using JOB_MANAGER.DATAACESS.Helper;
+using JOB_MANAGER.DATAACESS.Models;
 using JOB_MANAGER.Models;
-using JOB_MANAGER.Models.Concrete;
-using JOB_MANAGER.Models.Login;
-using JOB_MANAGER_BUSSINESS.Concrete;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.SqlServer;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -19,10 +17,10 @@ namespace JOB_MANAGER.Controllers
         [AuthorityControl("Profile")]
         public ActionResult CompanyProfile()
         {
-            CountyManager countyManager = new CountyManager(new Models.Concrete.CountyDal());
-            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
-            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
-            CompanyTypeManager companyTypeManager = new CompanyTypeManager(new Models.Concrete.CompanyTypeDal());
+            CountyManager countyManager = new CountyManager(new CountyDal());
+            StateManager stateManager = new StateManager(new StateDal());
+            CityManager cityManager = new CityManager(new CitiesDal());
+            CompanyTypeManager companyTypeManager = new CompanyTypeManager(new CompanyTypeDal());
 
 
             ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll(), "COUNTRY_ID", "COUNTRY_NAME");
@@ -35,7 +33,7 @@ namespace JOB_MANAGER.Controllers
 
         public JsonResult GetCompany()
         {
-            CompanyManager companyManager = new CompanyManager(new Models.Concrete.CompanyDal());   
+            CompanyManager companyManager = new CompanyManager(new CompanyDal());   
 
             return Json(new { Getlist = companyManager.GetAll().Where(w=>w.IS_CANCELED == false && 
                                         w.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId).ToList() }, JsonRequestBehavior.AllowGet);
@@ -44,7 +42,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateCompany(COMPANY param)
         {
-            CompanyManager companyManager = new CompanyManager(new Models.Concrete.CompanyDal());
+            CompanyManager companyManager = new CompanyManager(new CompanyDal());
             var control = companyManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -53,7 +51,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult GetStateByCompanyID(int CountryID)
         {
-            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
+            StateManager stateManager = new StateManager(new StateDal());
 
             return Json(new { StateList = stateManager.GetAll().Where(w=>w.COUNTRY_ID == CountryID).ToList() }, JsonRequestBehavior.AllowGet);
         }
@@ -62,7 +60,7 @@ namespace JOB_MANAGER.Controllers
         public JsonResult GetCityCompanyID(int StateID)
         {
 
-            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
+            CityManager cityManager = new CityManager(new CitiesDal());
 
             return Json(new { CityList = cityManager.GetAll().Where(w=>w.STATE_ID == StateID).ToList() }, JsonRequestBehavior.AllowGet);
         }
@@ -71,7 +69,7 @@ namespace JOB_MANAGER.Controllers
         public ActionResult UpdateCompanyImg(int CompanyID, HttpPostedFileBase Image, int Remove)
         {
 
-            CompanyManager companyManager = new CompanyManager(new Models.Concrete.CompanyDal());
+            CompanyManager companyManager = new CompanyManager(new CompanyDal());
             var control = companyManager.UpdateCompanyImg(CompanyID,Image,Remove);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -84,11 +82,11 @@ namespace JOB_MANAGER.Controllers
         public ActionResult Vehicles()
         {
 
-            EmployeeManager employeeManager = new EmployeeManager(new Models.Concrete.EmployeeDal());
-            VehicleModelManager vehicleModelManager = new VehicleModelManager(new Models.Concrete.VehicleModelDal());
-            VehicleMakeManager vehicleMakeManager = new VehicleMakeManager(new Models.Concrete.VehicleMakeDal());
-            VehicleBodyManager vehicleBodyManager = new VehicleBodyManager(new Models.Concrete.VehicleBodyDal());
-            StatusManager statusManager = new StatusManager(new Models.Concrete.StatusDal());
+            EmployeeManager employeeManager = new EmployeeManager(new EmployeeDal());
+            VehicleModelManager vehicleModelManager = new VehicleModelManager(new VehicleModelDal());
+            VehicleMakeManager vehicleMakeManager = new VehicleMakeManager(new VehicleMakeDal());
+            VehicleBodyManager vehicleBodyManager = new VehicleBodyManager(new VehicleBodyDal());
+            StatusManager statusManager = new StatusManager(new StatusDal());
 
 
             ViewBag.DRIVER_LIST = new SelectList(employeeManager.GetEmployeesByTypes(false,false,true,ThreadGlobals.UserAuthInfo.Value.CompanyId), "EMP_ID", "EMP_NAME");
@@ -103,7 +101,7 @@ namespace JOB_MANAGER.Controllers
 
         public ActionResult GetVeciclesList()
         {
-            VehicleManager vehicleManager = new VehicleManager(new Models.Concrete.VehicleDal());
+            VehicleManager vehicleManager = new VehicleManager(new VehicleDal());
 
             return Json(new { Getlist = vehicleManager.GetAll().Where(w=>w.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId) }, JsonRequestBehavior.AllowGet);
         }
@@ -112,7 +110,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult GetVecModelList(int VecMakesID,int VecBodysID)
         {
-            VehicleModelManager vehicleModelManager = new VehicleModelManager(new Models.Concrete.VehicleModelDal());
+            VehicleModelManager vehicleModelManager = new VehicleModelManager(new VehicleModelDal());
 
             var data = vehicleModelManager.GetAll().Where(w => w.IS_CANCELED == false);
 
@@ -146,7 +144,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateVehicle(VEHICLES param)
         {
-            VehicleManager vehicleManager = new VehicleManager(new Models.Concrete.VehicleDal());
+            VehicleManager vehicleManager = new VehicleManager(new VehicleDal());
             var control = vehicleManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage});
@@ -184,10 +182,10 @@ namespace JOB_MANAGER.Controllers
         public ActionResult Supplier()
         {
 
-            CountyManager countyManager = new CountyManager(new Models.Concrete.CountyDal());
-            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
-            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
-            StatusManager statusManager = new StatusManager(new Models.Concrete.StatusDal());
+            CountyManager countyManager = new CountyManager(new CountyDal());
+            StateManager stateManager = new StateManager(new StateDal());
+            CityManager cityManager = new CityManager(new CitiesDal());
+            StatusManager statusManager = new StatusManager(new StatusDal());
 
             ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll().Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
             ViewBag.STATES_LIST = new SelectList(stateManager.GetAll().Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
@@ -200,7 +198,7 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public ActionResult GetSupplierList()
         {
-            SuplierManager suplierManager = new SuplierManager(new Models.Concrete.SuplierDal());
+            SuplierManager suplierManager = new SuplierManager(new SuplierDal());
             
             return Json(new { Getlist = suplierManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
@@ -208,7 +206,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateSupplier(SUPPLIERS param)
         {
-            SuplierManager suplierManager = new SuplierManager(new Models.Concrete.SuplierDal());
+            SuplierManager suplierManager = new SuplierManager(new SuplierDal());
             var control = suplierManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage});
@@ -217,7 +215,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult DeleteSupplier(int SupplierID)
         {
-            SuplierManager suplierManager = new SuplierManager(new Models.Concrete.SuplierDal());
+            SuplierManager suplierManager = new SuplierManager(new SuplierDal());
             var control = suplierManager.Delete(new SUPPLIERS() { SUPPLIER_ID = SupplierID });
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -229,12 +227,12 @@ namespace JOB_MANAGER.Controllers
         public ActionResult SupervisorAreas()
         {
 
-            CountyManager countyManager = new CountyManager(new Models.Concrete.CountyDal());
-            StateManager stateManager = new StateManager(new Models.Concrete.StateDal());
-            CityManager cityManager = new CityManager(new Models.Concrete.CitiesDal());
-            StatusManager statusManager = new StatusManager(new Models.Concrete.StatusDal());
+            CountyManager countyManager = new CountyManager(new CountyDal());
+            StateManager stateManager = new StateManager(new StateDal());
+            CityManager cityManager = new CityManager(new CitiesDal());
+            StatusManager statusManager = new StatusManager(new StatusDal());
 
-            EmployeeManager employeeManager = new EmployeeManager(new Models.Concrete.EmployeeDal());
+            EmployeeManager employeeManager = new EmployeeManager(new EmployeeDal());
 
             int CompanyID = GetCompanyID();
             ViewBag.SUPERVISOR_LIST = new SelectList(employeeManager.GetEmployeesByTypes(true,false,false,ThreadGlobals.UserAuthInfo.Value.CompanyId).Select(e => new

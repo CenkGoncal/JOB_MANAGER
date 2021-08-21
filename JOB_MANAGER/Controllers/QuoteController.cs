@@ -1,10 +1,8 @@
-﻿using JOB_MANAGER.Helper;
+﻿using JOB_MANAGER.DATAACESS.Helper;
+using JOB_MANAGER.DATAACESS.Models;
 using JOB_MANAGER.Models;
-using JOB_MANAGER.Models.Login;
-using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
