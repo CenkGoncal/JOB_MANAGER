@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using JOB_MANAGER.Business.Abstract;
+using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
 using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class CompanyManager : IService<COMPANY, CompanyExtented>
+    
+    public class CompanyManager : ICompanyService//IService<COMPANY, CompanyExtented>
     {
         private CompanyDal _companyDal;
 
@@ -14,7 +17,7 @@ namespace JOB_MANAGER.Business.Concrete
         {
             _companyDal = companyDal;
         }
-
+   
         public ShowState AddorUpdate(COMPANY param)
         {
             return _companyDal.AddorUpdate(param, f => f.COMPANY_ID == param.COMPANY_ID);
@@ -24,12 +27,12 @@ namespace JOB_MANAGER.Business.Concrete
         {
             return _companyDal.Delete(param);
         }
-
+        
         public COMPANY Get(COMPANY param)
         {
             return _companyDal.GetAll(f => f.COMPANY_ID == param.COMPANY_ID).FirstOrDefault();
         }
-
+        
         public List<CompanyExtented> GetAll()
         {
             return _companyDal.GetAll2();

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class ContractTypeManager : IService<CONTRACT_TYPES, ContractTypesExtented>
+    public class ContractTypeManager : IService<CONTRACT_TYPES, ContractTypesExtented>, IContractTypeService
     {
         private ContractTypeDal _dal;
         public ContractTypeManager(ContractTypeDal companyTypeDal)

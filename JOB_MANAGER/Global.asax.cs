@@ -7,8 +7,10 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Security;
+using JOB_MANAGER.Business.Ninject;
 using JOB_MANAGER.DataAcess.Helper;
 using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
+using JOB_MANAGER.DATAACESS.CrossCuttingConsers.Utilities;
 using JOB_MANAGER.DATAACESS.Helper;
 
 namespace JOB_MANAGER
@@ -22,6 +24,10 @@ namespace JOB_MANAGER
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalFilters.Filters.Add(new AuthorizeAttribute());
+
+            ControllerBuilder.Current.SetControllerFactory(new NinjectControllerFactory(new BusinessModule()));
+            //Depenciy inversion ile yazılan geçilen parametrelerde anlam kazanıp alt sınıfların üst sınıf cinsine tek
+            //bir yerden ayarlamak 
 
             MemoryCacheManager.instance = new MemoryCacheManager();
 

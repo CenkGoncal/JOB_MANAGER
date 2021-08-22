@@ -5,22 +5,22 @@ using System.Runtime.InteropServices;
 // Bir bütünleştirilmiş koda ilişkin Genel Bilgiler aşağıdaki öznitelikler kümesiyle
 // denetlenir. Bütünleştirilmiş kod ile ilişkili bilgileri değiştirmek için
 // bu öznitelik değerlerini değiştirin.
-[assembly: AssemblyTitle("JOB_MANAGER_BUSSINESS")]
+[assembly: AssemblyTitle("JOB_MANAGER.WCF")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("JOB_MANAGER_BUSSINESS")]
+[assembly: AssemblyProduct("JOB_MANAGER.WCF")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// ComVisible özniteliğinin false olarak ayarlanması bu bütünleştirilmiş koddaki türleri
-// COM bileşenleri için görünmez yapar. Bu bütünleştirilmiş koddaki bir türe
+// ComVisible ayarının false olarak belirlenmesi bu derlemedeki türleri 
+// COM bileşenlerine görünmez yapar.  Bu derlemedeki bir türe COM'dan 
 // erişmeniz gerekirse ComVisible özniteliğini o türde true olarak ayarlayın.
 [assembly: ComVisible(false)]
 
 // Bu proje COM'un kullanımına sunulursa, aşağıdaki GUID tür kitaplığının kimliği içindir
-[assembly: Guid("fc5da62c-cbe6-49e1-b64d-3ed5b577356d")]
+[assembly: Guid("a4d3bba6-533f-40ff-af01-61765a7193d8")]
 
 // Bir derlemenin sürüm bilgileri aşağıdaki dört değerden oluşur:
 //
@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 //      Yapı Numarası
 //      Düzeltme
 //
-// Tüm değerleri belirtebilir veya varsayılan Derleme ve Düzeltme Numaralarını kullanmak için
+// Değerlerin tümünü belirtebilir ya da Yapı ve Düzeltme Numaralarını aşağıda gösterildiği gibi
 // aşağıda gösterildiği gibi '*' kullanabilirsiniz:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
