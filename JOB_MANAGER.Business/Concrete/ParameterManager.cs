@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class ParameterManager : IService<PARAMETERS, ParameterExtented>
+    public class ParameterManager : IParametrerService
     {
         private ParameterDal _dal;
         public ParameterManager(ParameterDal countyDal)

@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class VehicleBodyManager : IService<VEHICLE_BODY_TYPES, VehicleBodysExtented>
+    public class VehicleBodyManager : IVehicleBodyServices
     {
         private VehicleBodyDal _dal;
 

@@ -6,7 +6,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class RoleManager : IService<ROLES, RolesExtented>
+    public class RoleManager : IRoleService
     {
         private RoleDal _dal;
 

@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class VehicleMakeManager : IService<VEHICLE_MAKES, VehicleMakeExtented>
+    public class VehicleMakeManager : IVehicleMakeService
     {
         private VehicleMakeDal _dal;
         public VehicleMakeManager(VehicleMakeDal vehicleMakeDal)

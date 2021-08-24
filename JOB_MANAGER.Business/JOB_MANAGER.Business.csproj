@@ -73,9 +73,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\Common\IService.cs" />
+    <Compile Include="Abstract\ICityService.cs" />
     <Compile Include="Abstract\ICompanyService.cs" />
+    <Compile Include="Abstract\ICompanyTypeService.cs" />
     <Compile Include="Abstract\IContractTypeService.cs" />
+    <Compile Include="Abstract\ICountyService.cs" />
+    <Compile Include="Abstract\IDepartmentService.cs" />
     <Compile Include="Abstract\IEmployeeService.cs" />
+    <Compile Include="Abstract\IParametrerService.cs" />
+    <Compile Include="Abstract\IRoleMenuService.cs" />
+    <Compile Include="Abstract\IRoleService.cs" />
+    <Compile Include="Abstract\IStateService.cs" />
+    <Compile Include="Abstract\IStatusService.cs" />
+    <Compile Include="Abstract\IStreetService.cs" />
+    <Compile Include="Abstract\ITitleService.cs" />
+    <Compile Include="Abstract\IVehicleBodyService.cs" />
+    <Compile Include="Abstract\IVehicleMakeService.cs" />
+    <Compile Include="Abstract\IVehicleModelService.cs" />
     <Compile Include="Concrete\CityManager.cs" />
     <Compile Include="Concrete\ClientManager.cs" />
     <Compile Include="Concrete\CompanyManager.cs" />

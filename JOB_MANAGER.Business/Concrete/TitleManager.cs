@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class TitleManager : IService<TITLES, TitleExtented>
+    public class TitleManager : ITitleService
     {
         private TitleDal _dal;
         

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class CityManager : IService<CITIES, CitiesExtented>
+    public class CityManager : ICityService
     {
         private CitiesDal _citiesDal;
         public CityManager(CitiesDal citiesDal)

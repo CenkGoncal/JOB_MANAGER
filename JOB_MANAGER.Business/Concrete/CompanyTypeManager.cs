@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class CompanyTypeManager : IService<COMPANY_TYPES, CompanyTypesExtented>
+    public class CompanyTypeManager : ICompanyTypeService
     {
         private CompanyTypeDal _companyTypeDal;
         public CompanyTypeManager(CompanyTypeDal companyTypeDal)

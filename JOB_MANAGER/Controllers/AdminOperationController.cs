@@ -1,4 +1,6 @@
-﻿using JOB_MANAGER.Business.Concrete;
+﻿using JOB_MANAGER.Business.Abstract;
+using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.Business.Ninject;
 using JOB_MANAGER.DataAcess.Helper;
 using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
 using JOB_MANAGER.DATAACESS.Helper;
@@ -25,14 +27,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetContractTypeList()
         {
-            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal());
+            IContractTypeService contractType = InstanceFactory.GetInstance<IContractTypeService>();
+
             return Json(new { Getlist = contractType.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetRolesList()
         {
-            RoleManager role = new RoleManager(new RoleDal());
+            IRoleService role = InstanceFactory.GetInstance<IRoleService>();
 
             return Json(new { Getlist = role.GetAll() }, JsonRequestBehavior.AllowGet);
         }
@@ -40,7 +43,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateContractType(CONTRACT_TYPES param)
         {
-            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal());
+            IContractTypeService contractType = InstanceFactory.GetInstance<IContractTypeService>();
             var control = contractType.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -57,7 +60,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateContractRole(ROLES param)
         {
-            RoleManager role = new RoleManager(new RoleDal());
+            IRoleService role = InstanceFactory.GetInstance<IRoleService>();
             var control = role.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -66,7 +69,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveRoleType(ROLES param)
         {
-            RoleManager role = new RoleManager(new RoleDal());
+            IRoleService role = InstanceFactory.GetInstance<IRoleService>();
             var control = role.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -83,14 +86,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetTitleList()
         {
-            TitleManager title = new TitleManager(new TitleDal());
+            ITitleService title = InstanceFactory.GetInstance<ITitleService>();
             return Json(new { Getlist = title.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateTitle(TITLES param)
         {
-            TitleManager title = new TitleManager(new TitleDal());
+            ITitleService title = InstanceFactory.GetInstance<ITitleService>();
             var control = title.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage});
@@ -99,7 +102,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveTitle(TITLES param)
         {
-            TitleManager title =new TitleManager(new TitleDal());
+            ITitleService title = InstanceFactory.GetInstance<ITitleService>();
             var control = title.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -115,14 +118,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetDepartmentList()
         {
-            DepartmentManager department = new DepartmentManager(new DepartmentDal());
+            IDepartmentService department = InstanceFactory.GetInstance<IDepartmentService>();
             return Json(new { Getlist = department.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateDepartment(DEPARTMENTS param)
         {
-            DepartmentManager department = new DepartmentManager(new DepartmentDal());
+            IDepartmentService department = InstanceFactory.GetInstance<IDepartmentService>();
             var control = department.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -131,7 +134,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveDepartment(DEPARTMENTS param)
         {
-            DepartmentManager department = new DepartmentManager(new DepartmentDal());
+            IDepartmentService department = InstanceFactory.GetInstance<IDepartmentService>();
             var control = department.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -147,14 +150,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetCountyiesList()
         {
-            CountyManager county = new CountyManager(new CountyDal());
+            ICountyService county = InstanceFactory.GetInstance<ICountyService>();           
             return Json(new { Getlist = county.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCountry(COUNTRIES param)
         {
-            CountyManager county = new CountyManager(new CountyDal());
+            ICountyService county = InstanceFactory.GetInstance<ICountyService>();
             var control = county.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -163,7 +166,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveCountries(COUNTRIES param)
         {
-            CountyManager county = new CountyManager(new CountyDal());
+            ICountyService county = InstanceFactory.GetInstance<ICountyService>();
             var control = county.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.isError, GetList = GetDepartmentList() });
@@ -193,15 +196,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetStateList()
         {
-            StateManager state = new StateManager(new StateDal());
-
+            IStateService state = InstanceFactory.GetInstance<IStateService>();
             return Json(new { Getlist = state.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateState(STATES param)
         {
-            StateManager state = new StateManager(new StateDal());
+            IStateService state = InstanceFactory.GetInstance<IStateService>();
             var control = state.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -210,7 +212,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveState(STATES param)
         {
-            StateManager state = new StateManager( new StateDal());
+            IStateService state = InstanceFactory.GetInstance<IStateService>();
             var control = state.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -218,15 +220,15 @@ namespace JOB_MANAGER.Controllers
 
         [HttpGet]
         public JsonResult GetCitiesList()
-        {
-            CityManager cityManager = new CityManager(new CitiesDal());
+        {            
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
             return Json(new { Getlist = cityManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCity(CITIES param)
         {
-            CityManager cityManager = new CityManager(new CitiesDal());
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
             var control = cityManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -235,7 +237,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveCity(CITIES param)
         {
-            CityManager cityManager = new CityManager(new CitiesDal());
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
             var control = cityManager.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -244,14 +246,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetSteetList()
         {
-            StreetManager street = new StreetManager(new StreetDal());
+            IStreetService street = InstanceFactory.GetInstance<IStreetService>();            
             return Json(new { Getlist = street.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateStreet(STREET param)
         {
-            StreetManager street = new StreetManager(new StreetDal());
+            IStreetService street = InstanceFactory.GetInstance<IStreetService>();
             var control = street.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -260,7 +262,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveSteet(STREET param)
         {
-            StreetManager street = new StreetManager(new StreetDal());
+            IStreetService street = InstanceFactory.GetInstance<IStreetService>();
             var control = street.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -283,8 +285,8 @@ namespace JOB_MANAGER.Controllers
         
         [HttpPost]
         public JsonResult AddOrUpdateParameter(PARAMETERS param)
-        {
-            ParameterManager parameter = new ParameterManager(new ParameterDal());
+        {            
+            IParametrerService parameter = InstanceFactory.GetInstance<IParametrerService>();
             var control = parameter.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -301,14 +303,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetCompanyTypeList()
         {
-            CompanyTypeManager companyType = new CompanyTypeManager(new CompanyTypeDal());
+            ICompanyTypeService companyType = InstanceFactory.GetInstance<ICompanyTypeService>();
             return Json(new { Getlist = companyType.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateCompanyType(COMPANY_TYPES param)
         {
-            CompanyTypeManager companyType = new CompanyTypeManager(new CompanyTypeDal());
+            ICompanyTypeService companyType = InstanceFactory.GetInstance<ICompanyTypeService>();
             var control = companyType.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -316,7 +318,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveCompanyType(COMPANY_TYPES param)
         {
-            CompanyTypeManager companyType = new CompanyTypeManager(new CompanyTypeDal());
+            ICompanyTypeService companyType = InstanceFactory.GetInstance<ICompanyTypeService>();
             var control = companyType.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -332,14 +334,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclebody()
         {
-            VehicleBodyManager vehicle = new VehicleBodyManager(new VehicleBodyDal());
+            IVehicleBodyServices vehicle = InstanceFactory.GetInstance<IVehicleBodyServices>();            
             return Json(new { Getlist = vehicle.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclebody(VEHICLE_BODY_TYPES param)
         {
-            VehicleBodyManager vehicle = new VehicleBodyManager(new VehicleBodyDal());
+            IVehicleBodyServices vehicle = InstanceFactory.GetInstance<IVehicleBodyServices>();
             var control = vehicle.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -347,7 +349,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveVehiclebody(VEHICLE_BODY_TYPES param)
         {
-            VehicleBodyManager vehicle = new VehicleBodyManager(new VehicleBodyDal());
+            IVehicleBodyServices vehicle = InstanceFactory.GetInstance<IVehicleBodyServices>();
             var control = vehicle.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -355,14 +357,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclemakesList()
         {
-            VehicleMakeManager vehicle = new VehicleMakeManager(new VehicleMakeDal());
+            IVehicleMakeService vehicle = InstanceFactory.GetInstance<IVehicleMakeService>();
             return Json(new { Getlist = vehicle.GetAll() }, JsonRequestBehavior.AllowGet);            
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclemake(VEHICLE_MAKES param)
         {
-            VehicleMakeManager vehicle = new VehicleMakeManager(new VehicleMakeDal());
+            IVehicleMakeService vehicle = InstanceFactory.GetInstance<IVehicleMakeService>();
             var control = vehicle.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -370,7 +372,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveVehiclemake(VEHICLE_MAKES param)
         {
-            VehicleMakeManager vehicle = new VehicleMakeManager(new VehicleMakeDal());
+            IVehicleMakeService vehicle = InstanceFactory.GetInstance<IVehicleMakeService>();
             var control = vehicle.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -378,14 +380,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetVehiclemodelsList()
         {
-            VehicleModelManager vehicle = new VehicleModelManager( new VehicleModelDal());
+            IVehicleModelService vehicle = InstanceFactory.GetInstance<IVehicleModelService>();
             return Json(new { Getlist = vehicle.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateVehiclemodels(VEHICLE_MODELS param)
         {
-            VehicleModelManager vehicle = new VehicleModelManager(new VehicleModelDal());
+            IVehicleModelService vehicle = InstanceFactory.GetInstance<IVehicleModelService>();
             var control = vehicle.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
 
@@ -394,7 +396,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveVehiclemodels(VEHICLE_MODELS param)
         {
-            VehicleModelManager vehicle = new VehicleModelManager(new VehicleModelDal());
+            IVehicleModelService vehicle = InstanceFactory.GetInstance<IVehicleModelService>();
             var control = vehicle.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -402,14 +404,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetStatusList(int StatusType)
         {
-            StatusManager status =new StatusManager( new StatusDal());
+            IStatusService status = InstanceFactory.GetInstance<IStatusService>();
             return Json(new { Getlist = status.GetAll().Where(w=>w.STATUS_ID == StatusType).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateStatus(STATUS param)
         {
-            StatusManager status = new StatusManager(new StatusDal());
+            IStatusService status = InstanceFactory.GetInstance<IStatusService>();
             var control = status.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -417,7 +419,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveStatus(STATUS param)
         {
-            StatusManager status = new StatusManager(new StatusDal());
+            IStatusService status = InstanceFactory.GetInstance<IStatusService>();
             var control = status.Delete(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -447,9 +449,8 @@ namespace JOB_MANAGER.Controllers
         }
 
         public JsonResult GetRolesMenuList()
-        {
-            RoleMenuManager roleMenu = new RoleMenuManager(new RoleMenuDal());
-
+        {            
+            IRoleMenuService roleMenu = InstanceFactory.GetInstance<IRoleMenuService>();
             return Json(new { Getlist = roleMenu.GetAll().Distinct().ToList() }, JsonRequestBehavior.AllowGet);
         }
 
@@ -459,7 +460,7 @@ namespace JOB_MANAGER.Controllers
             chekmenus.ROLE_ID = RoleID;
             chekmenus.MENUS_STR = JsonConvert.SerializeObject(Menus);
 
-            RoleMenuManager roleMenu = new RoleMenuManager(new RoleMenuDal());
+            IRoleMenuService roleMenu = InstanceFactory.GetInstance<IRoleMenuService>();
             var control = roleMenu.AddorUpdate(chekmenus);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -467,7 +468,7 @@ namespace JOB_MANAGER.Controllers
 
         public JsonResult GetLoginEmpRolesMenus()
         {
-            RoleMenuManager roleMenu = new RoleMenuManager(new RoleMenuDal());            
+            IRoleMenuService roleMenu = InstanceFactory.GetInstance<IRoleMenuService>();
             return Json(new { Getlist = roleMenu.GetAllByEmployee() }, JsonRequestBehavior.AllowGet);
         }
         #endregion

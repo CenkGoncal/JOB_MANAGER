@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class StatusManager : IService<STATUS, StatusExtented>
+    public class StatusManager: IStatusService
     {
         private StatusDal _dal;
         public StatusManager(StatusDal statusDal)

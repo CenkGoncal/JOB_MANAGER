@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class DepartmentManager : IService<DEPARTMENTS, DepartmentExtented>
+    public class DepartmentManager : IDepartmentService
     {
         private DepartmentDal _dal;
         public DepartmentManager(DepartmentDal departmentDal)

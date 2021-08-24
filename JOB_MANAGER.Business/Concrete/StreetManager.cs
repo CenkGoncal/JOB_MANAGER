@@ -6,7 +6,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class StreetManager : IService<STREET, StreetExtented>
+    public class StreetManager : IStreetService
     {
         private StreetDal _dal;
         public StreetManager(StreetDal streetDal)

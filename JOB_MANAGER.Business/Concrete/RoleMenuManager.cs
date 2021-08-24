@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class RoleMenuManager : IService<ROLE_MENU, RoleMenuExtented>
+    public class RoleMenuManager : IRoleMenuService
     {
         private RoleMenuDal _dal;
 

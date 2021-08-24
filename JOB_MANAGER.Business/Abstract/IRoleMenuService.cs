@@ -7,8 +7,10 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Abstract
 {
-    public interface IContractTypeService : IService<CONTRACT_TYPES, ContractTypesExtented>
+    public interface IRoleMenuService : IService<ROLE_MENU, RoleMenuExtented>
     {
-        public List<ContractTypesExtented> GetContractTypesCompany(int CompanyId);
+        public List<MenuRolesDto> GetMenuByRole(int roleId);
+
+        public List<RoleMenuExtented> GetAllByEmployee()İ
     }
 }

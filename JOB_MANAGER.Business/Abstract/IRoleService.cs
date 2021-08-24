@@ -7,8 +7,8 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Abstract
 {
-    public interface IContractTypeService : IService<CONTRACT_TYPES, ContractTypesExtented>
+    public interface IRoleService : IService<ROLES, RolesExtented>
     {
-        public List<ContractTypesExtented> GetContractTypesCompany(int CompanyId);
+        public List<RolesExtented> GetRoleCompany(int CompanyId);
     }
 }

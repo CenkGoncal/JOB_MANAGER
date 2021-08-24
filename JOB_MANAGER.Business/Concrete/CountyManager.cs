@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class CountyManager : IService<COUNTRIES, CountryExtented>
+    public class CountyManager : ICountyService
     {
         private CountyDal _dal;
         public CountyManager(CountyDal countyDal)

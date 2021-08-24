@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class VehicleModelManager : IService<VEHICLE_MODELS, VehicleModelExtented>
+    public class VehicleModelManager : IVehicleModelService
     {
         private VehicleModelDal _dal;
 
