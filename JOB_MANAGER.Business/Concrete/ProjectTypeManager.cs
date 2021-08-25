@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class ProjectTypeManager : IService<PROJECT_TYPES, ProjectTypeExtented>
+    public class ProjectTypeManager : IProjectTypeService
     {
         private ProjectTypeDal _dal;
 

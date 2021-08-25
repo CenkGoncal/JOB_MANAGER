@@ -7,10 +7,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Abstract
 {
-    public interface IRoleMenuService : IService<ROLE_MENU, RoleMenuExtented>
+    public interface IFloorTypeService : IService<FLOOR_TYPES, FloorTypeExtented>
     {
-        public List<MenuRolesDto> GetMenuByRole(int roleId);
-
-        public List<RoleMenuExtented> GetAllByEmployee();
     }
 }

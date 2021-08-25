@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class ClientManager : IService<CLIENTS, ClientExtented>
+    public class ClientManager : IClientService
     {
         private ClientDal _clientdal;
         public ClientManager(ClientDal clientDal)
@@ -31,6 +31,11 @@ namespace JOB_MANAGER.Business.Concrete
         public List<ClientExtented> GetAll()
         {
             return _clientdal.GetAll2();
+        }
+
+        public List<ClientExtented> GetAllByCompany(int CompanyId)
+        {
+            return _clientdal.GetAll2().Where(w => w.COMPANY_ID == CompanyId).ToList();
         }
     }
 }

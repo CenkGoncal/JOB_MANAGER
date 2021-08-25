@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class FloorTypeManager : IService<FLOOR_TYPES, FloorTypeExtented>
+    public class FloorTypeManager : IFloorTypeService
     {
         private FloorTypeDal _dal;
 

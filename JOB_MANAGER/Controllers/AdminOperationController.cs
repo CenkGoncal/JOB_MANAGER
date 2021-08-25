@@ -485,45 +485,40 @@ namespace JOB_MANAGER.Controllers
         {
             if (Type == 1)
             {
-                FloorTypeManager floorType = new FloorTypeManager(new FloorTypeDal());
+                IFloorTypeService floorType = InstanceFactory.GetInstance<IFloorTypeService>();
                 return Json(new { Getlist = floorType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 2)
             {
-                MateryalManager materyal = new MateryalManager(new MateryalDal());
+                IMateryalService materyal = InstanceFactory.GetInstance<IMateryalService>();
                 return Json(new { Getlist = materyal.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 3)
             {
-                ProjectTypeManager projectType = new ProjectTypeManager(new ProjectTypeDal());
+                IProjectTypeService projectType = InstanceFactory.GetInstance<IProjectTypeService>();
                 return Json(new { Getlist = projectType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 4)
             {
-                var data = (from vb in db.EMPLOYEES
-                            where vb.IS_CANCELED == false && vb.IS_SUPERVISOR == true
-                            select new
-                            {
-                                EMP_ID = vb.EMP_ID,
-                                EMP_NAME = vb.FIRST_NAME+ SqlConstants.stringWhiteSpace+vb.LAST_NAME,
-                            }
-                ).OrderBy(o => o.EMP_NAME).ToList();   
+                IEmployeeService employeeService = InstanceFactory.GetInstance<IEmployeeService>();
+
+                var data = employeeService.GetEmployeesByTypes(true, false, false, ThreadGlobals.UserAuthInfo.Value.CompanyId);
 
                 return Json(new { Getlist = data }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 5)
             {
-                NoteTypeManager noteType = new NoteTypeManager(new NoteTypeDal());
+                INoteTypeService noteType = InstanceFactory.GetInstance<INoteTypeService>();
                 return Json(new { Getlist = noteType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
             else
             if (Type == 6)
             {
-                DocumentTypeManager documentType = new DocumentTypeManager(new DocumentTypeDal());
+                IDocumentTypeService documentType = InstanceFactory.GetInstance<IDocumentTypeService>();
                 return Json(new { Getlist = documentType.GetAll() }, JsonRequestBehavior.AllowGet);
             }
 
@@ -533,7 +528,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateFloorType(FLOOR_TYPES param)
         {
-            FloorTypeManager floorType = new FloorTypeManager(new FloorTypeDal());
+            IFloorTypeService floorType = InstanceFactory.GetInstance<IFloorTypeService>();
             var control = floorType.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -542,7 +537,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveFloorType(FLOOR_TYPES param)
         {
-            FloorTypeManager floorType = new FloorTypeManager(new FloorTypeDal());
+            IFloorTypeService floorType = InstanceFactory.GetInstance<IFloorTypeService>();
             var control = floorType.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -551,7 +546,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateMaterial(MATERIALS param)
         {
-            MateryalManager materyal = new MateryalManager(new MateryalDal());
+            IMateryalService materyal = InstanceFactory.GetInstance<IMateryalService>();
             var control = materyal.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -560,7 +555,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveMaterial(MATERIALS param)
         {
-            MateryalManager materyal = new MateryalManager(new MateryalDal());
+            IMateryalService materyal = InstanceFactory.GetInstance<IMateryalService>();
             var control = materyal.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -569,7 +564,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateProjectType(PROJECT_TYPES param)
         {
-            ProjectTypeManager projectType = new ProjectTypeManager(new ProjectTypeDal());
+            IProjectTypeService projectType = InstanceFactory.GetInstance<IProjectTypeService>();
             var control = projectType.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -578,7 +573,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveProjectType(PROJECT_TYPES param)
         {
-            ProjectTypeManager projectType = new ProjectTypeManager(new ProjectTypeDal());
+            IProjectTypeService projectType = InstanceFactory.GetInstance<IProjectTypeService>();
             var control = projectType.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -588,7 +583,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateNoteType(NOTE_TYPES param)
         {
-            NoteTypeManager noteType = new NoteTypeManager(new NoteTypeDal());
+            INoteTypeService noteType = InstanceFactory.GetInstance<INoteTypeService>();
             var control = noteType.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -597,7 +592,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveNoteType(NOTE_TYPES param)
         {
-            NoteTypeManager noteType = new NoteTypeManager(new NoteTypeDal());
+            INoteTypeService noteType = InstanceFactory.GetInstance<INoteTypeService>();
             var control = noteType.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -606,7 +601,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateDocumentType(DOCUMENT_TYPES param)
         {
-            DocumentTypeManager documentType = new DocumentTypeManager(new DocumentTypeDal());
+            IDocumentTypeService documentType = InstanceFactory.GetInstance<IDocumentTypeService>();
             var control = documentType.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -615,8 +610,8 @@ namespace JOB_MANAGER.Controllers
 
         [HttpPost]
         public JsonResult RemoveDocumentType(DOCUMENT_TYPES param)
-        {            
-            DocumentTypeManager documentType = new DocumentTypeManager(new DocumentTypeDal());
+        {
+            IDocumentTypeService documentType = InstanceFactory.GetInstance<IDocumentTypeService>();
             var control = documentType.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -632,11 +627,11 @@ namespace JOB_MANAGER.Controllers
              
         [HttpGet]
         public JsonResult DefPhasesTask()
-        {                  
-            PhaseManager phase = new PhaseManager(new PhaseDal());
-            StatusManager status = new StatusManager(new StatusDal());
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
-            
+        {
+            IPhaseService phase =InstanceFactory.GetInstance<IPhaseService>();
+            IStatusService status = InstanceFactory.GetInstance<IStatusService>();
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
+
             return Json(new { Getlist = phase.GetProjectTypeWithPhaseTasks(), 
                               ProjectStatus = status.GetAllByType((int)StatusType.Project), 
                               Employee = employee.GetAllByCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId) }, JsonRequestBehavior.AllowGet);
@@ -646,7 +641,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdatePhases(DEF_PROJECT_PHASES param)
         {
-            PhaseManager phase = new PhaseManager(new PhaseDal());
+            IPhaseService phase = InstanceFactory.GetInstance<IPhaseService>();
             var control = phase.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -656,7 +651,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemovePhases(DEF_PROJECT_PHASES param)
         {
-            PhaseManager phase = new PhaseManager(new PhaseDal());
+            IPhaseService phase = InstanceFactory.GetInstance<IPhaseService>();
             var control = phase.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -665,7 +660,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateTask(DEF_TASKS param)
         {
-            TaskManager task = new TaskManager(new TaskDal());
+            ITaskService task = InstanceFactory.GetInstance<ITaskService>();
             var control = task.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -674,7 +669,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult RemoveTask(DEF_TASKS param)
         {
-            TaskManager task = new TaskManager(new TaskDal());
+            ITaskService task = InstanceFactory.GetInstance<ITaskService>();
             var control = task.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });

@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class SupervisorAreasManager : IService<SUPERVISOR_AREAS, SupervisorAreasExtented>
+    public class SupervisorAreasManager : ISupervisorAreasService
     {
         private SupervisorAreasDal _supervisorAreasDal;
         public SupervisorAreasManager(SupervisorAreasDal supervisorAreasDal)

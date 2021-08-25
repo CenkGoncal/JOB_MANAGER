@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class MateryalManager : IService<MATERIALS, MaterialExtented>
+    public class MateryalManager : IMateryalService
     {
         private MateryalDal _dal;
         public MateryalManager(MateryalDal materyalDal)

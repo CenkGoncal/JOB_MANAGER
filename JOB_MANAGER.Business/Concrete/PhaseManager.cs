@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class PhaseManager : IService<DEF_PROJECT_PHASES, DefProjectPhaseExtented>
+    public class PhaseManager : IPhaseService
     {
         private PhaseDal _dal;
         public PhaseManager(PhaseDal phaseDal)

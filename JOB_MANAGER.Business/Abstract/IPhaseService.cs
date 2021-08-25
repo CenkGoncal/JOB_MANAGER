@@ -7,10 +7,8 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Abstract
 {
-    public interface IRoleMenuService : IService<ROLE_MENU, RoleMenuExtented>
+    public interface IPhaseService : IService<DEF_PROJECT_PHASES, DefProjectPhaseExtented>
     {
-        public List<MenuRolesDto> GetMenuByRole(int roleId);
-
-        public List<RoleMenuExtented> GetAllByEmployee();
+        public List<ProjectTypeWithPhaseTask> GetProjectTypeWithPhaseTasks();
     }
 }

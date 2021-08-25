@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class DocumentTypeManager:IService<DOCUMENT_TYPES, DocumentTypeExtented>
+    public class DocumentTypeManager: IDocumentTypeService
     {
         private DocumentTypeDal _dal;
 

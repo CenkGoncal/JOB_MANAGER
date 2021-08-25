@@ -7,7 +7,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Abstract
 {
-    public interface IEmployeeService
+    public interface IEmployeeService : IService<EMPLOYEES, EmployeeExtended>
     {
         public bool CheckLogin(string userName, string password, bool remember, bool doAuth);
         public List<EmployeeExtended> GetAllByCompany(int CompanyID);

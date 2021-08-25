@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class TaskManager : IService<DEF_TASKS, DefTaskExtented>
+    public class TaskManager : ITaskService
     {
         private TaskDal _dal;
         public TaskManager(TaskDal taskDal)

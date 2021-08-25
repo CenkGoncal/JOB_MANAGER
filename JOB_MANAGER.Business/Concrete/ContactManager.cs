@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class ContactManager : IService<CONTACTS, ContactsExtented>
+    public class ContactManager : IContactService
     {
         private ContactDal _contactDal;
         public ContactManager(ContactDal contactDal)
@@ -59,6 +59,11 @@ namespace JOB_MANAGER.Business.Concrete
             }
 
             return true;
+        }
+
+        public List<ContactsExtented> GetAllByCompany(int CompanyId)
+        {
+            return _contactDal.GetAll2().Where(w => w.COMPANY_ID == CompanyId).ToList();
         }
     }
 }

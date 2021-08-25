@@ -1,4 +1,7 @@
-﻿using JOB_MANAGER.Business.Concrete;
+﻿using JOB_MANAGER.Business;
+using JOB_MANAGER.Business.Abstract;
+using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.Business.Ninject;
 using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
 using JOB_MANAGER.DATAACESS.Helper;
 using JOB_MANAGER.DATAACESS.Models;
@@ -17,10 +20,10 @@ namespace JOB_MANAGER.Controllers
         [AuthorityControl("Profile")]
         public ActionResult CompanyProfile()
         {
-            CountyManager countyManager = new CountyManager(new CountyDal());
-            StateManager stateManager = new StateManager(new StateDal());
-            CityManager cityManager = new CityManager(new CitiesDal());
-            CompanyTypeManager companyTypeManager = new CompanyTypeManager(new CompanyTypeDal());
+            ICountyService countyManager = InstanceFactory.GetInstance<ICountyService>();
+            IStateService stateManager = InstanceFactory.GetInstance<IStateService>();
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
+            IContractTypeService companyTypeManager = InstanceFactory.GetInstance<IContractTypeService>();
 
 
             ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll(), "COUNTRY_ID", "COUNTRY_NAME");
@@ -33,7 +36,7 @@ namespace JOB_MANAGER.Controllers
 
         public JsonResult GetCompany()
         {
-            CompanyManager companyManager = new CompanyManager(new CompanyDal());   
+            ICompanyService companyManager = InstanceFactory.GetInstance<ICompanyService>();
 
             return Json(new { Getlist = companyManager.GetAll().Where(w=>w.IS_CANCELED == false && 
                                         w.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId).ToList() }, JsonRequestBehavior.AllowGet);
@@ -42,7 +45,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateCompany(COMPANY param)
         {
-            CompanyManager companyManager = new CompanyManager(new CompanyDal());
+            ICompanyService companyManager = InstanceFactory.GetInstance<ICompanyService>();
             var control = companyManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -51,17 +54,14 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult GetStateByCompanyID(int CountryID)
         {
-            StateManager stateManager = new StateManager(new StateDal());
-
+            IStateService stateManager = InstanceFactory.GetInstance<IStateService>();
             return Json(new { StateList = stateManager.GetAll().Where(w=>w.COUNTRY_ID == CountryID).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult GetCityCompanyID(int StateID)
         {
-
-            CityManager cityManager = new CityManager(new CitiesDal());
-
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
             return Json(new { CityList = cityManager.GetAll().Where(w=>w.STATE_ID == StateID).ToList() }, JsonRequestBehavior.AllowGet);
         }
 
@@ -69,7 +69,7 @@ namespace JOB_MANAGER.Controllers
         public ActionResult UpdateCompanyImg(int CompanyID, HttpPostedFileBase Image, int Remove)
         {
 
-            CompanyManager companyManager = new CompanyManager(new CompanyDal());
+            ICompanyService companyManager = InstanceFactory.GetInstance<ICompanyService>();
             var control = companyManager.UpdateCompanyImg(CompanyID,Image,Remove);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -82,11 +82,11 @@ namespace JOB_MANAGER.Controllers
         public ActionResult Vehicles()
         {
 
-            EmployeeManager employeeManager = new EmployeeManager(new EmployeeDal());
-            VehicleModelManager vehicleModelManager = new VehicleModelManager(new VehicleModelDal());
-            VehicleMakeManager vehicleMakeManager = new VehicleMakeManager(new VehicleMakeDal());
-            VehicleBodyManager vehicleBodyManager = new VehicleBodyManager(new VehicleBodyDal());
-            StatusManager statusManager = new StatusManager(new StatusDal());
+            IEmployeeService employeeManager = InstanceFactory.GetInstance<IEmployeeService>();
+            IVehicleBodyServices vehicleModelManager = InstanceFactory.GetInstance<IVehicleBodyServices>();
+            IVehicleMakeService vehicleMakeManager = InstanceFactory.GetInstance<IVehicleMakeService>();
+            IVehicleBodyServices vehicleBodyManager = InstanceFactory.GetInstance<IVehicleBodyServices>(); 
+            IStatusService statusManager = InstanceFactory.GetInstance<IStatusService>();
 
 
             ViewBag.DRIVER_LIST = new SelectList(employeeManager.GetEmployeesByTypes(false,false,true,ThreadGlobals.UserAuthInfo.Value.CompanyId), "EMP_ID", "EMP_NAME");
@@ -101,7 +101,7 @@ namespace JOB_MANAGER.Controllers
 
         public ActionResult GetVeciclesList()
         {
-            VehicleManager vehicleManager = new VehicleManager(new VehicleDal());
+            IVehicleService vehicleManager = InstanceFactory.GetInstance<IVehicleService>();
 
             return Json(new { Getlist = vehicleManager.GetAll().Where(w=>w.COMPANY_ID == ThreadGlobals.UserAuthInfo.Value.CompanyId) }, JsonRequestBehavior.AllowGet);
         }
@@ -109,8 +109,8 @@ namespace JOB_MANAGER.Controllers
 
         [HttpPost]
         public JsonResult GetVecModelList(int VecMakesID,int VecBodysID)
-        {
-            VehicleModelManager vehicleModelManager = new VehicleModelManager(new VehicleModelDal());
+        {            
+            IVehicleModelService vehicleModelManager = InstanceFactory.GetInstance<IVehicleModelService>();
 
             var data = vehicleModelManager.GetAll().Where(w => w.IS_CANCELED == false);
 
@@ -144,7 +144,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateVehicle(VEHICLES param)
         {
-            VehicleManager vehicleManager = new VehicleManager(new VehicleDal());
+            IVehicleService vehicleManager = InstanceFactory.GetInstance<IVehicleService>();
             var control = vehicleManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage});
@@ -153,27 +153,10 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult DeleteVehicle(int VehicleID)
         {
-            VEHICLES anVehicle = db.VEHICLES.Find(VehicleID);
-            if (anVehicle != null)
-            {
-                try
-                {
-                    anVehicle.IS_CANCELED = true;
-                    anVehicle.UPDATED_BY = GetUserID();
-                    db.VEHICLES.Attach(anVehicle);                    
+            IVehicleService vehicleManager = InstanceFactory.GetInstance<IVehicleService>();
+            var control = vehicleManager.Delete(new VEHICLES() { VEHICLE_ID = VehicleID });
 
-                    db.Entry(anVehicle).Property(x => x.IS_CANCELED).IsModified = true;
-                    db.Entry(anVehicle).Property(x => x.UPDATED_BY).IsModified = true;
-
-                    db.SaveChanges();
-                    return Json(new { success = true });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { success = false, message = ex.Message });
-                }
-            }
-            return Json(new { success = false, message = "Vehicle not found" });
+            return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
         #endregion
 
@@ -182,10 +165,10 @@ namespace JOB_MANAGER.Controllers
         public ActionResult Supplier()
         {
 
-            CountyManager countyManager = new CountyManager(new CountyDal());
-            StateManager stateManager = new StateManager(new StateDal());
-            CityManager cityManager = new CityManager(new CitiesDal());
-            StatusManager statusManager = new StatusManager(new StatusDal());
+            ICountyService countyManager = InstanceFactory.GetInstance<ICountyService>();
+            IStatusService statusManager = InstanceFactory.GetInstance<IStatusService>();
+            IStateService stateManager = InstanceFactory.GetInstance<IStateService>();
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
 
             ViewBag.COUNTRIES_LIST = new SelectList(countyManager.GetAll().Where(w => w.IS_CANCELED == false), "COUNTRY_ID", "COUNTRY_NAME");
             ViewBag.STATES_LIST = new SelectList(stateManager.GetAll().Where(w => w.IS_CANCELED == false), "STATE_ID", "STATE_NAME");
@@ -198,15 +181,15 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public ActionResult GetSupplierList()
         {
-            SuplierManager suplierManager = new SuplierManager(new SuplierDal());
-            
+            ISuplierService suplierManager = InstanceFactory.GetInstance<ISuplierService>();
+
             return Json(new { Getlist = suplierManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public JsonResult AddOrUpdateSupplier(SUPPLIERS param)
         {
-            SuplierManager suplierManager = new SuplierManager(new SuplierDal());
+            ISuplierService suplierManager = InstanceFactory.GetInstance<ISuplierService>();
             var control = suplierManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage});
@@ -215,7 +198,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult DeleteSupplier(int SupplierID)
         {
-            SuplierManager suplierManager = new SuplierManager(new SuplierDal());
+            ISuplierService suplierManager = InstanceFactory.GetInstance<ISuplierService>();
             var control = suplierManager.Delete(new SUPPLIERS() { SUPPLIER_ID = SupplierID });
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -227,10 +210,10 @@ namespace JOB_MANAGER.Controllers
         public ActionResult SupervisorAreas()
         {
 
-            CountyManager countyManager = new CountyManager(new CountyDal());
-            StateManager stateManager = new StateManager(new StateDal());
-            CityManager cityManager = new CityManager(new CitiesDal());
-            StatusManager statusManager = new StatusManager(new StatusDal());
+            ICountyService countyManager = InstanceFactory.GetInstance<ICountyService>();
+            IStatusService statusManager = InstanceFactory.GetInstance<IStatusService>();
+            ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
+            IStateService stateManager = InstanceFactory.GetInstance<IStateService>();
 
             EmployeeManager employeeManager = new EmployeeManager(new EmployeeDal());
 
@@ -262,7 +245,7 @@ namespace JOB_MANAGER.Controllers
         public JsonResult GetListFilterSupervisors()
         {
 
-            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());
+            ISupervisorAreasService supervisorAreasManager = InstanceFactory.GetInstance<ISupervisorAreasService>();
 
             var dataCity = supervisorAreasManager.GetAll().Select(s => new { CITY_ID = s.CITY_ID, CITY_NAME = s.CITY_NAME }).Distinct().ToList();
             var dataSup = supervisorAreasManager.GetAll().Select(s => new
@@ -279,7 +262,7 @@ namespace JOB_MANAGER.Controllers
         public JsonResult GetSuperVisorList()
         {
 
-            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());         
+            ISupervisorAreasService supervisorAreasManager = InstanceFactory.GetInstance<ISupervisorAreasService>();
 
             return Json(new { Getlist = supervisorAreasManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
@@ -287,7 +270,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddSuppervisorArea(int SuperVizorID, List<int> CityIDs)
         {
-            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());
+            ISupervisorAreasService supervisorAreasManager = InstanceFactory.GetInstance<ISupervisorAreasService>();
             var control = supervisorAreasManager.AddSuppervisorArea(SuperVizorID, CityIDs);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -296,7 +279,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult DeleteSuppervisorArea(int SuperVizorID, int CityID)
         {
-            SupervisorAreasManager supervisorAreasManager = new SupervisorAreasManager(new SupervisorAreasDal());
+            ISupervisorAreasService supervisorAreasManager = InstanceFactory.GetInstance<ISupervisorAreasService>();
             var control = supervisorAreasManager.Delete(new SUPERVISOR_AREAS() { EMPLOYEE_ID = SuperVizorID});
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -314,14 +297,14 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public JsonResult GetHolidays()
         {
-            HolidayManager holidayManager = new HolidayManager(new HolidayDal());
+            IHolidayService holidayManager = InstanceFactory.GetInstance<IHolidayService>(); 
             
             return Json(new { Getlist = holidayManager.GetAll() }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult AddOrUpdateHoliday(HOLIDAYS param)
         {
-            HolidayManager holidayManager = new HolidayManager(new HolidayDal());
+            IHolidayService holidayManager = InstanceFactory.GetInstance<IHolidayService>();
             var control = holidayManager.AddorUpdate(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
@@ -329,7 +312,7 @@ namespace JOB_MANAGER.Controllers
 
         public JsonResult RemoveHoliday(HOLIDAYS param)
         {
-            HolidayManager holidayManager = new HolidayManager(new HolidayDal());
+            IHolidayService holidayManager = InstanceFactory.GetInstance<IHolidayService>();
             var control = holidayManager.Delete(param);
 
             return Json(new { success = !control.isError, Message = control.ErrorMessage });

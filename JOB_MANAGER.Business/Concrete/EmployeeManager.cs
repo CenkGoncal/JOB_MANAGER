@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class EmployeeManager : IService<EMPLOYEES, EmployeeExtended>, IEmployeeService
+    public class EmployeeManager : IEmployeeService
     {
         private EmployeeDal _dal;
         public EmployeeManager(EmployeeDal employeeDal)

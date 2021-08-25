@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class SuplierManager : IService<SUPPLIERS, SuplierExtended>
+    public class SuplierManager : ISuplierService
     {
         private SuplierDal _suplierDal;
         public SuplierManager(SuplierDal suplierDal)

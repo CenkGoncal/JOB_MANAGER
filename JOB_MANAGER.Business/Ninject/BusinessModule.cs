@@ -65,7 +65,45 @@ namespace JOB_MANAGER.Business.Ninject
             Bind<IRoleMenuService>().To<RoleMenuManager>().InSingletonScope();
             Bind<RoleMenuDal>().To<RoleMenuDal>().InSingletonScope();
 
-            
+            Bind<IFloorTypeService>().To<FloorTypeManager>().InSingletonScope();
+            Bind<FloorTypeDal>().To<FloorTypeDal>().InSingletonScope();
+
+            Bind<IMateryalService>().To<MateryalManager>().InSingletonScope();
+            Bind<MateryalDal>().To<MateryalDal>().InSingletonScope();
+
+            Bind<IProjectTypeService>().To<ProjectTypeManager>().InSingletonScope();
+            Bind<ProjectTypeDal>().To<ProjectTypeDal>().InSingletonScope();
+
+            Bind<INoteTypeService>().To<NoteTypeManager>().InSingletonScope();
+            Bind<NoteTypeDal>().To<NoteTypeDal>().InSingletonScope();
+
+            Bind<IDocumentTypeService>().To<DocumentTypeManager>().InSingletonScope();
+            Bind<DocumentTypeDal>().To<DocumentTypeDal>().InSingletonScope();
+
+            Bind<IPhaseService>().To<PhaseManager>().InSingletonScope();
+            Bind<PhaseDal>().To<PhaseDal>().InSingletonScope();
+
+            Bind<ITaskService>().To<TaskManager>().InSingletonScope();
+            Bind<TaskDal>().To<TaskDal>().InSingletonScope();
+
+            Bind<IClientService>().To<ClientManager>().InSingletonScope();
+            Bind<ClientDal>().To<ClientDal>().InSingletonScope();
+
+            Bind<IContactService>().To<ContactManager>().InSingletonScope();
+            Bind<ContactDal>().To<ContactDal>().InSingletonScope();
+
+            Bind<IVehicleService>().To<VehicleManager>().InSingletonScope();
+            Bind<VehicleDal>().To<VehicleDal>().InSingletonScope();
+
+            Bind<ISuplierService>().To<SuplierManager>().InSingletonScope();
+            Bind<SuplierDal>().To<SuplierDal>().InSingletonScope();
+
+            Bind<ISupervisorAreasService>().To<SupervisorAreasManager>().InSingletonScope();
+            Bind<SupervisorAreasDal>().To<SupervisorAreasDal>().InSingletonScope();
+
+            Bind<IHolidayService>().To<HolidayManager>().InSingletonScope();
+            Bind<HolidayDal>().To<HolidayDal>().InSingletonScope();
+
         }
     }
 }

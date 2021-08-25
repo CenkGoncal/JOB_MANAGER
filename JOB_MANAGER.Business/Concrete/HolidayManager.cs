@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class HolidayManager : IService<HOLIDAYS, HolidayExtented>
+    public class HolidayManager : IHolidayService
     {
         private HolidayDal _holidayDal;
         public HolidayManager(HolidayDal holidayDal)

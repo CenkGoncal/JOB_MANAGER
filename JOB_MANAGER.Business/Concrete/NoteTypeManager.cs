@@ -5,7 +5,7 @@ using JOB_MANAGER.DATAACESS.Models;
 
 namespace JOB_MANAGER.Business.Concrete
 {
-    public class NoteTypeManager : IService<NOTE_TYPES, NoteTypeExtented>
+    public class NoteTypeManager : INoteTypeService
     {
         private NoteTypeDal _dal;
         public NoteTypeManager(NoteTypeDal noteType)
