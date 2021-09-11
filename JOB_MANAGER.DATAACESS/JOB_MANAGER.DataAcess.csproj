@@ -313,6 +313,7 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DatabaseScript\script.sql" />
     <Content Include="Models\JOB_MANAGER_DB_CONTEXT.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>JOB_MANAGER_DB_CONTEXT.edmx</DependentUpon>

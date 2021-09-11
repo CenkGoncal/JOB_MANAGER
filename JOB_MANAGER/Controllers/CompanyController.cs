@@ -215,7 +215,7 @@ namespace JOB_MANAGER.Controllers
             ICityService cityManager = InstanceFactory.GetInstance<ICityService>();
             IStateService stateManager = InstanceFactory.GetInstance<IStateService>();
 
-            EmployeeManager employeeManager = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employeeManager = InstanceFactory.GetInstance<IEmployeeService>();
 
             int CompanyID = GetCompanyID();
             ViewBag.SUPERVISOR_LIST = new SelectList(employeeManager.GetEmployeesByTypes(true,false,false,ThreadGlobals.UserAuthInfo.Value.CompanyId).Select(e => new

@@ -1,4 +1,6 @@
-﻿using JOB_MANAGER.Business.Concrete;
+﻿using JOB_MANAGER.Business.Abstract;
+using JOB_MANAGER.Business.Concrete;
+using JOB_MANAGER.Business.Ninject;
 using JOB_MANAGER.DATAACESS.CrossCuttingConsers;
 using JOB_MANAGER.DATAACESS.Helper;
 using JOB_MANAGER.DATAACESS.Models;
@@ -17,22 +19,22 @@ namespace JOB_MANAGER.Controllers
         [AuthorityControl("Employees")]
         public ActionResult Index()
         {
-            DepartmentManager department = new DepartmentManager(new DepartmentDal());
+            IDepartmentService department = InstanceFactory.GetInstance<IDepartmentService>();
             ViewBag.DEPARTMENT_LIST = new SelectList(department.GetDepartmentCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "DEPARTMENT_ID", "DEPARTMENT_NAME");
 
-            StatusManager status = new StatusManager(new StatusDal());
+            IStatusService status = InstanceFactory.GetInstance<IStatusService>();
             ViewBag.EMPLOYEE_STATUS_LIST = new SelectList(status.GetAllByType((int)StatusType.Employee), "STATUS_ID", "STATUS_NAME");
 
-            RoleManager role = new RoleManager(new RoleDal());
+            IRoleService role = InstanceFactory.GetInstance<IRoleService>();
             ViewBag.ROLE_LIST = new SelectList(role.GetRoleCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "ROLE_ID", "ROLE_NAME");
 
-            TitleManager title = new TitleManager(new TitleDal());
+            ITitleService title = InstanceFactory.GetInstance<ITitleService>();
             ViewBag.TITLE_LIST = new SelectList(title.GetTitleCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "TITLE_ID", "TITLE_NAME");
 
-            ContractTypeManager contractType = new ContractTypeManager(new ContractTypeDal());
+            IContractTypeService contractType = InstanceFactory.GetInstance<IContractTypeService>();
             ViewBag.CONTRACT_TYPE_LIST = new SelectList(contractType.GetContractTypesCompany(ThreadGlobals.UserAuthInfo.Value.CompanyId), "CONTRACT_TYPE_ID", "CONTRACT_TYPE_NAME");
 
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
             ViewBag.SUPERVISOR_LIST = new SelectList(employee.GetEmployeesByTypes(true,false,false, ThreadGlobals.UserAuthInfo.Value.CompanyId), "EMP_ID", "EMP_NAME");
 
             ViewBag.DefaultProfileImg = Convert.ToBase64String(GlobalTools.GetParamByteVal("NO_PICTURE_IMG", ThreadGlobals.UserAuthInfo.Value.CompanyId));
@@ -61,7 +63,7 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]
         public ActionResult UserProfile()
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
 
             if (ThreadGlobals.UserAuthInfo.Value.UserId < 0)
             {
@@ -86,7 +88,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult UpdateEmployeeImg(int EmpID, HttpPostedFileBase Image, int Remove)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
 
             EMPLOYEES emp = new EMPLOYEES();
             emp.EMP_ID = EmpID;
@@ -101,7 +103,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult UpdateProfileDetails(int id, string phone, string extension, string mobile)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
 
             EMPLOYEES emp = new EMPLOYEES();
             emp.EMP_ID = id;
@@ -119,7 +121,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult ChangePassword(int id, string oldPwd, string newPwd, string confirmPwd)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
             var control = employee.ChangePassword(id, oldPwd, newPwd, confirmPwd);
 
             return Json(new { success = !control.isError, message = control.isError ? control.ErrorMessage : "success" });
@@ -137,7 +139,7 @@ namespace JOB_MANAGER.Controllers
             employees.SHOW_SIGNATURE = showSignature;
 
 
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
             var control = employee.UpdateEmailSettings(employees);
 
             return Json(new { success = !control.isError, message = control.isError ? control.ErrorMessage : "success" });
@@ -146,7 +148,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult AddOrUpdateEmployee(EMPLOYEES param)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
             var control = employee.AddorUpdate(param);
             return Json(new { success = !control.isError, Message = control.ErrorMessage });
         }
@@ -154,7 +156,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public ActionResult DeleteEmployee(int EmpID)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
 
             EMPLOYEES emp = new EMPLOYEES();
             emp.EMP_ID = EmpID;
@@ -167,7 +169,7 @@ namespace JOB_MANAGER.Controllers
         [HttpPost]
         public JsonResult UpdateNavbarClass(int Type, string navbarClass)
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
             var control = employee.UpdateNavbarClass(ThreadGlobals.UserAuthInfo.Value.UserId,Type,navbarClass);
             return Json(new { success = !control.isError, message = control.isError ? control.ErrorMessage : "success" });
         }
@@ -175,7 +177,7 @@ namespace JOB_MANAGER.Controllers
         [HttpGet]        
         public bool CopyNavbarAll()
         {
-            EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+            IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
             var control = employee.CopyNavbarAll(ThreadGlobals.UserAuthInfo.Value.UserId);
             return control.isError;
         }
@@ -199,32 +201,31 @@ namespace JOB_MANAGER.Controllers
         {
             if(TypeID == 1)
             {
-                EmployeeManager employee = new EmployeeManager(new EmployeeDal());
+                IEmployeeService employee = InstanceFactory.GetInstance<IEmployeeService>();
                 var emplist = employee.GetAllActive().Select(s => new { EMAIL = s.EMAIL_USERNAME, NAME = s.EMP_NAME });
 
                 return Json(new { Getlist = emplist, success = true }, JsonRequestBehavior.AllowGet);
             }
             else if(TypeID == 2)
             {
-                var query2 = (from c in db.CONTACTS
-                              where c.IS_CANCELED == false && c.CONTACT_EMAIL != SqlConstants.stringEmpty
-                              select new
-                              {
-                                  EMAIL = c.CONTACT_EMAIL,
-                                  NAME = c.CONTACT_FIRST_NAME + SqlConstants.stringWhiteSpace + c.CONTACT_LAST_NAME
-                              });
+                IContactService  contact = InstanceFactory.GetInstance<IContactService>();
+                var query2 = contact.GetAll().Where(w => w.CONTACT_EMAIL != SqlConstants.stringEmpty).Select(s => new
+                {
+                    EMAIL = s.CONTACT_EMAIL,
+                    NAME = s.CONTACT_FIRST_NAME + SqlConstants.stringWhiteSpace + s.CONTACT_LAST_NAME
+                }).ToList();
 
                 return Json(new { Getlist = query2.ToList(), success = true }, JsonRequestBehavior.AllowGet);
             }
             else if (TypeID == 3)
             {
-                var query3 = (from s in db.SUPPLIERS
-                              where s.IS_CANCELED == false && s.SUPPLIER_EMAIL != SqlConstants.stringEmpty
-                              select new
-                              {
-                                  EMAIL = s.SUPPLIER_EMAIL,
-                                  NAME = s.SUPPLIER_NAME
-                              });
+                ISuplierService suplier = InstanceFactory.GetInstance<ISuplierService>();
+                var query3 = suplier.GetAll().Where(w => w.SUPPLIER_EMAIL != SqlConstants.stringEmpty).
+                             Select(s => new
+                             {
+                                 EMAIL = s.SUPPLIER_EMAIL,
+                                 NAME = s.SUPPLIER_NAME
+                             });
 
                 return Json(new { Getlist = query3.ToList(), success = true }, JsonRequestBehavior.AllowGet);
             }

@@ -24,7 +24,7 @@ namespace JOB_MANAGER.Controllers
 
             ICountyService county = InstanceFactory.GetInstance<ICountyService>();
             IStateService state = InstanceFactory.GetInstance<IStateService>();
-            CityManager city = new CityManager(new CitiesDal());
+            ICityService city = InstanceFactory.GetInstance<ICityService>();
             
             int defaultCountry = county.GetAll().Where(w => w.IS_DEFAULT == true).Select(s => s.COUNTRY_ID).FirstOrDefault();                
             if (defaultCountry > 0)
